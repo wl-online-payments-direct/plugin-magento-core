@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <worldline_connection>
+            <connection>
+                <environment_mode>0</environment_mode>
+                <production_api_url>https://payment.direct.worldline-solutions.com</production_api_url>
+                <testing_api_url>https://payment.preprod.direct.worldline-solutions.com</testing_api_url>
+            </connection>
+        </worldline_connection>
+        <worldline_order_status_updater>
+            <general>
+                <fallback_timeout>10</fallback_timeout>
+                <fallback_timeout_limit>3</fallback_timeout_limit>
+                <cron_expr>*/5 * * * *</cron_expr>
+            </general>
+            <abandoned_orders>
+                <waiting_time>180</waiting_time>
+                <cron_expr>* * * * *</cron_expr>
+            </abandoned_orders>
+        </worldline_order_status_updater>
+        <worldline_debug>
+            <general>
+                <logging_lifetime>14</logging_lifetime>
+            </general>
+        </worldline_debug>
+    </default>
+</config>

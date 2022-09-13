@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Preference -->
+    <preference type="OnlinePayments\Sdk\DefaultConnection" for="OnlinePayments\Sdk\Connection" />
+    <preference type="Magento\Framework\Filesystem\Driver\File" for="Magento\Framework\Filesystem\DriverInterface" />
+    <preference type="Worldline\PaymentCore\Model\Log\Log" for="Worldline\PaymentCore\Api\Data\LogInterface" />
+    <preference type="Worldline\PaymentCore\Model\Log\LogRepository" for="Worldline\PaymentCore\Api\LogRepositoryInterface" />
+    <preference type="Worldline\PaymentCore\Logger\RequestLog" for="Worldline\PaymentCore\Api\Data\RequestLogInterface" />
+    <preference type="Worldline\PaymentCore\Model\RefundRequest\RefundRequest" for="Worldline\PaymentCore\Api\Data\RefundRequestInterface" />
+    <preference type="Worldline\PaymentCore\Model\RefundRequest\RefundRequestRepository" for="Worldline\PaymentCore\Api\RefundRequestRepositoryInterface" />
+    <preference type="Worldline\PaymentCore\Model\Transaction\Transaction" for="Worldline\PaymentCore\Api\Data\TransactionInterface" />
+    <preference type="Worldline\PaymentCore\Model\Transaction\TransactionRepository" for="Worldline\PaymentCore\Api\TransactionRepositoryInterface" />
+    <preference type="Worldline\PaymentCore\Model\Transaction\TransactionWebhookManager" for="Worldline\PaymentCore\Api\TransactionWebhookManagerInterface" />
+    <preference type="Worldline\PaymentCore\Model\Transaction\PaymentInfo" for="Worldline\PaymentCore\Api\Data\PaymentInfoInterface" />
+    <!-- End Preference -->
+
+    <type name="Worldline\PaymentCore\Block\Info">
+        <arguments>
+            <argument name="infoFormatter" xsi:type="object">Worldline\PaymentCore\Block\InfoFormatter</argument>
+        </arguments>
+    </type>
+
+    <type name="Worldline\PaymentCore\Model\Webhook\GeneralProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="payment.pending_capture" xsi:type="object">Worldline\PaymentCore\Model\Webhook\PlaceOrderProcessor</item>
+                <item name="payment.capture_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\PlaceOrderProcessor</item>
+                <item name="payment.captured" xsi:type="object">Worldline\PaymentCore\Model\Webhook\PlaceOrderProcessor</item>
+                <item name="payment.authorization_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\PlaceOrderProcessor</item>
+                <item name="payment.refunded" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
+                <item name="refund.refund_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Plugin -->
+    <type name="OnlinePayments\Sdk\Communicator">
+        <plugin name="Worldline_PaymentCore::debug_logger"
+                type="Worldline\PaymentCore\Logger\Plugin\OnlinePayments\Sdk\Communicator\DebugLog"/>
+    </type>
+    <!-- End Plugin -->
+
+    <!-- Command -->
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="world-line-order-status-updater" xsi:type="object">Worldline\PaymentCore\Console\Command\OrderStatusUpdater</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- End Command -->
+
+    <!-- Dedicated log file -->
+    <type name="Worldline\PaymentCore\Controller\Webhook\Index">
+        <arguments>
+            <argument name="logger" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Logger\Virtual</argument>
+        </arguments>
+    </type>
+    <type name="Worldline\PaymentCore\Model\Order\Service\WorldLineApiProcessor">
+        <arguments>
+            <argument name="logger" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Logger\Virtual</argument>
+        </arguments>
+    </type>
+    <type name="Worldline\PaymentCore\Cron\OrderStatusUpdater">
+        <arguments>
+            <argument name="logger" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Logger\Virtual</argument>
+        </arguments>
+    </type>
+    <virtualType name="Worldline\PaymentCore\Model\Webhook\Logger\Virtual"
+                 type="Monolog\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">worldline_webhook</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Logger\Handler\Virtual</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Worldline\PaymentCore\Model\Webhook\Logger\Handler\Virtual"
+                 type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+            <argument name="fileName" xsi:type="string">/var/log/worldline-order-update.log</argument>
+        </arguments>
+    </virtualType>
+    <!-- END Dedicated log file -->
+
+    <!-- System configuration -->
+    <type name="Worldline\PaymentCore\Model\Config\OrderStatusUpdater">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="key" xsi:type="string">worldline_connection/webhook/key</item>
+                <item name="secret_key" xsi:type="string">worldline_connection/webhook/secret_key</item>
+                <item name="fallback_timeout" xsi:type="string">worldline_order_status_updater/general/fallback_timeout</item>
+                <item name="fallback_timeout_limit" xsi:type="string">worldline_order_status_updater/general/fallback_timeout_limit</item>
+                <item name="waiting_time" xsi:type="string">worldline_order_status_updater/abandoned_orders/waiting_time</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Worldline\PaymentCore\Logger\Config\ConfigDebugProvider">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="log_mode" xsi:type="string">worldline_debug/worldline_request/log_mode</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- END System configuration -->
+
+    <!-- UI components configuration -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="request_log_listing_data_source" xsi:type="string">Worldline\PaymentCore\View\Element\UiComponent\DataProvider\SearchResult\Virtual</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Worldline\PaymentCore\View\Element\UiComponent\DataProvider\SearchResult\Virtual" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">worldline_request_log</argument>
+            <argument name="resourceModel" xsi:type="string">Worldline\PaymentCore\Logger\ResourceModel\RequestLog</argument>
+        </arguments>
+    </virtualType>
+    <!-- END UI components configuration -->
+
+    <!-- General payment configuration -->
+    <!-- Logger, initialized with WorldlineConfig -->
+    <type name="Worldline\PaymentCore\Logger\Plugin\OnlinePayments\Sdk\Communicator\DebugLog">
+        <arguments>
+            <argument name="logger" xsi:type="object">Worldline\PaymentCore\Model\Method\Logger\Virtual</argument>
+        </arguments>
+    </type>
+    <virtualType name="Worldline\PaymentCore\Model\Logger\Virtual" type="Monolog\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">worldline_debug</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="debug" xsi:type="object">Worldline\PaymentCore\Logger\Handler\Debug</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- END Logger, initialized with WorldlineConfig -->
+
+    <virtualType name="Worldline\PaymentCore\Gateway\ErrorMapper\VirtualErrorMessageMapper\Virtual" type="Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapper">
+        <arguments>
+            <argument name="messageMapping" xsi:type="object">Worldline\PaymentCore\Gateway\ErrorMapper\VirtualMappingData</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Worldline\PaymentCore\Gateway\ErrorMapper\VirtualMappingData" type="Magento\Payment\Gateway\ErrorMapper\MappingData">
+        <arguments>
+            <argument name="reader" xsi:type="object">Worldline\PaymentCore\Gateway\ErrorMapper\VirtualConfigReader\Virtual</argument>
+            <argument name="cacheId" xsi:type="string">worldline_error_mapper</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Worldline\PaymentCore\Gateway\ErrorMapper\VirtualConfigReader\Virtual" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">
+        <arguments>
+            <argument name="fileName" xsi:type="string">worldline_error_mapping.xml</argument>
+        </arguments>
+    </virtualType>
+    <!-- END General payment configuration -->
+</config>

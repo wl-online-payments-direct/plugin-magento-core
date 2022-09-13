@@ -1,0 +1,7 @@
+type Query {
+    checkRedirect(incrementId: String!): CheckRedirectOutput @resolver(class: "\\Worldline\\PaymentCore\\GraphQl\\Model\\Resolver\\Redirect") @doc(description: "Retrieve redirect status.")
+}
+
+type CheckRedirectOutput {
+    url: String
+}
