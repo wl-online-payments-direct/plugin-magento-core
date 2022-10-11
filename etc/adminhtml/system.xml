@@ -103,23 +103,23 @@
                     <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\TestConnection</frontend_model>
                 </field>
             </group>
-            <group id="webhook" translate="label" type="text" sortOrder="20" showInDefault="1">
+            <group id="webhook" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
                 <label>Webhook</label>
-                <field id="webhook_url" translate="label comment" type="text" sortOrder="20" showInDefault="1">
+                <field id="webhook_url" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
                     <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\WebhookUrl</frontend_model>
                 </field>
-                <field id="key" translate="label" type="obscure" sortOrder="30" showInDefault="1">
+                <field id="key" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1">
                     <label>Key</label>
                     <validate>required-entry</validate>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field>
-                <field id="secret_key" translate="label comment" type="obscure" sortOrder="40" showInDefault="1">
+                <field id="secret_key" translate="label comment" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1">
                     <label>Secret Key</label>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     <validate>required-entry</validate>
                     <comment>To retrieve webhooks credentials, login to the Worldline Back Office</comment>
                 </field>
-                <field id="webhook_info" translate="label" type="text" sortOrder="50" showInDefault="1">
+                <field id="webhook_info" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1">
                     <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\WebhookInfo</frontend_model>
                 </field>
             </group>
@@ -129,8 +129,8 @@
             <tab>worldline</tab>
             <resource>Worldline_PaymentCore::config_worldline</resource>
         </section>
-        <section id="worldline_order_status_updater" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Order Status Updater</label>
+        <section id="worldline_order_creator" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Dynamic order status synchronization</label>
             <class>separator-top</class>
             <tab>worldline</tab>
             <resource>Worldline_PaymentCore::config_worldline</resource>
@@ -140,29 +140,25 @@
                     <label>Fallback Timeout</label>
                     <validate>validate-digits validate-zero-or-greater</validate>
                     <tooltip><![CDATA[If the payment process is failed, change the order status after the specified time.]]></tooltip>
-                    <comment>Specify fallback timeout in minutes.</comment>
+                    <comment>Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.</comment>
                 </field>
                 <field id="fallback_timeout_limit" translate="label tooltip comment" type="text" sortOrder="20" showInDefault="1" canRestore="1">
                     <label>Fallback Timeout Limit</label>
                     <validate>validate-digits validate-zero-or-greater</validate>
                     <tooltip><![CDATA[If the payment process is failed, change the order status after the specified time in "Fallback Timeout" till the value specified in this field.<br/>In other words, the request will be executed during the specified time limit.]]></tooltip>
-                    <comment>Specify fallback timeout limit in hours.</comment>
+                    <comment>Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.</comment>
                 </field>
                 <field id="cron_expr" sortOrder="30" type="text" showInDefault="1" translate="label comment" canRestore="1">
                     <label>Schedule (Cron Syntax)</label>
-                    <comment><![CDATA[Default value: every 5 minutes. <a href="http://crontab.guru/" target="_blank">Need help?</a>]]></comment>
+                    <comment><![CDATA[Default value: every minute. <a href="http://crontab.guru/" target="_blank">Need help?</a>]]></comment>
                 </field>
-            </group>
-            <group id="abandoned_orders" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
-                <label>Abandoned Orders</label>
-                <field id="waiting_time" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Waiting Time</label>
-                    <validate>validate-digits validate-zero-or-greater</validate>
-                    <comment><![CDATA[Auto cancellation of orders that are stuck in the payment review status after the specified time. The time is in minutes.]]></comment>
+                <field id="refused_payment_template" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1">
+                    <label>Payment Refused Email Template</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
                 </field>
-                <field id="cron_expr" sortOrder="20" type="text" showInDefault="1" translate="label comment" canRestore="1">
-                    <label>Schedule (Cron Syntax)</label>
-                    <comment><![CDATA[<a href="http://crontab.guru/" target="_blank">Need help?</a>]]></comment>
+                <field id="refused_payment_sender" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1">
+                    <label>Email Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
                 </field>
             </group>
         </section>

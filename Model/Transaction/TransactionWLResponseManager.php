@@ -8,14 +8,13 @@ use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\RefundResponse;
-use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterfaceFactory;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
-use Worldline\PaymentCore\Api\TransactionWebhookManagerInterface;
+use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
 use Worldline\PaymentCore\Model\Ui\PaymentProductsProvider;
 
-class TransactionWebhookManager implements TransactionWebhookManagerInterface
+class TransactionWLResponseManager implements TransactionWLResponseManagerInterface
 {
     /**
      * @var TransactionInterfaceFactory
@@ -35,9 +34,13 @@ class TransactionWebhookManager implements TransactionWebhookManagerInterface
         $this->transactionRepository = $transactionRepository;
     }
 
-    public function saveTransaction(WebhooksEvent $webhookEvent): void
+    /**
+     * @param DataObject $worldlineResponse (PaymentResponse|RefundResponse)
+     * @return void
+     * @throws LocalizedException
+     */
+    public function saveTransaction(DataObject $worldlineResponse): void
     {
-        $worldlineResponse = $this->getResponse($webhookEvent);
         $statusCode = (int)$worldlineResponse->getStatusOutput()->getStatusCode();
         $output = $this->getOutput($worldlineResponse);
 
@@ -61,29 +64,6 @@ class TransactionWebhookManager implements TransactionWebhookManagerInterface
         }
 
         $this->transactionRepository->save($transaction);
-    }
-
-    /**
-     * @param WebhooksEvent $webhookEvent
-     * @return DataObject
-     * @throws LocalizedException
-     */
-    private function getResponse(WebhooksEvent $webhookEvent): DataObject
-    {
-        $response = null;
-        if ($webhookEvent->getPayment()) {
-            $response = $webhookEvent->getPayment();
-        }
-
-        if ($webhookEvent->getRefund()) {
-            $response = $webhookEvent->getRefund();
-        }
-
-        if (!$response) {
-            throw new LocalizedException(__('Invalid response model'));
-        }
-
-        return $response;
     }
 
     /**

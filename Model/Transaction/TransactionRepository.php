@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Transaction;
 
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
 use Worldline\PaymentCore\Model\Transaction\ResourceModel\Transaction as TransactionResource;
@@ -22,20 +24,37 @@ class TransactionRepository implements TransactionRepositoryInterface
     private $collectionFactory;
 
     /**
+     * @var CollectionProcessorInterface
+     */
+    private $collectionProcessor;
+
+    /**
      * @var array
      */
     private $transactions = [];
 
-    public function __construct(TransactionResource $transactionResource, CollectionFactory $collectionFactory)
-    {
+    public function __construct(
+        TransactionResource $transactionResource,
+        CollectionFactory $collectionFactory,
+        CollectionProcessorInterface $collectionProcessor
+    ) {
         $this->transactionResource = $transactionResource;
         $this->collectionFactory = $collectionFactory;
+        $this->collectionProcessor = $collectionProcessor;
     }
 
     public function save(TransactionInterface $refundRequest): TransactionInterface
     {
         $this->transactionResource->save($refundRequest);
         return $refundRequest;
+    }
+
+    public function getList(SearchCriteriaInterface $searchCriteria): array
+    {
+        $collection = $this->collectionFactory->create();
+        $this->collectionProcessor->process($searchCriteria, $collection);
+
+        return $collection->getItems();
     }
 
     public function getLastTransaction(string $incrementId): ?TransactionInterface
@@ -64,12 +83,9 @@ class TransactionRepository implements TransactionRepositoryInterface
             return null;
         }
 
-        $statuses = [
-            TransactionStatusInterface::PENDING_CAPTURE_CODE,
-            TransactionStatusInterface::CAPTURE_REQUESTED,
-        ];
+        /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
-            if (in_array($transaction->getStatusCode(), $statuses)) {
+            if ($transaction->getStatusCode() == TransactionStatusInterface::PENDING_CAPTURE_CODE) {
                 return $transaction;
             }
         }
@@ -84,6 +100,7 @@ class TransactionRepository implements TransactionRepositoryInterface
             return null;
         }
 
+        /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
             if ($transaction->getStatusCode() == TransactionStatusInterface::CAPTURED_CODE) {
                 $result = $transaction;
@@ -94,6 +111,23 @@ class TransactionRepository implements TransactionRepositoryInterface
         return $result;
     }
 
+    public function getCaptureTransactionsAmount(string $incrementId): float
+    {
+        $amount = 0;
+        if (!$transactions = $this->getAllTransactions($incrementId)) {
+            return 0;
+        }
+
+        /** @var TransactionInterface $transaction */
+        foreach ($transactions as $transaction) {
+            if ($transaction->getStatusCode() == TransactionStatusInterface::CAPTURED_CODE) {
+                $amount += $transaction->getAmount();
+            }
+        }
+
+        return $amount;
+    }
+
     public function getRefundedTransactions(string $incrementId): array
     {
         $transactions = $this->getAllTransactions($incrementId);
@@ -102,6 +136,7 @@ class TransactionRepository implements TransactionRepositoryInterface
             return $result;
         }
 
+        /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
             if ($transaction->getStatusCode() == TransactionStatusInterface::REFUNDED_CODE) {
                 $result[$transaction->getTransactionId()] = $transaction;
@@ -109,6 +144,17 @@ class TransactionRepository implements TransactionRepositoryInterface
         }
 
         return $result;
+    }
+
+    public function getRefundedTransactionsAmount(string $incrementId): float
+    {
+        $refundAmount = 0;
+        /** @var TransactionInterface $transaction */
+        foreach ($this->getRefundedTransactions($incrementId) as $transaction) {
+            $refundAmount += $transaction->getAmount();
+        }
+
+        return $refundAmount;
     }
 
     public function getPendingRefundTransactions(string $incrementId): array
@@ -120,7 +166,7 @@ class TransactionRepository implements TransactionRepositoryInterface
         }
 
         $refundedTransaction = $this->getRefundedTransactions($incrementId);
-
+        /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
             if ($transaction->getStatusCode() == TransactionStatusInterface::PENDING_REFUND_CODE
                 && !in_array($transaction->getTransactionId(), array_keys($refundedTransaction))
@@ -130,6 +176,17 @@ class TransactionRepository implements TransactionRepositoryInterface
         }
 
         return $result;
+    }
+
+    public function getPendingRefundTransactionsAmount(string $incrementId): float
+    {
+        $pendingRefundAmount = 0;
+        /** @var TransactionInterface $transaction */
+        foreach ($this->getPendingRefundTransactions($incrementId) as $transaction) {
+            $pendingRefundAmount += $transaction->getAmount();
+        }
+
+        return $pendingRefundAmount;
     }
 
     private function getAllTransactions(string $incrementId): array

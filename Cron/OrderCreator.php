@@ -6,14 +6,14 @@ namespace Worldline\PaymentCore\Cron;
 
 use Magento\Framework\FlagFactory;
 use Psr\Log\LoggerInterface;
-use Worldline\PaymentCore\Model\Order\Service\WorldLineApiProcessor;
+use Worldline\PaymentCore\Model\Order\Creation\OrderCreationProcessor;
 
-class OrderStatusUpdater
+class OrderCreator
 {
     /**
-     * @var WorldLineApiProcessor
+     * @var OrderCreationProcessor
      */
-    private $worldLineApiProcessor;
+    private $orderCreationProcessor;
 
     /**
      * @var FlagFactory
@@ -25,28 +25,19 @@ class OrderStatusUpdater
      */
     private $logger;
 
-    /**
-     * @param WorldLineApiProcessor $worldLineApiProcessor
-     * @param FlagFactory $flagFactory
-     * @param LoggerInterface $logger
-     */
     public function __construct(
-        WorldLineApiProcessor $worldLineApiProcessor,
+        OrderCreationProcessor $orderCreationProcessor,
         FlagFactory $flagFactory,
         LoggerInterface $logger
     ) {
-        $this->worldLineApiProcessor = $worldLineApiProcessor;
+        $this->orderCreationProcessor = $orderCreationProcessor;
         $this->flagFactory = $flagFactory;
         $this->logger = $logger;
     }
 
-    /**
-     * @return void
-     * @throws \Exception
-     */
-    public function execute()
+    public function execute(): void
     {
-        $flagModel = $this->flagFactory->create(['data' =>  ['flag_code' => 'world_line_order_update_watcher']]);
+        $flagModel = $this->flagFactory->create(['data' =>  ['flag_code' => 'worldline_order_update_watcher']]);
         $flagModel->loadSelf();
 
         if ($flagModel->getFlagData()) {
@@ -55,7 +46,7 @@ class OrderStatusUpdater
 
         try {
             $flagModel->setFlagData(true)->save();
-            $this->worldLineApiProcessor->process();
+            $this->orderCreationProcessor->process();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         } finally {

@@ -10,8 +10,10 @@
     <preference type="Worldline\PaymentCore\Model\RefundRequest\RefundRequestRepository" for="Worldline\PaymentCore\Api\RefundRequestRepositoryInterface" />
     <preference type="Worldline\PaymentCore\Model\Transaction\Transaction" for="Worldline\PaymentCore\Api\Data\TransactionInterface" />
     <preference type="Worldline\PaymentCore\Model\Transaction\TransactionRepository" for="Worldline\PaymentCore\Api\TransactionRepositoryInterface" />
-    <preference type="Worldline\PaymentCore\Model\Transaction\TransactionWebhookManager" for="Worldline\PaymentCore\Api\TransactionWebhookManagerInterface" />
+    <preference type="Worldline\PaymentCore\Model\Transaction\TransactionWLResponseManager" for="Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface" />
     <preference type="Worldline\PaymentCore\Model\Transaction\PaymentInfo" for="Worldline\PaymentCore\Api\Data\PaymentInfoInterface" />
+    <preference type="Worldline\PaymentCore\Model\PendingOrderManager" for="Worldline\PaymentCore\Api\PendingOrderManagerInterface" />
+    <preference type="Worldline\PaymentCore\Model\OrderState" for="Worldline\PaymentCore\Api\Data\OrderStateInterface" />
     <!-- End Preference -->
 
     <type name="Worldline\PaymentCore\Block\Info">
@@ -28,6 +30,7 @@
                 <item name="payment.captured" xsi:type="object">Worldline\PaymentCore\Model\Webhook\PlaceOrderProcessor</item>
                 <item name="payment.authorization_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\PlaceOrderProcessor</item>
                 <item name="payment.refunded" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
+                <item name="payment.rejected" xsi:type="object">Worldline\PaymentCore\Model\Webhook\RejectPaymentProcessor</item>
                 <item name="refund.refund_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
             </argument>
         </arguments>
@@ -56,12 +59,13 @@
             <argument name="logger" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Logger\Virtual</argument>
         </arguments>
     </type>
-    <type name="Worldline\PaymentCore\Model\Order\Service\WorldLineApiProcessor">
+    <type name="Worldline\PaymentCore\Model\Order\Creation\OrderCreationProcessor">
         <arguments>
             <argument name="logger" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Logger\Virtual</argument>
+            <argument name="pendingOrderManager" xsi:type="object">Worldline\PaymentCore\Api\PendingOrderManagerInterface\Proxy</argument>
         </arguments>
     </type>
-    <type name="Worldline\PaymentCore\Cron\OrderStatusUpdater">
+    <type name="Worldline\PaymentCore\Cron\OrderCreator">
         <arguments>
             <argument name="logger" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Logger\Virtual</argument>
         </arguments>
@@ -85,14 +89,19 @@
     <!-- END Dedicated log file -->
 
     <!-- System configuration -->
-    <type name="Worldline\PaymentCore\Model\Config\OrderStatusUpdater">
+    <type name="Worldline\PaymentCore\Model\Config\OrderSynchronizationConfig">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="fallback_timeout" xsi:type="string">worldline_order_creator/general/fallback_timeout</item>
+                <item name="fallback_timeout_limit" xsi:type="string">worldline_order_creator/general/fallback_timeout_limit</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Worldline\PaymentCore\Model\Config\WebhookConfig">
         <arguments>
             <argument name="data" xsi:type="array">
                 <item name="key" xsi:type="string">worldline_connection/webhook/key</item>
                 <item name="secret_key" xsi:type="string">worldline_connection/webhook/secret_key</item>
-                <item name="fallback_timeout" xsi:type="string">worldline_order_status_updater/general/fallback_timeout</item>
-                <item name="fallback_timeout_limit" xsi:type="string">worldline_order_status_updater/general/fallback_timeout_limit</item>
-                <item name="waiting_time" xsi:type="string">worldline_order_status_updater/abandoned_orders/waiting_time</item>
             </argument>
         </arguments>
     </type>

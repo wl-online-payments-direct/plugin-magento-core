@@ -22,11 +22,6 @@ class DownloadDebugLog extends Action
      */
     private $contentProcessor;
 
-    /**
-     * @param Context $context
-     * @param RawFactory $resultRawFactory
-     * @param ContentProcessor $contentProcessor
-     */
     public function __construct(
         Context $context,
         RawFactory $resultRawFactory,

@@ -6,7 +6,6 @@ namespace Worldline\PaymentCore\Model\Webhook;
 
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
-use Worldline\PaymentCore\Api\WebhookProcessorInterface;
 
 interface ProcessorInterface
 {

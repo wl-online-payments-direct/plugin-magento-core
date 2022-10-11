@@ -1,7 +1,18 @@
 type Query {
     checkRedirect(incrementId: String!): CheckRedirectOutput @resolver(class: "\\Worldline\\PaymentCore\\GraphQl\\Model\\Resolver\\Redirect") @doc(description: "Retrieve redirect status.")
+    checkOrder(incrementId: String!): Boolean @resolver(class: "\\Worldline\\PaymentCore\\GraphQl\\Model\\Resolver\\CheckOrder") @doc(description: "Check if exist the order.")
+    processPendingOrder(incrementId: String!): Boolean @resolver(class: "\\Worldline\\PaymentCore\\GraphQl\\Model\\Resolver\\ProcessPendingOrder") @doc(description: "Send request to payment system and place order.")
 }
 
 type CheckRedirectOutput {
     url: String
+}
+
+type AvailablePaymentMethod {
+    icons: [IconDetailsOutput] @resolver(class: "\\Worldline\\PaymentCore\\GraphQl\\Resolver\\PaymentMethodIcons")
+}
+
+type IconDetailsOutput {
+    icon_title: String @doc(description: "Icon card type")
+    icon_url: String @doc(description: "Icon url")
 }

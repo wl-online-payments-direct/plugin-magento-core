@@ -52,5 +52,16 @@
         "constraint": {
             "PRIMARY": true
         }
+    },
+    "worldline_failed_payment_log": {
+        "column": {
+            "id": true,
+            "quote_payment_id": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "WORLDLINE_FAILED_PAYMENT_LOG_ID_QUOTE_PAYMENT_ID": true,
+            "WORLDLINE_FAILED_PAYMENT_LOG_QUOTE_PAYMENT_ID": true
+        }
     }
 }

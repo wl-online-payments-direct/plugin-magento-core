@@ -4,25 +4,29 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Webhook;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
-use Magento\Sales\Helper\Data as SalesData;
-use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Email\Sender\CreditmemoSender;
+use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
+use Worldline\PaymentCore\Api\Data\RefundRequestInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
-use Worldline\PaymentCore\Api\TransactionWebhookManagerInterface;
-use Worldline\PaymentCore\Api\WebhookProcessorInterface;
+use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
 use Worldline\PaymentCore\Model\RefundRequest\CreditmemoOfflineService;
+use Worldline\PaymentCore\Model\RefundRequest\EmailNotification;
 
 class CreditmemoProcessor implements ProcessorInterface
 {
     public const REFUND_CODE = 8;
+    public const REFUND_UNCERTAIN_CODE = 82;
 
     /**
      * @var CreditmemoOfflineService
      */
     private $refundOfflineService;
+
+    /**
+     * @var WebhookResponseManager
+     */
+    private $webhookResponseManager;
 
     /**
      * @var RefundRequestRepositoryInterface
@@ -35,57 +39,56 @@ class CreditmemoProcessor implements ProcessorInterface
     private $creditmemoRepository;
 
     /**
-     * @var TransactionWebhookManagerInterface
+     * @var TransactionWLResponseManagerInterface
      */
-    private $transactionWebhookManager;
+    private $transactionWLResponseManager;
 
     /**
-     * @var SalesData
+     * @var EmailNotification
      */
-    private $salesData;
-
-    /**
-     * @var CreditmemoSender
-     */
-    private $creditmemoSender;
+    private $emailNotification;
 
     public function __construct(
         CreditmemoOfflineService $refundOfflineService,
+        WebhookResponseManager $webhookResponseManager,
         RefundRequestRepositoryInterface $refundRequestRepository,
         CreditmemoRepositoryInterface $creditmemoRepository,
-        TransactionWebhookManagerInterface $transactionWebhookManager,
-        SalesData $salesData,
-        CreditmemoSender $creditmemoSender
+        TransactionWLResponseManagerInterface $transactionWLResponseManager,
+        EmailNotification $emailNotification
     ) {
         $this->refundOfflineService = $refundOfflineService;
+        $this->webhookResponseManager = $webhookResponseManager;
         $this->refundRequestRepository = $refundRequestRepository;
         $this->creditmemoRepository = $creditmemoRepository;
-        $this->transactionWebhookManager = $transactionWebhookManager;
-        $this->salesData = $salesData;
-        $this->creditmemoSender = $creditmemoSender;
+        $this->transactionWLResponseManager = $transactionWLResponseManager;
+        $this->emailNotification = $emailNotification;
     }
 
-    /**
-     * @param WebhooksEvent $webhookEvent
-     * @return void
-     * @throws LocalizedException
-     */
     public function process(WebhooksEvent $webhookEvent): void
     {
-        $this->transactionWebhookManager->saveTransaction($webhookEvent);
-
-        $statusCode = (int)$webhookEvent->getRefund()->getStatusOutput()->getStatusCode();
-        if ($statusCode !== self::REFUND_CODE) {
+        /** @var RefundResponse $refundResponse */
+        $refundResponse = $this->webhookResponseManager->getResponse($webhookEvent);
+        $statusCode = (int)$refundResponse->getStatusOutput()->getStatusCode();
+        if ($statusCode === self::REFUND_UNCERTAIN_CODE) {
             return;
         }
 
-        $incrementId = (string)$webhookEvent->getRefund()->getRefundOutput()->getReferences()->getMerchantReference();
-        $amount = (int)$webhookEvent->getRefund()->getRefundOutput()->getAmountOfMoney()->getAmount();
-        $refundRequest = $this->refundRequestRepository->getByIncrementIdAndAmount($incrementId, $amount);
-        if (!$refundRequest->getCreditMemoId()) {
-            return;
-        }
+        if ($statusCode === self::REFUND_CODE) {
+            $incrementId = $refundResponse->getRefundOutput()->getReferences()->getMerchantReference();
+            $amount = (int)$refundResponse->getRefundOutput()->getAmountOfMoney()->getAmount();
+            $refundRequest = $this->refundRequestRepository->getByIncrementIdAndAmount((string)$incrementId, $amount);
+            if (!$refundRequest->getCreditMemoId()) {
+                return;
+            }
 
+            $this->transactionWLResponseManager->saveTransaction($refundResponse);
+
+            $this->processRefund($refundRequest);
+        }
+    }
+
+    private function processRefund(RefundRequestInterface $refundRequest): void
+    {
         $creditmemoEntity = $this->creditmemoRepository->get($refundRequest->getCreditMemoId());
 
         $this->refundOfflineService->refund($creditmemoEntity);
@@ -93,13 +96,6 @@ class CreditmemoProcessor implements ProcessorInterface
         $refundRequest->setRefunded(true);
         $this->refundRequestRepository->save($refundRequest);
 
-        $this->notifyCustomer($creditmemoEntity);
-    }
-
-    private function notifyCustomer(Creditmemo $creditmemo): void
-    {
-        if ($creditmemo->getOrder()->getCustomerNoteNotify() && $this->salesData->canSendNewCreditmemoEmail()) {
-            $this->creditmemoSender->send($creditmemo);
-        }
+        $this->emailNotification->send($creditmemoEntity);
     }
 }

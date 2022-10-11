@@ -1,0 +1,36 @@
+<?php
+declare(strict_types=1);
+
+namespace Worldline\PaymentCore\Model\Webhook;
+
+use Magento\Framework\Exception\LocalizedException;
+use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\PaymentResponse;
+use OnlinePayments\Sdk\Domain\RefundResponse;
+use OnlinePayments\Sdk\Domain\WebhooksEvent;
+
+class WebhookResponseManager
+{
+    /**
+     * @param WebhooksEvent $webhookEvent
+     * @return DataObject (PaymentResponse|RefundResponse)
+     * @throws LocalizedException
+     */
+    public function getResponse(WebhooksEvent $webhookEvent): DataObject
+    {
+        $response = null;
+        if ($webhookEvent->getPayment()) {
+            $response = $webhookEvent->getPayment();
+        }
+
+        if ($webhookEvent->getRefund()) {
+            $response = $webhookEvent->getRefund();
+        }
+
+        if (!$response) {
+            throw new LocalizedException(__('Invalid response model'));
+        }
+
+        return $response;
+    }
+}

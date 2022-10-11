@@ -9,17 +9,15 @@
                 <testing_api_url>https://payment.preprod.direct.worldline-solutions.com</testing_api_url>
             </connection>
         </worldline_connection>
-        <worldline_order_status_updater>
+        <worldline_order_creator>
             <general>
                 <fallback_timeout>10</fallback_timeout>
-                <fallback_timeout_limit>3</fallback_timeout_limit>
-                <cron_expr>*/5 * * * *</cron_expr>
-            </general>
-            <abandoned_orders>
-                <waiting_time>180</waiting_time>
+                <fallback_timeout_limit>180</fallback_timeout_limit>
                 <cron_expr>* * * * *</cron_expr>
-            </abandoned_orders>
-        </worldline_order_status_updater>
+                <refused_payment_template>worldline_order_creator_general_refused_payment_template</refused_payment_template>
+                <refused_payment_sender>general</refused_payment_sender>
+            </general>
+        </worldline_order_creator>
         <worldline_debug>
             <general>
                 <logging_lifetime>14</logging_lifetime>

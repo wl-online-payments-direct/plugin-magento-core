@@ -34,12 +34,6 @@ class TrackerDataProvider
      */
     private $packageInfo;
 
-    /**
-     * @param Reader $moduleReader
-     * @param File $filesystem
-     * @param Serializer $serializer
-     * @param PackageInfo $packageInfo
-     */
     public function __construct(
         Reader $moduleReader,
         File $filesystem,

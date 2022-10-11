@@ -14,6 +14,7 @@ use Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader;
 use Magento\Sales\Model\Order\Creditmemo;
 use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Model\RefundRequest\CreditmemoOnlineService;
+use Worldline\PaymentCore\Model\RefundRequest\EmailNotification;
 
 class Save extends Action implements HttpPostActionInterface
 {
@@ -49,13 +50,19 @@ class Save extends Action implements HttpPostActionInterface
      */
     private $creditmemoManagement;
 
+    /**
+     * @var EmailNotification
+     */
+    private $emailNotification;
+
     public function __construct(
         Action\Context $context,
         CreditmemoLoader $creditmemoLoader,
         ForwardFactory $resultForwardFactory,
         CreditmemoOnlineService $refundOnlineService,
         LoggerInterface $logger,
-        CreditmemoManagementInterface $creditmemoManagement
+        CreditmemoManagementInterface $creditmemoManagement,
+        EmailNotification $emailNotification
     ) {
         parent::__construct($context);
 
@@ -64,6 +71,7 @@ class Save extends Action implements HttpPostActionInterface
         $this->refundOnlineService = $refundOnlineService;
         $this->logger = $logger;
         $this->creditmemoManagement = $creditmemoManagement;
+        $this->emailNotification = $emailNotification;
     }
 
     /**
@@ -91,13 +99,13 @@ class Save extends Action implements HttpPostActionInterface
 
                 if ($this->isOffline()) {
                     $this->creditmemoManagement->refund($creditmemo, true);
+                    $this->emailNotification->send($creditmemo);
+                    $this->messageManager->addSuccessMessage(__('You created the credit memo.'));
                 } else {
                     $this->refundOnlineService->refund($creditmemo);
+                    $this->messageManager->addSuccessMessage(__('The credit memo request has been sent.'));
                 }
 
-                //TODO: should we send a message that customer have REQUESTED a refund?
-
-                $this->messageManager->addSuccessMessage(__('You created the credit memo.'));
                 $this->_getSession()->getCommentText(true);
                 $resultRedirect->setPath('sales/order/view', ['order_id' => $creditmemo->getOrderId()]);
 

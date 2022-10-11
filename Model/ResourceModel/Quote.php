@@ -7,7 +7,8 @@ namespace Worldline\PaymentCore\Model\ResourceModel;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Model\QuoteFactory;
 use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
-use Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory;
+use Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory as QuotePaymentCollectionFactory;
+use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
 
 class Quote
 {
@@ -22,9 +23,14 @@ class Quote
     private $quoteResource;
 
     /**
-     * @var CollectionFactory
+     * @var QuotePaymentCollectionFactory
      */
-    private $collectionFactory;
+    private $quotePaymentCollectionFactory;
+
+    /**
+     * @var QuoteCollectionFactory
+     */
+    private $quoteCollectionFactory;
 
     /**
      * @var array
@@ -34,19 +40,22 @@ class Quote
     public function __construct(
         QuoteFactory $quoteFactory,
         QuoteResource $quoteResource,
-        CollectionFactory $collectionFactory
+        QuotePaymentCollectionFactory $quotePaymentCollectionFactory,
+        QuoteCollectionFactory $quoteCollectionFactory
     ) {
         $this->quoteFactory = $quoteFactory;
         $this->quoteResource = $quoteResource;
-        $this->collectionFactory = $collectionFactory;
+        $this->quotePaymentCollectionFactory = $quotePaymentCollectionFactory;
+        $this->quoteCollectionFactory = $quoteCollectionFactory;
     }
 
     public function getQuoteByReservedOrderId(string $reservedOrderId): CartInterface
     {
         if (empty($this->quotes[$reservedOrderId])) {
-            $quote = $this->quoteFactory->create();
-            $this->quoteResource->load($quote, $reservedOrderId, 'reserved_order_id');
-            $this->quotes[$reservedOrderId] = $quote;
+            $collection = $this->quoteCollectionFactory->create();
+            $collection->addFieldToFilter('reserved_order_id', ['eq' => $reservedOrderId]);
+            $collection->getSelect()->limit(1);
+            $this->quotes[$reservedOrderId] = $collection->getFirstItem();
         }
 
         return $this->quotes[$reservedOrderId];
@@ -54,7 +63,7 @@ class Quote
 
     public function getQuoteByWorldlinePaymentId(string $paymentId): CartInterface
     {
-        $collection = $this->collectionFactory->create();
+        $collection = $this->quotePaymentCollectionFactory->create();
         $collection->addFieldToFilter('additional_information', ['like' => '%' . $paymentId . '%']);
         $collection->setOrder('payment_id');
         $collection->getSelect()->limit(1);

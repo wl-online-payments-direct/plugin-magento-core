@@ -39,12 +39,6 @@ class ClientProvider
      */
     private $clientFactory;
 
-    /**
-     * @param WorldlineConfig $worldlineConfig
-     * @param CommunicatorConfigurationFactory $communicatorConfigurationFactory
-     * @param CommunicatorFactory $communicatorFactory
-     * @param ClientFactory $clientFactory
-     */
     public function __construct(
         WorldlineConfig $worldlineConfig,
         CommunicatorConfigurationFactory $communicatorConfigurationFactory,
@@ -57,29 +51,21 @@ class ClientProvider
         $this->clientFactory = $clientFactory;
     }
 
-    /**
-     * @return IngenicoSdkClient
-     * @throws Exception
-     */
-    public function getClient(): IngenicoSdkClient
+    public function getClient(?int $storeId = null): IngenicoSdkClient
     {
         if (!$this->client) {
-            $this->client = $this->clientFactory->create(['communicator' => $this->getCommunicator()]);
+            $this->client = $this->clientFactory->create(['communicator' => $this->getCommunicator($storeId)]);
         }
 
         return $this->client;
     }
 
-    /**
-     * @return Communicator
-     * @throws Exception
-     */
-    private function getCommunicator(): Communicator
+    private function getCommunicator(?int $storeId = null): Communicator
     {
         $communicatorConfiguration = $this->communicatorConfigurationFactory->create([
-            'apiKeyId' => $this->worldlineConfig->getApiKey(),
-            'apiSecret' => $this->worldlineConfig->getApiSecret(),
-            'apiEndpoint' => $this->worldlineConfig->getApiEndpoint(),
+            'apiKeyId' => $this->worldlineConfig->getApiKey($storeId),
+            'apiSecret' => $this->worldlineConfig->getApiSecret($storeId),
+            'apiEndpoint' => $this->worldlineConfig->getApiEndpoint($storeId),
             'integrator' => 'Ingenico',
         ]);
 

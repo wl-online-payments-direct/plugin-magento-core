@@ -22,11 +22,6 @@ class EraseDebugLog extends Action
      */
     private $logger;
 
-    /**
-     * @param Context $context
-     * @param Log $logResource
-     * @param LoggerInterface $logger
-     */
     public function __construct(Context $context, Log $logResource, LoggerInterface $logger)
     {
         parent::__construct($context);

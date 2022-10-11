@@ -17,9 +17,6 @@ abstract class AbstractTransaction implements ClientInterface
      */
     protected $logger;
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         LoggerInterface $logger
     ) {
