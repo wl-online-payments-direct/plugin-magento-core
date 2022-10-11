@@ -51,7 +51,11 @@ class PaymentProductsProvider
         863  => ['group' => self::PAYMENT_GROUP_MOBILE,           'label' => 'WeChat Pay'],
         3012 => ['group' => self::PAYMENT_GROUP_CARD,             'label' => 'Bancontact'],
         3112 => ['group' => self::PAYMENT_GROUP_GIFT_CARD,        'label' => 'Illicado'],
-        3301 => ['group' => self::PAYMENT_GROUP_INSTALMENT,       'label' => 'Klarna'],
+        3301 => ['group' => self::PAYMENT_GROUP_INSTALMENT,       'label' => 'Klarna Pay Now'],
+        3302 => ['group' => self::PAYMENT_GROUP_INSTALMENT,       'label' => 'Klarna Pay Later'],
+        3303 => ['group' => self::PAYMENT_GROUP_INSTALMENT,       'label' => 'Klarna Financing'],
+        3304 => ['group' => self::PAYMENT_GROUP_INSTALMENT,       'label' => 'Klarna Bank Transfer'],
+        3305 => ['group' => self::PAYMENT_GROUP_INSTALMENT,       'label' => 'Klarna Direct Debit'],
         5001 => ['group' => self::PAYMENT_GROUP_E_WALLET,         'label' => 'Bizum'],
         5100 => ['group' => self::PAYMENT_GROUP_CONSUMER_CREDIT,  'label' => 'Cpay'],
         5110 => ['group' => self::PAYMENT_GROUP_INSTALMENT,       'label' => 'Oney 3x-4x'],
@@ -108,7 +112,7 @@ class PaymentProductsProvider
         $this->scopeConfig = $scopeConfig;
     }
 
-    public function getPaymentProducts($storeId = null)
+    public function getPaymentProducts(?int $storeId = null): array
     {
         $paymentProducts = $this->getPaymentProductsFromCache($storeId);
 
@@ -129,8 +133,8 @@ class PaymentProductsProvider
             );
             $getParams->setLocale($locale);
             try {
-                $pPs = $this->modelClient->getClient()
-                    ->merchant($this->worldlineConfig->getMerchantId())
+                $pPs = $this->modelClient->getClient($storeId)
+                    ->merchant($this->worldlineConfig->getMerchantId($storeId))
                     ->products()
                     ->getPaymentProducts($getParams);
             } catch (\Exception $e) {

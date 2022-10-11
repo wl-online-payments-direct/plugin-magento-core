@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Console\Command;
 
-use Exception;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Console\Cli;
@@ -12,39 +11,31 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Worldline\PaymentCore\Model\Order\Service\WorldLineApiProcessor;
+use Worldline\PaymentCore\Model\Order\Creation\OrderCreationProcessor;
 
 class OrderStatusUpdater extends Command
 {
     /**
-     * @var WorldLineApiProcessor
+     * @var OrderCreationProcessor
      */
-    private $worldLineApiProcessor;
+    private $orderCreationProcessor;
 
     /**
      * @var State
      */
     private $state;
 
-    /**
-     * @param WorldLineApiProcessor $worldLineApiProcessor
-     * @param State $state
-     * @param string|null $name
-     */
     public function __construct(
-        WorldLineApiProcessor $worldLineApiProcessor,
+        OrderCreationProcessor $worldLineApiProcessor,
         State $state,
         string $name = null
     ) {
         parent::__construct($name);
-        $this->worldLineApiProcessor = $worldLineApiProcessor;
+        $this->orderCreationProcessor = $worldLineApiProcessor;
         $this->state = $state;
     }
 
-    /**
-     * @return void
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('worldline:update-order-status');
         $this->setDescription('Change status for all orders in processing status or for the given the order id');
@@ -56,17 +47,11 @@ EOT
         );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     * @throws Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             $this->state->setAreaCode(Area::AREA_GLOBAL);
-            $this->worldLineApiProcessor->process((string) $input->getOption('increment-id'));
+            $this->orderCreationProcessor->process((string) $input->getOption('increment-id'));
             return Cli::RETURN_SUCCESS;
         } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");

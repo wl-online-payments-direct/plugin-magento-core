@@ -12,4 +12,9 @@ interface TransactionStatusInterface
 
     public const PENDING_REFUND_CODE = 81;
     public const REFUNDED_CODE = 8;
+
+    public const CANCELLED_BY_CUSTOMER = 1;
+    public const AUTHORISATION_DECLINED = 2;
+    public const AUTHORISED_AND_CANCELLED = 6;
+    public const PAYMENT_REFUSED = 93;
 }

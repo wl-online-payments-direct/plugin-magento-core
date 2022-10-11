@@ -10,9 +10,9 @@ $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
 <?php endif; ?>
 
 <?php if ($block->getIconUrl()): ?>
-    <img src="<?= $block->escapeHtmlAttr($block->getIconUrl()) ?>"
+    <img src="<?= $block->escapeUrl($block->getIconUrl()) ?>"
          style="max-height: <?= $block->escapeHtmlAttr($block->getMaxHeight()) ?>;
-                aspect-ratio: <?= $block->escapeHtmlAttr($block->getAspectRatio()) ?>;"
+                aspect-ratio: <?= $block->escapeHtml($block->getAspectRatio()) ?>;"
          alt="<?= $block->escapeHtmlAttr($block->escapeHtml($block->getIconTitle())) ?>"
     >
 <?php endif; ?>

@@ -1,0 +1,42 @@
+<?php
+/**
+ * @var Magento\Framework\View\Element\Template $block
+ * @var Worldline\PaymentCore\ViewModel\WaitingPageDataProvider $pageDataProvider
+ */
+
+$pageDataProvider = $block->getWaitingPageDataProvider();
+?>
+
+<div data-bind="scope: 'waitingPageScope'">
+    <div class="message" style="display: none"></div>
+    <br>
+    <div id="waiting-notification-message">
+        <span><?= $block->escapeHtml($pageDataProvider->getNotificationMessage()) ?></span>
+    </div>
+    <br>
+    <div id="waiting-loader" data-role="waiting-loader" class="waiting-mask">
+        <div class="loader">
+            <img src="<?= $block->escapeUrl($block->getViewFileUrl('images/loader-1.gif')) ?>"
+                 alt="<?= $block->escapeHtml(__('Loading...')) ?>">
+        </div>
+    </div>
+</div>
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "waitingPageScope": {
+                    "component": "Worldline_PaymentCore/js/model/waiting-page",
+                    "storeCode": "<?= $block->escapeHtml($pageDataProvider->getStoreCode()) ?>",
+                    "incrementId": "<?= $block->escapeHtml($pageDataProvider->getIncrementId()) ?>",
+                    "checkOrderUrl": "<?= $block->escapeUrl($pageDataProvider->checkOrderUrl()) ?>",
+                    "successUrl": "<?= $block->escapeUrl($pageDataProvider->successUrl()) ?>",
+                    "failUrl": "<?= $block->escapeUrl($pageDataProvider->failUrl()) ?>",
+                    "pendingOrderUrl": "<?= $block->escapeUrl($pageDataProvider->pendingOrderUrl()) ?>"
+                }
+            }
+        }
+    }
+}
+</script>

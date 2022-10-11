@@ -54,4 +54,14 @@
             <column name="entity_id"/>
         </constraint>
     </table>
+    <table name="worldline_failed_payment_log" resource="default" engine="innodb" comment="Worldline Failed Payment Log">
+        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" />
+        <column xsi:type="int" name="quote_payment_id" unsigned="true" nullable="false" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="WORLDLINE_FAILED_PAYMENT_LOG_ID_QUOTE_PAYMENT_ID">
+            <column name="quote_payment_id"/>
+        </constraint>
+    </table>
 </schema>

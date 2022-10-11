@@ -92,8 +92,8 @@ class PaymentIconsProvider
                 'url' => $asset->getUrl(),
                 'width' => $width,
                 'height' => $height,
-                'title' => $data['label'],
-                'method' => $data['method']
+                'title' => $data['label'] ?? '',
+                'method' => $data['method'] ?? ''
             ];
         }
     }

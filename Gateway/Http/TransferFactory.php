@@ -15,9 +15,6 @@ class TransferFactory implements TransferFactoryInterface
      */
     private $transferBuilder;
 
-    /**
-     * @param TransferBuilder $transferBuilder
-     */
     public function __construct(TransferBuilder $transferBuilder)
     {
         $this->transferBuilder = $transferBuilder;

@@ -21,10 +21,6 @@ class ContentProcessor
      */
     private $filesystem;
 
-    /**
-     * @param Storage $storage
-     * @param Filesystem $filesystem
-     */
     public function __construct(
         Storage $storage,
         Filesystem $filesystem

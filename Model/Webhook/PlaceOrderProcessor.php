@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\Webhook;
 
 use Magento\Quote\Model\QuoteManagement;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
+use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
-use Worldline\PaymentCore\Api\TransactionWebhookManagerInterface;
-use Worldline\PaymentCore\Api\WebhookProcessorInterface;
+use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
 use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
 use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
@@ -30,25 +31,34 @@ class PlaceOrderProcessor implements ProcessorInterface
     private $orderFactory;
 
     /**
-     * @var TransactionWebhookManagerInterface
+     * @var WebhookResponseManager
      */
-    private $transactionWebhookManager;
+    private $webhookResponseManager;
+
+    /**
+     * @var TransactionWLResponseManagerInterface
+     */
+    private $transactionWLResponseManager;
 
     public function __construct(
         QuoteResource $quoteResource,
         QuoteManagement $quoteManagement,
         OrderFactory $orderFactory,
-        TransactionWebhookManagerInterface $transactionWebhookManager
+        WebhookResponseManager $webhookResponseManager,
+        TransactionWLResponseManagerInterface $transactionWLResponseManager
     ) {
         $this->quoteResource = $quoteResource;
         $this->quoteManagement = $quoteManagement;
         $this->orderFactory = $orderFactory;
-        $this->transactionWebhookManager = $transactionWebhookManager;
+        $this->webhookResponseManager = $webhookResponseManager;
+        $this->transactionWLResponseManager = $transactionWLResponseManager;
     }
 
     public function process(WebhooksEvent $webhookEvent)
     {
-        $statusCode = (int)$webhookEvent->getPayment()->getStatusOutput()->getStatusCode();
+        /** @var PaymentResponse $paymentResponse */
+        $paymentResponse = $this->webhookResponseManager->getResponse($webhookEvent);
+        $statusCode = (int)$paymentResponse->getStatusOutput()->getStatusCode();
         if (!in_array(
             $statusCode,
             [
@@ -60,19 +70,30 @@ class PlaceOrderProcessor implements ProcessorInterface
             return;
         }
 
-        $this->transactionWebhookManager->saveTransaction($webhookEvent);
-
-        $orderIncrementId = (string)$webhookEvent->getPayment()
-            ->getPaymentOutput()
-            ->getReferences()
-            ->getMerchantReference();
+        $orderIncrementId = (string)$paymentResponse->getPaymentOutput()->getReferences()->getMerchantReference();
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($orderIncrementId);
         $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
+
+        $this->checkTransactionForSave($paymentResponse, $order);
+
         if ($order->getId()) {
             return;
         }
 
         $this->quoteManagement->placeOrder($quote->getId());
+    }
+
+    private function checkTransactionForSave(PaymentResponse $paymentResponse, Order $order): void
+    {
+        if (!$order->getId()) {
+            $this->transactionWLResponseManager->saveTransaction($paymentResponse);
+        } else {
+            $wlPaymentId = strtok($paymentResponse->getId(), '_');
+            $orderLastTransId = strtok((string)$order->getPayment()->getLastTransId(), '_');
+            if ($orderLastTransId === $wlPaymentId) {
+                $this->transactionWLResponseManager->saveTransaction($paymentResponse);
+            }
+        }
     }
 }

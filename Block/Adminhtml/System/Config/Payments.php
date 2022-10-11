@@ -16,11 +16,6 @@ class Payments extends Field
      */
     private $urlBuilder;
 
-    /**
-     * @param Context $context
-     * @param UrlInterface $urlBuilder
-     * @param array $data
-     */
     public function __construct(
         Context $context,
         UrlInterface $urlBuilder,

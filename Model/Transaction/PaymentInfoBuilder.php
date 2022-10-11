@@ -78,40 +78,26 @@ class PaymentInfoBuilder
         ?TransactionInterface $authorizeTransaction,
         string $incrementId
     ): PaymentInfoInterface {
-        $captureTransaction = $this->transactionRepository->getCaptureTransaction($incrementId);
-        if ($captureTransaction) {
-            $amountAvailableForCapture = $authorizeTransaction->getAmount() - $captureTransaction->getAmount();
-            $paymentInfo->setAmountAvailableForCapture($amountAvailableForCapture);
+        $authorizeAmount = $authorizeTransaction ? $authorizeTransaction->getAmount() : 0;
+        $captureAmount = $this->transactionRepository->getCaptureTransactionsAmount($incrementId);
+        if ($authorizeAmount) {
+            $paymentInfo->setAmountAvailableForCapture($authorizeAmount - $captureAmount);
         }
 
-        $refundTransactions = $this->transactionRepository->getRefundedTransactions($incrementId);
-        $refundAmount = 0;
-        if ($refundTransactions) {
-            foreach ($refundTransactions as $refundTransaction) {
-                $refundAmount += $refundTransaction->getAmount();
-            }
+        $refundAmount = $this->transactionRepository->getRefundedTransactionsAmount($incrementId);
+        $paymentInfo->setRefundedAmount($refundAmount);
 
-            $paymentInfo->setRefundedAmount($refundAmount);
-        }
+        if ($captureAmount) {
+            $pendingRefundAmount = $this->transactionRepository->getPendingRefundTransactionsAmount($incrementId);
+            $amountAvailableForRefund = $captureAmount - $pendingRefundAmount - $refundAmount;
+            $paymentInfo->setAmountAvailableForRefund($amountAvailableForRefund);
 
-        $pendingRefundTransactions = $this->transactionRepository->getPendingRefundTransactions($incrementId);
-        $pendingRefundAmount = 0;
-        if ($pendingRefundTransactions) {
-            foreach ($pendingRefundTransactions as $pendingRefundTransaction) {
-                $pendingRefundAmount += $pendingRefundTransaction->getAmount();
-            }
-        }
-
-        if ($captureTransaction) {
-            $amountAvailableForRefund = $captureTransaction->getAmount() - $pendingRefundAmount - $refundAmount;
-            // TODO: implement for future
-            // $paymentInfo->setAmountAvailableForRefund($amountAvailableForRefund);
-
-            if ($amountAvailableForRefund > 0) {
+            if ($amountAvailableForRefund > 0 || $authorizeAmount > $captureAmount) {
+                $captureTransaction = $this->transactionRepository->getCaptureTransaction($incrementId);
                 $paymentInfo = $this->setStatusInfo($paymentInfo, $captureTransaction);
-            } elseif (!empty($refundTransactions)) {
-                $lastRefundTransaction = current($refundTransactions);
-                $paymentInfo = $this->setStatusInfo($paymentInfo, $lastRefundTransaction);
+            } elseif ($refundAmount) {
+                $refundTransactions = $this->transactionRepository->getRefundedTransactions($incrementId);
+                $paymentInfo = $this->setStatusInfo($paymentInfo, current($refundTransactions));
             }
         }
 

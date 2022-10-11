@@ -44,14 +44,6 @@ class LoggingRecordsCleaner
      */
     private $requestLog;
 
-    /**
-     * @param Log $logResource
-     * @param DateTime $dateTime
-     * @param TimezoneInterface $timezone
-     * @param LoggerInterface $logger
-     * @param \Worldline\PaymentCore\Model\Config\WorldlineConfig $worldlineConfig
-     * @param RequestLog $requestLog
-     */
     public function __construct(
         Log $logResource,
         DateTime $dateTime,

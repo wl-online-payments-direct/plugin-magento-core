@@ -20,10 +20,6 @@ class DeviceDataBuilder
      */
     private $customerDeviceFactory;
 
-    /**
-     * @param BrowserDataFactory $browserDataFactory
-     * @param CustomerDeviceFactory $customerDeviceFactory
-     */
     public function __construct(
         BrowserDataFactory $browserDataFactory,
         CustomerDeviceFactory $customerDeviceFactory

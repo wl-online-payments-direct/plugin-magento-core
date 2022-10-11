@@ -23,10 +23,6 @@ class Redirect implements ResolverInterface
      */
     private $orderRepository;
 
-    /**
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param OrderRepositoryInterface $orderRepository
-     */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         OrderRepositoryInterface $orderRepository
