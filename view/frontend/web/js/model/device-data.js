@@ -7,12 +7,12 @@ define([], function () {
          */
         getData: function () {
             return {
-                ColorDepth: window.screen.colorDepth,
-                JavaEnabled: window.navigator.javaEnabled(),
-                Locale: window.navigator.language,
-                ScreenHeight: window.screen.height,
-                ScreenWidth: window.screen.width,
-                TimezoneOffsetUtcMinutes: (new Date()).getTimezoneOffset()
+                color_depth: window.screen.colorDepth,
+                java_enabled: window.navigator.javaEnabled(),
+                locale: window.navigator.language,
+                screen_height: window.screen.height,
+                screen_width: window.screen.width,
+                timezone_offset_utc_minutes: (new Date()).getTimezoneOffset()
             };
         }
     }

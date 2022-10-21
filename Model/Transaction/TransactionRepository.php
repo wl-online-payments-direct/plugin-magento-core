@@ -43,10 +43,10 @@ class TransactionRepository implements TransactionRepositoryInterface
         $this->collectionProcessor = $collectionProcessor;
     }
 
-    public function save(TransactionInterface $refundRequest): TransactionInterface
+    public function save(TransactionInterface $transaction): TransactionInterface
     {
-        $this->transactionResource->save($refundRequest);
-        return $refundRequest;
+        $this->transactionResource->save($transaction);
+        return $transaction;
     }
 
     public function getList(SearchCriteriaInterface $searchCriteria): array

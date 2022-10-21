@@ -27,10 +27,11 @@ class PaymentMethodIcons implements ResolverInterface
      * @param ResolveInfo $info
      * @param array|null $value
      * @param array|null $args
-     * @return array
+     * @return array|null
+     * @throws LocalizedException
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
+    public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null): ?array
     {
         if (!isset($value['code'])) {
             throw new LocalizedException(__('"code" value should be specified'));

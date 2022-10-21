@@ -17,6 +17,13 @@ class IconsRetriever
         $this->iconsPool = $iconsPool;
     }
 
+    /**
+     * @param string $code
+     * @param string $originalCode
+     * @param int $storeId
+     * @return array|null
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function getIcons(string $code, string $originalCode, int $storeId): ?array
     {
         $retriever = $this->iconsPool->getIconsRetriever($code);

@@ -8,6 +8,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Quote\Api\CartRepositoryInterface;
 
 class Failed extends Action
 {
@@ -16,10 +17,16 @@ class Failed extends Action
      */
     private $checkoutSession;
 
-    public function __construct(Context $context, Session $checkoutSession)
+    /**
+     * @var CartRepositoryInterface
+     */
+    private $cartRepository;
+
+    public function __construct(Context $context, Session $checkoutSession, CartRepositoryInterface $cartRepository)
     {
         parent::__construct($context);
         $this->checkoutSession = $checkoutSession;
+        $this->cartRepository = $cartRepository;
     }
 
     public function execute(): Redirect
@@ -33,10 +40,22 @@ class Failed extends Action
             )
         );
 
+        $this->clearQuote();
+
         /** @var Redirect $redirect */
         $redirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $redirect->setPath('checkout/cart');
 
         return $redirect;
+    }
+
+    private function clearQuote(): void
+    {
+        $quote = $this->checkoutSession->getQuote();
+        $quote->setIsActive(false);
+        $this->cartRepository->save($quote);
+
+        $this->checkoutSession->clearQuote();
+        $this->checkoutSession->clearStorage();
     }
 }

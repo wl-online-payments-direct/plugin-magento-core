@@ -10,10 +10,10 @@ use Worldline\PaymentCore\Api\Data\TransactionInterface;
 interface TransactionRepositoryInterface
 {
     /**
-     * @param TransactionInterface $refundRequest
+     * @param TransactionInterface $transaction
      * @return TransactionInterface
      */
-    public function save(TransactionInterface $refundRequest): TransactionInterface;
+    public function save(TransactionInterface $transaction): TransactionInterface;
 
     /**
      * @param SearchCriteriaInterface $searchCriteria
