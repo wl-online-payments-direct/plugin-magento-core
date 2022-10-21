@@ -16,12 +16,12 @@ class DeviceDataAssigner implements DataAssignerInterface
                 'AcceptHeader' => $additionalInformation['agent'] ?? '',
                 'UserAgent' => $additionalInformation['user-agent'] ?? '',
                 'Locale' => $additionalInformation['locale'] ?? '',
-                'TimezoneOffsetUtcMinutes' => $additionalInformation['TimezoneOffsetUtcMinutes'] ?? '',
+                'TimezoneOffsetUtcMinutes' => $additionalInformation['timezone_offset_utc_minutes'] ?? '',
                 'BrowserData' => [
-                    'ColorDepth' => $additionalInformation['ColorDepth'] ?? '',
-                    'JavaEnabled' => (bool) ($additionalInformation['JavaEnabled'] ?? false),
-                    'ScreenHeight' => $additionalInformation['ScreenHeight'] ?? '',
-                    'ScreenWidth' => $additionalInformation['ScreenWidth'] ?? '',
+                    'ColorDepth' => $additionalInformation['color_depth'] ?? '',
+                    'JavaEnabled' => (bool) ($additionalInformation['java_enabled'] ?? false),
+                    'ScreenHeight' => $additionalInformation['screen_height'] ?? '',
+                    'ScreenWidth' => $additionalInformation['screen_width'] ?? '',
                 ],
             ]
         );

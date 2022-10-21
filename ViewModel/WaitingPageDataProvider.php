@@ -39,7 +39,7 @@ class WaitingPageDataProvider implements ArgumentInterface
 
     public function getNotificationMessage(): Phrase
     {
-        return __('Please, wait. The payment is being processed...');
+        return __('Please wait, the payment is being processed...');
     }
 
     public function checkOrderUrl(): string
