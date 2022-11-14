@@ -1,7 +1,5 @@
 <?php
-/**
- * @var Worldline\PaymentCore\Block\Adminhtml\System\Config\TestConnection $block
- */
+/** @var Worldline\PaymentCore\Block\Adminhtml\System\Config\TestConnection $block */
 ?>
 <td class="label">
     <label for="<?= $block->escapeHtml($block->getHtmlId()) ?>"></label>
@@ -11,11 +9,12 @@
             type="button"
             id="<?= $block->escapeHtmlAttr($block->getHtmlId()) ?>"
             data-mage-init='{"checkConnection":{
-    "url": "<?= $block->escapeUrl($block->getAjaxUrl()); ?>",
-    "elementId": "<?= $block->escapeHtmlAttr($block->getHtmlId()) ?>",
-    "successText": "<?= $block->escapeHtmlAttr(__('Successful! Test again?')); ?>",
-    "failedText": "<?= $block->escapeHtmlAttr(__('Connection failed! Test again?')); ?>",
-    "fieldMapping": "<?= /* @noEscape */ $block->getFieldMapping() ?>"}, "validation": {}}'>
-        <span id="<?= $block->getHtmlId(); ?>_result"><?= $block->escapeHtml($block->getLabel()); ?></span>
+        "url": "<?= $block->escapeUrl($block->getAjaxUrl()) ?>",
+        "elementId": "<?= $block->escapeHtmlAttr($block->getHtmlId()) ?>",
+        "successText": "<?= $block->escapeHtmlAttr(__('Successful! Test again?')) ?>",
+        "failedText": "<?= $block->escapeHtmlAttr(__('Connection failed! Test again?')) ?>",
+        "fieldMapping": "<?= /* @noEscape */ $block->getFieldMapping() ?>"}, "validation": {}
+    }'>
+        <span id="<?= $block->escapeHtml($block->getHtmlId()) ?>_result"><?= $block->escapeHtml($block->getLabel()) ?></span>
     </button>
 </td>

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Webhook;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
@@ -64,6 +65,13 @@ class RejectPaymentProcessor implements ProcessorInterface
         $this->webhookResponseManager = $webhookResponseManager;
     }
 
+    /**
+     * Handled refused refund webhook only
+     *
+     * @param WebhooksEvent $webhookEvent
+     * @return void
+     * @throws LocalizedException
+     */
     public function process(WebhooksEvent $webhookEvent): void
     {
         /** @var RefundResponse $refundResponse */

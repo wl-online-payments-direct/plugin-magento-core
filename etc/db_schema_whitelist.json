@@ -63,5 +63,21 @@
             "WORLDLINE_FAILED_PAYMENT_LOG_ID_QUOTE_PAYMENT_ID": true,
             "WORLDLINE_FAILED_PAYMENT_LOG_QUOTE_PAYMENT_ID": true
         }
+    },
+    "worldline_payment": {
+        "column": {
+            "entity_id": true,
+            "increment_id": true,
+            "payment_id": true,
+            "payment_product_id": true,
+            "amount": true,
+            "currency": true,
+            "fraud_result": true,
+            "card_number": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
     }
 }

@@ -14,6 +14,14 @@
     <preference type="Worldline\PaymentCore\Model\Transaction\PaymentInfo" for="Worldline\PaymentCore\Api\Data\PaymentInfoInterface" />
     <preference type="Worldline\PaymentCore\Model\PendingOrderManager" for="Worldline\PaymentCore\Api\PendingOrderManagerInterface" />
     <preference type="Worldline\PaymentCore\Model\OrderState" for="Worldline\PaymentCore\Api\Data\OrderStateInterface" />
+    <preference type="Worldline\PaymentCore\Model\CacheIdentifier" for="Worldline\PaymentCore\Api\Data\CacheIdentifierInterface" />
+
+    <preference type="Worldline\PaymentCore\Model\Payment\Payment" for="Worldline\PaymentCore\Api\Data\PaymentInterface" />
+    <preference type="Worldline\PaymentCore\Model\Payment\PaymentRepository" for="Worldline\PaymentCore\Api\PaymentRepositoryInterface" />
+    <preference type="Worldline\PaymentCore\Model\Payment\PaymentManager" for="Worldline\PaymentCore\Api\PaymentManagerInterface" />
+    <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentDetailsRequest" for="Worldline\PaymentCore\Api\Service\GetPaymentDetailsRequestInterface" />
+
+    <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentProductsRequest" for="Worldline\PaymentCore\Api\Service\GetPaymentProductsRequestInterface" />
     <!-- End Preference -->
 
     <type name="Worldline\PaymentCore\Block\Info">
