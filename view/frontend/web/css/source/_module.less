@@ -25,4 +25,53 @@
             }
         }
     }
+
+    .waiting-page-container {
+        .opc-block-summary {
+            width: 100% !important;
+            justify-self: self-end;
+        }
+
+        .waiting-mask {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}
+
+//
+//  Desktop
+//  -------------------------------------------
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .waiting-page-container {
+        & {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: 1fr;
+        }
+
+        .waiting-mask {
+            height: 300px;
+        }
+    }
+}
+
+//
+//  Mobile
+//  -------------------------------------------
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+    .waiting-page-container {
+        & {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .waiting-mask {
+            height: 220px;
+        }
+    }
 }

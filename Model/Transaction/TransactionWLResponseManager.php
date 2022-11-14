@@ -8,11 +8,9 @@ use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\RefundResponse;
-use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterfaceFactory;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
-use Worldline\PaymentCore\Model\Ui\PaymentProductsProvider;
 
 class TransactionWLResponseManager implements TransactionWLResponseManagerInterface
 {
@@ -41,28 +39,19 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
      */
     public function saveTransaction(DataObject $worldlineResponse): void
     {
-        $statusCode = (int)$worldlineResponse->getStatusOutput()->getStatusCode();
-        $output = $this->getOutput($worldlineResponse);
-
-        $incrementId = (string)$output->getReferences()->getMerchantReference();
-        $transaction = $this->transactionRepository->getLastTransaction($incrementId);
-
-        if ($transaction
-            && $transaction->getStatusCode() == $statusCode
-            && $transaction->getTransactionId() == (string)$worldlineResponse->getId()
-        ) {
+        if (!$this->isValid($worldlineResponse)) {
             return;
         }
 
+        $output = $this->getOutput($worldlineResponse);
+
         $transaction = $this->transactionFactory->create();
-        $this->addGeneralPaymentData($worldlineResponse, $transaction);
-
-        if ($worldlineResponse instanceof PaymentResponse) {
-            $this->addCardPaymentMethodData($worldlineResponse, $transaction);
-            $this->addRedirectPaymentMethodData($worldlineResponse, $transaction);
-            $this->addSepaPaymentMethodData($worldlineResponse, $transaction);
-        }
-
+        $transaction->setIncrementId((string)$output->getReferences()->getMerchantReference());
+        $transaction->setStatus((string)$worldlineResponse->getStatus());
+        $transaction->setStatusCode((int)$worldlineResponse->getStatusOutput()->getStatusCode());
+        $transaction->setTransactionId((string)$worldlineResponse->getId());
+        $transaction->setAmount((int)$output->getAmountOfMoney()->getAmount());
+        $transaction->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
         $this->transactionRepository->save($transaction);
     }
 
@@ -89,67 +78,23 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
         return $output;
     }
 
-    private function addGeneralPaymentData(DataObject $worldlineResponse, TransactionInterface $transaction): void
+    private function isValid(DataObject $worldlineResponse): bool
     {
         $output = $this->getOutput($worldlineResponse);
-        $transaction->setIncrementId((string)$output->getReferences()->getMerchantReference());
-        $transaction->setStatus((string)$worldlineResponse->getStatus());
-        $transaction->setStatusCode((int)$worldlineResponse->getStatusOutput()->getStatusCode());
-        $transaction->setTransactionId((string)$worldlineResponse->getId());
-        $amount = (float) ($output->getAmountOfMoney()->getAmount() / 100);
-        $transaction->setAmount($amount);
-        $transaction->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
-    }
+        $incrementId = (string)$output->getReferences()->getMerchantReference();
+        $statusCode = (int)$worldlineResponse->getStatusOutput()->getStatusCode();
+        $transaction = $this->transactionRepository->getLastTransaction($incrementId);
 
-    private function addCardPaymentMethodData(DataObject $worldlineResponse, TransactionInterface $transaction): void
-    {
-        $cardPaymentMethod = $worldlineResponse->getPaymentOutput()->getCardPaymentMethodSpecificOutput();
-        if (!$cardPaymentMethod) {
-            return;
+        if (!$transaction) {
+            return true;
         }
 
-        $transaction->setAdditionalData([
-            TransactionInterface::FRAUD_RESULT =>
-                ucfirst($cardPaymentMethod->getFraudResults()->getFraudServiceResult()),
-            TransactionInterface::PAYMENT_PRODUCT_ID => $cardPaymentMethod->getPaymentProductId(),
-            TransactionInterface::PAYMENT_METHOD =>
-                PaymentProductsProvider::PAYMENT_PRODUCTS[$cardPaymentMethod->getPaymentProductId()]['group'],
-            TransactionInterface::CARD_LAST_4 =>
-                trim($cardPaymentMethod->getCard()->getCardNumber(), '*'),
-        ]);
-    }
-
-    private function addRedirectPaymentMethodData(
-        DataObject $worldlineResponse,
-        TransactionInterface $transaction
-    ): void {
-        $redirectPaymentMethod = $worldlineResponse->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput();
-        if (!$redirectPaymentMethod) {
-            return;
+        if ((int)$transaction->getStatusCode() === $statusCode
+            && (string) $transaction->getTransactionId() === (string)$worldlineResponse->getId()
+        ) {
+            return false;
         }
 
-        $transaction->setAdditionalData([
-            TransactionInterface::FRAUD_RESULT =>
-                ucfirst($redirectPaymentMethod->getFraudResults()->getFraudServiceResult()),
-            TransactionInterface::PAYMENT_PRODUCT_ID => $redirectPaymentMethod->getPaymentProductId(),
-            TransactionInterface::PAYMENT_METHOD =>
-                PaymentProductsProvider::PAYMENT_PRODUCTS[$redirectPaymentMethod->getPaymentProductId()]['group'],
-        ]);
-    }
-
-    private function addSepaPaymentMethodData(
-        DataObject $worldlineResponse,
-        TransactionInterface $transaction
-    ): void {
-        $sepaPaymentMethod = $worldlineResponse->getPaymentOutput()->getSepaDirectDebitPaymentMethodSpecificOutput();
-        if (!$sepaPaymentMethod) {
-            return;
-        }
-
-        $transaction->setAdditionalData([
-            TransactionInterface::PAYMENT_PRODUCT_ID => $sepaPaymentMethod->getPaymentProductId(),
-            TransactionInterface::PAYMENT_METHOD =>
-                PaymentProductsProvider::PAYMENT_PRODUCTS[$sepaPaymentMethod->getPaymentProductId()]['group'],
-        ]);
+        return (int)$transaction->getTransactionId() === (int)$worldlineResponse->getId();
     }
 }

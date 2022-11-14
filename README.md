@@ -1,6 +1,13 @@
 # Worldline Online Payments
 
+## Core extension
+
 Change log:
+
+1.2.0
+- Improve waiting page by adding an order summary block so that customers will always see what they have bought
+- Improve payment info block within Magento backend. Merchants can now manually refresh the info available to be sure it is always up to date
+- General improvements and bug fixes
 
 1.1.1
 - Support version 4.3.3 of Worldline SDK

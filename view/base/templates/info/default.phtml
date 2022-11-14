@@ -21,11 +21,30 @@ $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
     <table class="data-table admin__table-secondary">
         <?php foreach ($specificInfo as $item): ?>
             <tr>
-                <th><?= $block->escapeHtml($item['label']); ?>:</th>
-                <td><?= $block->escapeHtml($item['value']); ?></td>
+                <th><?= $block->escapeHtml($item['label']) ?>:</th>
+                <td><?= $block->escapeHtml($item['value']) ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
 <?php endif;?>
 
-<?= /* @noEscape */ $block->getChildHtml(); ?>
+<?php if ($block->getDisplayUpdateButton()): ?>
+    <div data-bind="scope: 'update-payment-details'"><!-- ko template: getTemplate() --><!-- /ko --></div>
+    <script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "update-payment-details": {
+                        "component": "Worldline_PaymentCore/js/model/update-payment-details",
+                        "template": "Worldline_PaymentCore/order/update-payment-details",
+                        "storeId": "<?= $block->escapeHtml($block->getInfo()->getOrder()->getStoreId()) ?>",
+                        "incrementId": "<?= $block->escapeHtml($block->getInfo()->getOrder()->getIncrementId()) ?>",
+                        "updateUrl": "<?= $block->escapeUrl($block->getUrl('worldline/PaymentDetails/update')) ?>"
+                    }
+                }
+            }
+        }
+    }
+    </script>
+<?php endif;?>

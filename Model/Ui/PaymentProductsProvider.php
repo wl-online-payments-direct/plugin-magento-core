@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Ui;
 
-use Magento\Config\Model\ResourceModel\Config\Data\CollectionFactory;
 use Magento\Framework\App\CacheInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParams;
-use Worldline\PaymentCore\Model\ClientProvider;
-use Worldline\PaymentCore\Model\Config\WorldlineConfig;
+use Psr\Log\LoggerInterface;
+use Worldline\PaymentCore\Api\Data\CacheIdentifierInterface;
+use Worldline\PaymentCore\Api\Data\CacheIdentifierInterfaceFactory;
+use Worldline\PaymentCore\Api\Service\GetPaymentProductsRequestInterface;
+use Worldline\PaymentCore\Service\Payment\GetPaymentProductsRequestBuilder;
 
 class PaymentProductsProvider
 {
     public const CACHE_ID = "worldline_payment_products";
     public const CACHE_LIFETIME = 86400; //24h
+
+    public const GENERATE_CACHE_ID_EVENT = 'worldline_core_payment_products_cache_id_generate';
 
     /**
      * @link https://support.direct.ingenico.com/en/payment-methods/view-by-payment-product/
@@ -67,14 +67,19 @@ class PaymentProductsProvider
     ];
 
     /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
-    /**
      * @var CacheInterface
      */
     private $cache;
+
+    /**
+     * @var ManagerInterface
+     */
+    private $eventManager;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var SerializerInterface
@@ -82,94 +87,105 @@ class PaymentProductsProvider
     private $serializer;
 
     /**
-     * @var ClientProvider
+     * @var CacheIdentifierInterfaceFactory
      */
-    private $modelClient;
+    private $cacheIdentifierFactory;
 
     /**
-     * @var WorldlineConfig
+     * @var GetPaymentProductsRequestInterface
      */
-    private $worldlineConfig;
+    private $getPaymentProductsRequest;
 
     /**
-     * @var ScopeConfigInterface
+     * @var GetPaymentProductsRequestBuilder
      */
-    private $scopeConfig;
+    private $getPaymentProductsRequestBuilder;
 
     public function __construct(
-        StoreManagerInterface $storeManager,
         CacheInterface $cache,
+        LoggerInterface $logger,
+        ManagerInterface $eventManager,
         SerializerInterface $serializer,
-        ClientProvider $modelClient,
-        WorldlineConfig $worldlineConfig,
-        ScopeConfigInterface $scopeConfig
+        CacheIdentifierInterfaceFactory $cacheIdentifierFactory,
+        GetPaymentProductsRequestInterface $getPaymentProductsRequest,
+        GetPaymentProductsRequestBuilder $getPaymentProductsRequestBuilder
     ) {
-        $this->storeManager = $storeManager;
         $this->cache = $cache;
+        $this->logger = $logger;
+        $this->eventManager = $eventManager;
         $this->serializer = $serializer;
-        $this->modelClient = $modelClient;
-        $this->worldlineConfig = $worldlineConfig;
-        $this->scopeConfig = $scopeConfig;
+        $this->cacheIdentifierFactory = $cacheIdentifierFactory;
+        $this->getPaymentProductsRequest = $getPaymentProductsRequest;
+        $this->getPaymentProductsRequestBuilder = $getPaymentProductsRequestBuilder;
     }
 
-    public function getPaymentProducts(?int $storeId = null): array
+    public function getPaymentProducts(int $storeId): array
     {
-        $paymentProducts = $this->getPaymentProductsFromCache($storeId);
-
-        if (empty($paymentProducts)) {
-            $getParams = new GetPaymentProductsParams();
-            $countryCode = $this->scopeConfig->getValue(
-                'general/country/default',
-                ScopeInterface::SCOPE_STORE,
-                $storeId
-            );
-            $getParams->setCountryCode($countryCode);
-            $currencyCode = $this->storeManager->getStore($storeId)->getCurrentCurrency()->getCode();
-            $getParams->setCurrencyCode($currencyCode);
-            $locale = $this->scopeConfig->getValue(
-                'general/locale/code',
-                ScopeInterface::SCOPE_STORE,
-                $storeId
-            );
-            $getParams->setLocale($locale);
-            try {
-                $pPs = $this->modelClient->getClient($storeId)
-                    ->merchant($this->worldlineConfig->getMerchantId($storeId))
-                    ->products()
-                    ->getPaymentProducts($getParams);
-            } catch (\Exception $e) {
-                return [];
-            }
-
-            foreach ($pPs->getPaymentProducts() as $pP) {
-                $paymentProducts[$pP->getId()] = [
-                    'method' => $pP->getPaymentMethod(),
-                    'label' => $pP->getDisplayHints()->getLabel()
-                ];
-            }
-
-            $this->savePaymentProductsToCache($paymentProducts, $storeId);
+        $cachedPayProducts = $this->getPaymentProductsFromCache($storeId);
+        if (!empty($cachedPayProducts)) {
+            return $cachedPayProducts;
         }
 
-        return $paymentProducts;
+        try {
+            $paymentProductsQueryParams = $this->getPaymentProductsRequestBuilder->build($storeId);
+            $response = $this->getPaymentProductsRequest->get($paymentProductsQueryParams, $storeId);
+            $paymentProducts = $response->getPaymentProducts();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            return [];
+        }
+
+        if (empty($paymentProducts)) {
+            return [];
+        }
+
+        $formattedPayProducts = $this->formatPayProducts($paymentProducts);
+        $this->savePaymentProductsToCache($formattedPayProducts, $storeId);
+
+        return $formattedPayProducts;
     }
 
-    public function savePaymentProductsToCache($paymentProducts, $storeId)
+    public function savePaymentProductsToCache(array $paymentProducts, int $storeId): void
     {
         $this->cache->save(
             $this->serializer->serialize($paymentProducts),
-            self::CACHE_ID . '_' . $storeId,
+            $this->generateCacheIdentifier($storeId),
             [],
             self::CACHE_LIFETIME
         );
     }
 
-    public function getPaymentProductsFromCache($storeId)
+    public function getPaymentProductsFromCache(int $storeId): array
     {
-        $paymentProducts = $this->cache->load(self::CACHE_ID . '_' . $storeId);
+        $paymentProducts = $this->cache->load($this->generateCacheIdentifier($storeId));
         if (!empty($paymentProducts)) {
             return $this->serializer->unserialize($paymentProducts);
         }
+
         return [];
+    }
+
+    public function generateCacheIdentifier(int $storeId): string
+    {
+        /** @var CacheIdentifierInterface $cacheIdentifier */
+        $cacheIdentifier = $this->cacheIdentifierFactory->create();
+        $cacheIdentifier->setCacheIdentifier(self::CACHE_ID . '_' . $storeId);
+
+        $this->eventManager->dispatch(self::GENERATE_CACHE_ID_EVENT, ['cache_identifier' => $cacheIdentifier]);
+
+        return $cacheIdentifier->getCacheIdentifier();
+    }
+
+    private function formatPayProducts(array $paymentProducts): array
+    {
+        $resultPayProducts = [];
+        foreach ($paymentProducts as $pP) {
+            $resultPayProducts[$pP->getId()] = [
+                'method' => $pP->getPaymentMethod(),
+                'label' => $pP->getDisplayHints()->getLabel()
+            ];
+        }
+
+        return $resultPayProducts;
     }
 }

@@ -39,7 +39,7 @@ class AddPaymentDetails
         $total = $paymentInfo->getAuthorizedAmount() . ' ' . $paymentInfo->getCurrency();
         $last4Digits = $paymentInfo->getCardLastNumbers();
         $payProductId = (int)$paymentInfo->getPaymentProductId();
-        $iconUrl = $this->getIconForType($payProductId)['url'] ?? '';
+        $iconUrl = $this->getIconForType($payProductId, (int)$orderModel->getStoreId())['url'] ?? '';
 
         foreach ($result as &$payment) {
             $payment['name'] .= ' ' . $last4Digits;
@@ -50,8 +50,8 @@ class AddPaymentDetails
         return $result;
     }
 
-    private function getIconForType(int $payProductId): array
+    private function getIconForType(int $payProductId, int $storeId): array
     {
-        return $this->paymentIconProvider->getIconById($payProductId);
+        return $this->paymentIconProvider->getIconById($payProductId, $storeId);
     }
 }

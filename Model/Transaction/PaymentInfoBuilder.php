@@ -7,8 +7,11 @@ namespace Worldline\PaymentCore\Model\Transaction;
 use Magento\Sales\Api\Data\OrderInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterfaceFactory;
-use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
+use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
+use Worldline\PaymentCore\Api\PaymentRepositoryInterface;
+use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
+use Worldline\PaymentCore\Model\Ui\PaymentProductsProvider;
 
 class PaymentInfoBuilder
 {
@@ -22,12 +25,19 @@ class PaymentInfoBuilder
      */
     private $transactionRepository;
 
+    /**
+     * @var PaymentRepositoryInterface
+     */
+    private $paymentRepository;
+
     public function __construct(
         PaymentInfoInterfaceFactory $paymentInfoFactory,
-        TransactionRepositoryInterface $transactionRepository
+        TransactionRepositoryInterface $transactionRepository,
+        PaymentRepositoryInterface $paymentRepository
     ) {
         $this->paymentInfoFactory = $paymentInfoFactory;
         $this->transactionRepository = $transactionRepository;
+        $this->paymentRepository = $paymentRepository;
     }
 
     public function build(OrderInterface $order): PaymentInfoInterface
@@ -36,84 +46,73 @@ class PaymentInfoBuilder
         $paymentInfo = $this->paymentInfoFactory->create();
 
         $incrementId = (string)$order->getIncrementId();
+        $payment = $this->paymentRepository->get($incrementId);
+
         $lastTransaction = $this->transactionRepository->getLastTransaction($incrementId);
-        $paymentInfo = $this->setStatusInfo($paymentInfo, $lastTransaction);
+        $this->setStatusInfo($paymentInfo, $lastTransaction);
+        $this->setPaymentInfo($paymentInfo, $payment);
 
-        $authorizeTransaction = $this->transactionRepository->getAuthorizeTransaction($incrementId);
-
-        $paymentInfo = $this->setInfoByAuthorizeTransaction($paymentInfo, $authorizeTransaction);
-        $paymentInfo = $this->calculateTransactionAmounts($paymentInfo, $authorizeTransaction, $incrementId);
+        $this->calculateTransactionAmounts($paymentInfo, $payment, $incrementId);
 
         return $paymentInfo;
     }
 
-    private function setInfoByAuthorizeTransaction(
+    private function setPaymentInfo(
         PaymentInfoInterface $paymentInfo,
-        ?TransactionInterface $authorizeTransaction
-    ): PaymentInfoInterface {
-        if (!$authorizeTransaction) {
-            return $paymentInfo;
-        }
-
-        $paymentInfo->setAuthorizedAmount($authorizeTransaction->getAmount());
-        $paymentInfo->setFraudResult(
-            $authorizeTransaction->getAdditionalData()[TransactionInterface::FRAUD_RESULT] ?? ''
-        );
-        $paymentInfo->setPaymentMethod(
-            $authorizeTransaction->getAdditionalData()[TransactionInterface::PAYMENT_METHOD] ?? ''
-        );
-        $paymentInfo->setCardLastNumbers(
-            $authorizeTransaction->getAdditionalData()[TransactionInterface::CARD_LAST_4] ?? ''
-        );
-        $paymentInfo->setPaymentProductId(
-            $authorizeTransaction->getAdditionalData()[TransactionInterface::PAYMENT_PRODUCT_ID] ?? 0
-        );
-        $paymentInfo->setCurrency($authorizeTransaction->getCurrency());
-
-        return $paymentInfo;
+        PaymentInterface $payment
+    ): void {
+        $paymentInfo->setAuthorizedAmount($this->formatAmount((int) $payment->getAmount()));
+        $paymentInfo->setFraudResult((string)$payment->getFraudResult());
+        $paymentMethod = PaymentProductsProvider::PAYMENT_PRODUCTS[$payment->getPaymentProductId()]['group'] ?? '';
+        $paymentInfo->setPaymentMethod($paymentMethod);
+        $paymentInfo->setCardLastNumbers((string) $payment->getCardNumber());
+        $paymentInfo->setPaymentProductId((int) $payment->getPaymentProductId());
+        $paymentInfo->setCurrency((string)$payment->getCurrency());
     }
 
     private function calculateTransactionAmounts(
         PaymentInfoInterface $paymentInfo,
-        ?TransactionInterface $authorizeTransaction,
+        PaymentInterface $payment,
         string $incrementId
-    ): PaymentInfoInterface {
-        $authorizeAmount = $authorizeTransaction ? $authorizeTransaction->getAmount() : 0;
-        $captureAmount = $this->transactionRepository->getCaptureTransactionsAmount($incrementId);
-        if ($authorizeAmount) {
-            $paymentInfo->setAmountAvailableForCapture($authorizeAmount - $captureAmount);
+    ): void {
+        $authorizedAmount = $payment->getAmount();
+        $capturedAmount = $this->transactionRepository->getCaptureTransactionsAmount($incrementId);
+        $amountAvailableForCapture = (int) round($authorizedAmount - $capturedAmount);
+        $paymentInfo->setAmountAvailableForCapture($this->formatAmount($amountAvailableForCapture));
+
+        $refundAmount = (int) $this->transactionRepository->getRefundedTransactionsAmount($incrementId);
+        $paymentInfo->setRefundedAmount($this->formatAmount($refundAmount));
+
+        if (!$capturedAmount) {
+            return;
         }
 
-        $refundAmount = $this->transactionRepository->getRefundedTransactionsAmount($incrementId);
-        $paymentInfo->setRefundedAmount($refundAmount);
+        $pendingRefundAmount = $this->transactionRepository->getPendingRefundTransactionsAmount($incrementId);
+        $amountAvailableForRefund = (int) round($capturedAmount - $pendingRefundAmount - $refundAmount);
+        $paymentInfo->setAmountAvailableForRefund($this->formatAmount($amountAvailableForRefund));
 
-        if ($captureAmount) {
-            $pendingRefundAmount = $this->transactionRepository->getPendingRefundTransactionsAmount($incrementId);
-            $amountAvailableForRefund = $captureAmount - $pendingRefundAmount - $refundAmount;
-            $paymentInfo->setAmountAvailableForRefund($amountAvailableForRefund);
-
-            if ($amountAvailableForRefund > 0 || $authorizeAmount > $captureAmount) {
-                $captureTransaction = $this->transactionRepository->getCaptureTransaction($incrementId);
-                $paymentInfo = $this->setStatusInfo($paymentInfo, $captureTransaction);
-            } elseif ($refundAmount) {
-                $refundTransactions = $this->transactionRepository->getRefundedTransactions($incrementId);
-                $paymentInfo = $this->setStatusInfo($paymentInfo, current($refundTransactions));
-            }
+        if ($amountAvailableForRefund > 0 || $authorizedAmount > $capturedAmount) {
+            $captureTransaction = $this->transactionRepository->getCaptureTransaction($incrementId);
+            $this->setStatusInfo($paymentInfo, $captureTransaction);
+        } elseif ($refundAmount) {
+            $refundTransactions = $this->transactionRepository->getRefundedTransactions($incrementId);
+            $this->setStatusInfo($paymentInfo, current($refundTransactions));
         }
-
-        return $paymentInfo;
     }
 
     private function setStatusInfo(
         PaymentInfoInterface $paymentInfo,
         ?TransactionInterface $transaction
-    ): PaymentInfoInterface {
+    ): void {
         if ($transaction) {
             $paymentInfo->setStatus($transaction->getStatus());
             $paymentInfo->setStatusCode($transaction->getStatusCode());
             $paymentInfo->setLastTransactionNumber($transaction->getTransactionId());
         }
+    }
 
-        return $paymentInfo;
+    private function formatAmount(int $amount): float
+    {
+        return (float) ($amount / 100);
     }
 }

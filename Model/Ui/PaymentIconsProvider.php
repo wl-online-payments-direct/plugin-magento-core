@@ -52,16 +52,12 @@ class PaymentIconsProvider
         $this->assetSource = $assetSource;
     }
 
-    public function getIconById(?int $id, ?int $storeId = null): array
+    public function getIconById(?int $id, int $storeId): array
     {
-        if (empty($this->getIcons()[$id])) {
-            $this->generateIconById($id, $storeId);
-        }
-
-        return $this->icons[$id] ?? [];
+        return $this->getIcons($storeId)[$id] ?? [];
     }
 
-    public function getIcons(?int $storeId = null): array
+    public function getIcons(int $storeId): array
     {
         if (!empty($this->icons)) {
             return $this->icons;
@@ -75,7 +71,7 @@ class PaymentIconsProvider
         return $this->icons;
     }
 
-    private function generateIconById(?int $id, ?int $storeId = null, ?array $data = null): void
+    private function generateIconById(?int $id, int $storeId, ?array $data = null): void
     {
         if (empty($data)) {
             $data = $this->paymentProductsProvider->getPaymentProducts($storeId)[$id] ?? [];

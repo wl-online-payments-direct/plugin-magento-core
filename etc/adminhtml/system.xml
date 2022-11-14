@@ -138,7 +138,7 @@
                 <label>General</label>
                 <field id="fallback_timeout" translate="label tooltip comment" type="text" sortOrder="10" showInDefault="1" canRestore="1">
                     <label>Fallback Timeout</label>
-                    <validate>validate-digits validate-zero-or-greater</validate>
+                    <validate>validate-digits validate-digits-range digits-range-2-1440</validate>
                     <tooltip><![CDATA[If the payment process is failed, change the order status after the specified time.]]></tooltip>
                     <comment>Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.</comment>
                 </field>

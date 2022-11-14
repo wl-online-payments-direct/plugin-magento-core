@@ -5,19 +5,120 @@
  */
 
 $pageDataProvider = $block->getWaitingPageDataProvider();
+$quote = $pageDataProvider->getQuote();
 ?>
 
-<div data-bind="scope: 'waitingPageScope'">
-    <div class="message" style="display: none"></div>
-    <br>
-    <div id="waiting-notification-message">
-        <span><?= $block->escapeHtml($pageDataProvider->getNotificationMessage()) ?></span>
+<div data-bind="scope: 'waitingPageScope'" class="waiting-page-container">
+    <div class="opc-waiting-loader">
+        <div class="message" style="display: none"></div>
+        <div class="waiting-loader-wrapper">
+            <div id="waiting-notification-message">
+                <span><?= $block->escapeHtml($pageDataProvider->getNotificationMessage()) ?></span>
+            </div>
+            <div id="waiting-loader" data-role="waiting-loader" class="waiting-mask">
+                <div class="loader">
+                    <img src="<?= $block->escapeUrl($block->getViewFileUrl('images/loader-1.gif')) ?>"
+                         alt="<?= $block->escapeHtml(__('Loading...')) ?>">
+                </div>
+            </div>
+        </div>
     </div>
-    <br>
-    <div id="waiting-loader" data-role="waiting-loader" class="waiting-mask">
-        <div class="loader">
-            <img src="<?= $block->escapeUrl($block->getViewFileUrl('images/loader-1.gif')) ?>"
-                 alt="<?= $block->escapeHtml(__('Loading...')) ?>">
+
+    <div class="opc-block-summary" style="float: right; width: 40%">
+        <span class="title"><?= $block->escapeHtml(__('Order Summary')) ?></span>
+        <table class="data table table-totals">
+            <caption class="table-caption"><?= $block->escapeHtml(__('Order Summary')) ?></caption>
+            <tbody>
+            <tr class="totals sub">
+                <th class="mark"><?= $block->escapeHtml(__('Cart Subtotal')) ?></th>
+                <td class="amount">
+                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getSubtotal()) ?>
+                </td>
+            </tr>
+            <?php if ($quote->getShippingAddress()->getDiscountAmount()): ?>
+                <tr class="totals discount">
+                    <th class="mark" scope="row">
+                        <span class="title"><?= $block->escapeHtml(__('Discount')) ?></span>
+                        <span class="discount coupon"></span>
+                    </th>
+                    <td class="amount">
+                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getShippingAddress()->getDiscountAmount()) ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            <tr class="totals shipping excl">
+                <th class="mark">
+                    <span class="label"><?= $block->escapeHtml(__('Shipping')) ?></span>
+                    <span class="value"><?= $block->escapeHtml($quote->getShippingAddress()->getShippingMethod()) ?></span>
+                </th>
+                <td class="amount">
+                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getShippingAddress()->getShippingAmount()) ?>
+                </td>
+            </tr>
+            <?php if ($quote->getShippingAddress()->getTaxAmount()): ?>
+                <tr class="totals-tax">
+                    <th class="mark" scope="row"><?= $block->escapeHtml(__('Tax')) ?></th>
+                    <td class="amount">
+                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getShippingAddress()->getTaxAmount()) ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            <tr class="grand totals">
+                <th class="mark">
+                    <strong><?= $block->escapeHtml(__('Order Total')) ?></strong>
+                </th>
+                <td class="amount">
+                    <strong><?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getGrandTotal()) ?></strong>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="block items-in-cart active" role="tablist">
+            <div class="title" role="tab" aria-selected="true" aria-expanded="true" tabindex="0">
+                <strong role="heading" aria-level="1">
+                    <span><?= $block->escapeHtml($quote->getItemsCount()) ?></span><span><?= $block->escapeHtml(__('Item in Cart')) ?></span>
+                </strong>
+            </div>
+            <div class="content minicart-items" role="tabpanel" aria-hidden="false" style="">
+                <div class="minicart-items-wrapper">
+                    <ol class="minicart-items">
+                        <?php foreach ($quote->getAllItems() as $item): ?>
+                            <li class="product-item">
+                            <div class="product">
+                                <span class="product-image-container" style="height: 75px; width: 75px;">
+                                    <span class="product-image-wrapper">
+                                        <img src="<?= $block->escapeUrl($pageDataProvider->getSmallImageUrl($item->getProduct())) ?>"
+                                             width="150"
+                                             height="150"
+                                             alt="<?= $block->escapeHtml($item->getName()) ?>"
+                                             title="<?= $block->escapeHtml($item->getName()) ?>">
+                                    </span>
+                                </span>
+                                <div class="product-item-details">
+                                    <div class="product-item-inner">
+                                        <div class="product-item-name-block">
+                                            <strong class="product-item-name"><?= $block->escapeHtml($item->getName()) ?></strong>
+                                            <div class="details-qty">
+                                                <span class="label"><span><?= $block->escapeHtml(__('Qty')) ?></span></span>
+                                                <span class="value"><?= $block->escapeHtml($item->getQty()) ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="subtotal">
+                                            <span class="price-excluding-tax">
+                                                <span class="cart-price">
+                                                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($item->getPrice()) ?>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <?php endforeach; ?>
+                    </ol>
+                </div>
+            </div>
         </div>
     </div>
 </div>

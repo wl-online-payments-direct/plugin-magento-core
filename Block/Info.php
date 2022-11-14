@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Block;
 
 use Magento\Framework\Phrase;
+use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Payment\Block\ConfigurableInfo;
-use Magento\Payment\Gateway\ConfigInterface;
+use Magento\Payment\Model\MethodInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
 use Worldline\PaymentCore\Api\InfoFormatterInterface;
 use Worldline\PaymentCore\Model\Transaction\PaymentInfoBuilder;
 use Worldline\PaymentCore\Model\Ui\PaymentIconsProvider;
 use Worldline\PaymentCore\Model\Ui\PaymentProductsProvider;
 
-class Info extends ConfigurableInfo
+class Info extends Template
 {
     public const MAX_HEIGHT = '40px';
 
@@ -40,13 +40,12 @@ class Info extends ConfigurableInfo
 
     public function __construct(
         Context $context,
-        ConfigInterface $config,
         PaymentIconsProvider $paymentIconProvider,
         PaymentInfoBuilder $paymentInfoBuilder,
         InfoFormatterInterface $infoFormatter,
         array $data = []
     ) {
-        parent::__construct($context, $config, $data);
+        parent::__construct($context, $data);
         $this->paymentIconProvider = $paymentIconProvider;
         $this->paymentInfoBuilder = $paymentInfoBuilder;
         $this->infoFormatter = $infoFormatter;
@@ -104,7 +103,8 @@ class Info extends ConfigurableInfo
 
     private function getIconForType(): array
     {
-        return $this->paymentIconProvider->getIconById($this->getPaymentInformation()->getPaymentProductId());
+        $storeId = (int)$this->getInfo()->getOrder()->getStoreId();
+        return $this->paymentIconProvider->getIconById($this->getPaymentInformation()->getPaymentProductId(), $storeId);
     }
 
     public function getPaymentInformation(): PaymentInfoInterface
@@ -114,5 +114,15 @@ class Info extends ConfigurableInfo
         }
 
         return $this->paymentInformation;
+    }
+
+    /**
+     * Return checkout method
+     *
+     * @return MethodInterface
+     */
+    public function getMethod(): MethodInterface
+    {
+        return $this->getInfo()->getOrder()->getPayment()->getMethodInstance();
     }
 }

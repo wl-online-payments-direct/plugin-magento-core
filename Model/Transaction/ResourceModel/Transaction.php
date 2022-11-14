@@ -19,4 +19,14 @@ class Transaction extends AbstractDb
     {
         $this->_init(self::TABLE_NAME, 'entity_id');
     }
+
+    public function removeByIncrementId(string $incrementId): void
+    {
+        $this->getConnection()->delete($this->getMainTable(), ['increment_id = ?' => $incrementId]);
+    }
+
+    public function insertMultipleTransactions(array $transactions): void
+    {
+        $this->getConnection()->insertMultiple($this->getMainTable(), $transactions);
+    }
 }
