@@ -54,12 +54,12 @@ class PendingOrderProvider
 
     private function addTimeToFilter(QuoteCollection $collection): void
     {
-        if ($dateTo = $this->dateLimitProvider->getDateTo()) {
-            $collection->addFieldToFilter('main_table.created_at', ['lteq' => $dateTo]);
+        if ($dateFrom = $this->dateLimitProvider->getDateFrom()) {
+            $collection->addFieldToFilter('main_table.updated_at', ['lteq' => $dateFrom]);
         }
 
-        if ($dateFrom = $this->dateLimitProvider->getDateFrom()) {
-            $collection->addFieldToFilter('main_table.created_at', ['gteq' => $dateFrom]);
+        if ($dateTo = $this->dateLimitProvider->getDateTo()) {
+            $collection->addFieldToFilter('main_table.updated_at', ['gteq' => $dateTo]);
         }
     }
 

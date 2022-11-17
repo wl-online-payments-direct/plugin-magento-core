@@ -4,6 +4,9 @@
 
 Change log:
 
+1.2.1
+- Fix cron run time to prevent order duplication
+
 1.2.0
 - Improve waiting page by adding an order summary block so that customers will always see what they have bought
 - Improve payment info block within Magento backend. Merchants can now manually refresh the info available to be sure it is always up to date
