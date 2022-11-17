@@ -27,7 +27,7 @@ class DateLimitProvider
         $this->orderSynchronizationConfig = $orderSynchronizationConfig;
     }
 
-    public function getDateTo(): ?string
+    public function getDateFrom(): ?string
     {
         if (!$this->orderSynchronizationConfig->getFallbackTimeout()) {
             return null;
@@ -40,7 +40,7 @@ class DateLimitProvider
         );
     }
 
-    public function getDateFrom(): ?string
+    public function getDateTo(): ?string
     {
         if (!$this->orderSynchronizationConfig->getFallbackTimeoutLimit()) {
             return null;

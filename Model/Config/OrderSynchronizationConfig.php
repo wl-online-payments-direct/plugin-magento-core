@@ -32,14 +32,14 @@ class OrderSynchronizationConfig
         $this->data = $data;
     }
 
-    public function getFallbackTimeout(?int $storeId = null): string
+    public function getFallbackTimeout(?int $storeId = null): int
     {
-        return $this->getValue('fallback_timeout', $storeId);
+        return (int) $this->getValue('fallback_timeout', $storeId);
     }
 
-    public function getFallbackTimeoutLimit(?int $storeId = null): string
+    public function getFallbackTimeoutLimit(?int $storeId = null): int
     {
-        return $this->getValue('fallback_timeout_limit', $storeId);
+        return (int) $this->getValue('fallback_timeout_limit', $storeId);
     }
 
     public function getRefusedPaymentTemplate(?int $storeId = null): ?string
