@@ -4,6 +4,10 @@
 
 Change log:
 
+1.3.0
+- Improve the "waiting" page
+- Add the "pending" page
+
 1.2.1
 - Fix cron run time to prevent order duplication
 

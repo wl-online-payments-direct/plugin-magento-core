@@ -32,7 +32,7 @@ $quote = $pageDataProvider->getQuote();
             <tr class="totals sub">
                 <th class="mark"><?= $block->escapeHtml(__('Cart Subtotal')) ?></th>
                 <td class="amount">
-                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getSubtotal()) ?>
+                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getSubtotal()) ?>
                 </td>
             </tr>
             <?php if ($quote->getShippingAddress()->getDiscountAmount()): ?>
@@ -42,7 +42,7 @@ $quote = $pageDataProvider->getQuote();
                         <span class="discount coupon"></span>
                     </th>
                     <td class="amount">
-                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getShippingAddress()->getDiscountAmount()) ?>
+                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getDiscountAmount()) ?>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -52,14 +52,14 @@ $quote = $pageDataProvider->getQuote();
                     <span class="value"><?= $block->escapeHtml($quote->getShippingAddress()->getShippingMethod()) ?></span>
                 </th>
                 <td class="amount">
-                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getShippingAddress()->getShippingAmount()) ?>
+                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getShippingAmount()) ?>
                 </td>
             </tr>
             <?php if ($quote->getShippingAddress()->getTaxAmount()): ?>
                 <tr class="totals-tax">
                     <th class="mark" scope="row"><?= $block->escapeHtml(__('Tax')) ?></th>
                     <td class="amount">
-                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getShippingAddress()->getTaxAmount()) ?>
+                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getTaxAmount()) ?>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -68,7 +68,7 @@ $quote = $pageDataProvider->getQuote();
                     <strong><?= $block->escapeHtml(__('Order Total')) ?></strong>
                 </th>
                 <td class="amount">
-                    <strong><?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($quote->getGrandTotal()) ?></strong>
+                    <strong><?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getGrandTotal()) ?></strong>
                 </td>
             </tr>
             </tbody>
@@ -107,7 +107,7 @@ $quote = $pageDataProvider->getQuote();
                                         <div class="subtotal">
                                             <span class="price-excluding-tax">
                                                 <span class="cart-price">
-                                                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($item->getPrice()) ?>
+                                                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$item->getPrice()) ?>
                                                 </span>
                                             </span>
                                         </div>
@@ -134,6 +134,7 @@ $quote = $pageDataProvider->getQuote();
                     "checkOrderUrl": "<?= $block->escapeUrl($pageDataProvider->checkOrderUrl()) ?>",
                     "successUrl": "<?= $block->escapeUrl($pageDataProvider->successUrl()) ?>",
                     "failUrl": "<?= $block->escapeUrl($pageDataProvider->failUrl()) ?>",
+                    "pendingPageUrl": "<?= $block->escapeUrl($pageDataProvider->pendingPageUrl()) ?>",
                     "pendingOrderUrl": "<?= $block->escapeUrl($pageDataProvider->pendingOrderUrl()) ?>"
                 }
             }

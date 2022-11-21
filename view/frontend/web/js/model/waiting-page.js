@@ -12,6 +12,7 @@ define([
             checkOrderUrl: null,
             successUrl: null,
             failUrl: null,
+            pendingPageUrl: null,
             pendingOrderUrl: null
         },
 
@@ -67,7 +68,7 @@ define([
                 if (result.status) {
                     window.location.replace(self.successUrl);
                 } else {
-                    window.location.replace(self.failUrl);
+                    window.location.replace(self.pendingPageUrl);
                 }
             })
             .fail(function(result) {
