@@ -82,6 +82,14 @@ class WaitingPageDataProvider implements ArgumentInterface
         return $this->urlBuilder->getUrl('worldline/returns/failed');
     }
 
+    public function pendingPageUrl(): string
+    {
+        return $this->urlBuilder->getUrl(
+            'worldline/returns/pendingPayment',
+            ['incrementId' => $this->getIncrementId()]
+        );
+    }
+
     public function pendingOrderUrl(): string
     {
         return $this->urlBuilder->getUrl('worldline/returns/pendingOrder');
