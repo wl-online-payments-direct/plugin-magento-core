@@ -10,6 +10,12 @@ class ReplaceSaveUrl
 {
     private const WORLDLINE = 'worldline';
 
+    /**
+     * @param Form $subject
+     * @param string $result
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function afterGetSaveUrl(Form $subject, string $result)
     {
         $paymentMethodName = $subject->getOrder()->getPayment()->getMethod();

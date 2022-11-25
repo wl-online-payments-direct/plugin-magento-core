@@ -19,6 +19,12 @@ class CheckRefundAbility
         $this->refundValidator = $refundValidator;
     }
 
+    /**
+     * @param Order $subject
+     * @param bool $result
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function afterCanCreditmemo(Order $subject, bool $result): bool
     {
         if (!$result) {

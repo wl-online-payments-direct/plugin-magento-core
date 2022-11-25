@@ -5,23 +5,11 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\ResourceModel;
 
 use Magento\Quote\Api\Data\CartInterface;
-use Magento\Quote\Model\QuoteFactory;
-use Magento\Quote\Model\ResourceModel\Quote as QuoteResource;
 use Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory as QuotePaymentCollectionFactory;
 use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
 
 class Quote
 {
-    /**
-     * @var QuoteFactory
-     */
-    private $quoteFactory;
-
-    /**
-     * @var QuoteResource
-     */
-    private $quoteResource;
-
     /**
      * @var QuotePaymentCollectionFactory
      */
@@ -38,13 +26,9 @@ class Quote
     private $quotes = [];
 
     public function __construct(
-        QuoteFactory $quoteFactory,
-        QuoteResource $quoteResource,
         QuotePaymentCollectionFactory $quotePaymentCollectionFactory,
         QuoteCollectionFactory $quoteCollectionFactory
     ) {
-        $this->quoteFactory = $quoteFactory;
-        $this->quoteResource = $quoteResource;
         $this->quotePaymentCollectionFactory = $quotePaymentCollectionFactory;
         $this->quoteCollectionFactory = $quoteCollectionFactory;
     }
@@ -69,14 +53,9 @@ class Quote
         $collection->getSelect()->limit(1);
         $quotePayment = $collection->getFirstItem();
 
-        $quote = $this->quoteFactory->create();
-        $this->quoteResource->load($quote, $quotePayment->getQuoteId());
-
-        return $quote;
-    }
-
-    public function saveCart(CartInterface $cart)
-    {
-        $this->quoteResource->save($cart);
+        $collection = $this->quoteCollectionFactory->create();
+        $collection->addFieldToFilter('entity_id', ['eq' => $quotePayment->getQuoteId()]);
+        $collection->getSelect()->limit(1);
+        return $collection->getFirstItem();
     }
 }

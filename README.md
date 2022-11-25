@@ -4,6 +4,9 @@
 
 Change log:
 
+1.3.1
+- Improve work for multi-website instances
+
 1.3.0
 - Improve the "waiting" page
 - Add the "pending" page
