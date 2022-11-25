@@ -70,26 +70,18 @@ class Index implements CsrfAwareActionInterface, HttpPostActionInterface
         }
 
         $errorMessages = [];
-        $this->logger->info('start');
-        if ($this->request->isPost()) {
-            $this->logger->info('content: ' . $this->request->getContent());
-            try {
-                $this->webhookProcessor->process($webhookEvent);
-            } catch (LocalizedException $exception) {
-                $this->logger->error($exception->getMessage());
-                $errorMessages = $exception->getMessage();
-            }
-        } else {
-            $this->logger->error(__('Please correct the sent data.'));
-            $errorMessages[] = __('Please correct the sent data.');
+        $this->logger->info('content: ' . $this->request->getContent());
+        try {
+            $this->webhookProcessor->process($webhookEvent);
+        } catch (LocalizedException $exception) {
+            $this->logger->error($exception->getMessage());
+            $errorMessages = $exception->getMessage();
         }
 
         $resultJson->setData([
             'messages' => $errorMessages,
             'error' => (bool) $errorMessages,
         ]);
-
-        $this->logger->info('finish');
 
         return $resultJson;
     }

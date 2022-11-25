@@ -78,7 +78,9 @@ class PlaceOrderProcessor implements ProcessorInterface
             return;
         }
 
-        $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($paymentResponse->getId());
+        // remove postfix from payment id if any (11111_1 -> 11111)
+        $paymentId = (string)(int)$paymentResponse->getId();
+        $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($paymentId);
         $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
 
         $this->checkTransactionForSave($paymentResponse, $order);
@@ -87,7 +89,7 @@ class PlaceOrderProcessor implements ProcessorInterface
             return;
         }
 
-        $this->quoteManagement->placeOrder($quote->getId());
+        $this->quoteManagement->submit($quote);
     }
 
     private function checkTransactionForSave(PaymentResponse $paymentResponse, Order $order): void
