@@ -50,7 +50,7 @@ $quote = $pageDataProvider->getQuote();
             <tr class="totals shipping excl">
                 <th class="mark">
                     <span class="label"><?= $block->escapeHtml(__('Shipping')) ?></span>
-                    <span class="value"><?= $block->escapeHtml($quote->getShippingAddress()->getShippingMethod()) ?></span>
+                    <span class="value"><?= $block->escapeHtml($quote->getShippingAddress()->getShippingDescription()) ?></span>
                 </th>
                 <td class="amount">
                     <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getShippingAmount()) ?>
@@ -85,16 +85,18 @@ $quote = $pageDataProvider->getQuote();
                 <div class="minicart-items-wrapper">
                     <ol class="minicart-items">
                         <?php foreach ($quote->getAllItems() as $item): ?>
+                            <?php
+                            if ($item->getParentItem()):
+                                continue;
+                            endif;
+                            ?>
                             <li class="product-item">
                             <div class="product">
-                                <span class="product-image-container" style="height: 75px; width: 75px;">
-                                    <span class="product-image-wrapper">
-                                        <img src="<?= $block->escapeUrl($pageDataProvider->getSmallImageUrl($item->getProduct())) ?>"
-                                             width="150"
-                                             height="150"
-                                             alt="<?= $block->escapeHtml($item->getName()) ?>"
-                                             title="<?= $block->escapeHtml($item->getName()) ?>">
-                                    </span>
+                                <span class="product-image-container">
+                                    <img src="<?= $block->escapeUrl($pageDataProvider->getResizedImageUrl($item->getProduct())) ?>"
+                                         style="display: block;width: 100%; height: auto; max-height: none;"
+                                         alt="<?= $block->escapeHtml($item->getName()) ?>"
+                                         title="<?= $block->escapeHtml($item->getName()) ?>">
                                 </span>
                                 <div class="product-item-details">
                                     <div class="product-item-inner">

@@ -11,12 +11,12 @@ use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParams;
  *
  * @see: https://support.direct.ingenico.com/en/documentation/api/reference/#tag/Products/operation/GetPaymentProducts
  */
-interface GetPaymentProductsRequestInterface
+interface GetPaymentProductsServiceInterface
 {
     /**
      * @param GetPaymentProductsParams $queryParams
      * @param int|null $storeId
      * @return GetPaymentProductsResponse
      */
-    public function get(GetPaymentProductsParams $queryParams, ?int $storeId = null): GetPaymentProductsResponse;
+    public function execute(GetPaymentProductsParams $queryParams, ?int $storeId = null): GetPaymentProductsResponse;
 }

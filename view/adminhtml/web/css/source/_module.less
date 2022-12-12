@@ -7,12 +7,53 @@
 //  ----------------------------------------------
 
 & when (@media-common = true) {
-    .config.admin__collapsible-block .worldline-payment__row {
-        display: flex;
-        padding: 10px 0;
-    }
-
     .worldline-float-right {
         float: right;
+    }
+
+    .about-worldline {
+        width: 60%;
+
+        hr {
+            margin-top: 60px;
+            float: left;
+            height: 1px;
+            background-color: lightgrey;
+            border: none;
+            width: 100%;
+
+            &.bottom-line {
+                margin-top: 30px;
+            }
+        }
+
+        .title {
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .sub-title {
+            padding-top: 20px;
+            font-weight: bold;
+            font-size: 14px;
+
+            &.version-title {
+                padding-top: 0;
+            }
+        }
+
+        .description, .button {
+            padding-top: 10px;
+        }
+
+        .version-block {
+            margin-top: 80px;
+        }
+
+        .github-button {
+            margin-top: -13px;
+            background-color: royalblue;
+            float: right;
+        }
     }
 }

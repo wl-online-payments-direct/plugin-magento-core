@@ -61,6 +61,11 @@ class WorldlineConfig
      */
     private $apiEndpoint = null;
 
+    /**
+     * @var bool
+     */
+    private $isProductionMode;
+
     public function __construct(ScopeConfigInterface $scopeConfig, EncryptorInterface $encryptor)
     {
         $this->scopeConfig = $scopeConfig;
@@ -69,30 +74,39 @@ class WorldlineConfig
 
     public function isProductionMode(?int $scopeCode = null): bool
     {
-        return $this->scopeConfig->isSetFlag(
-            self::XML_PATH_MODE,
-            ScopeInterface::SCOPE_STORE,
-            $scopeCode
-        );
+        if (null === $this->isProductionMode) {
+            $this->isProductionMode = $this->scopeConfig->isSetFlag(
+                self::XML_PATH_MODE,
+                ScopeInterface::SCOPE_STORE,
+                $scopeCode
+            );
+        }
+
+        return $this->isProductionMode;
     }
 
-    public function getMerchantId(?int $scopeCode = null): string
+    public function setProductionModeFlag(bool $flag): void
+    {
+        $this->isProductionMode = $flag;
+    }
+
+    public function getMerchantId(?int $scopeCode = null, ?string $scopeType = ScopeInterface::SCOPE_STORE): string
     {
         if ($this->merchantId) {
             return $this->merchantId;
         }
 
         $path = $this->isProductionMode($scopeCode) ? self::XML_PATH_MERCHANT_ID . '_prod' : self::XML_PATH_MERCHANT_ID;
-        $this->merchantId = (string)$this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $scopeCode);
+        $this->merchantId = (string)$this->scopeConfig->getValue($path, $scopeType, $scopeCode);
         return $this->merchantId;
     }
 
-    public function setMerchantId(string $merchantId)
+    public function setMerchantId(string $merchantId): void
     {
         $this->merchantId = $merchantId;
     }
 
-    public function getApiKey(?int $scopeCode = null): string
+    public function getApiKey(?int $scopeCode = null, ?string $scopeType = ScopeInterface::SCOPE_STORE): string
     {
         if ($this->apiKey) {
             return $this->apiKey;
@@ -100,17 +114,17 @@ class WorldlineConfig
 
         $path = $this->isProductionMode($scopeCode) ? self::XML_PATH_API_KEY . '_prod' : self::XML_PATH_API_KEY;
         $this->apiKey = $this->encryptor->decrypt(
-            $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $scopeCode)
+            $this->scopeConfig->getValue($path, $scopeType, $scopeCode)
         );
         return $this->apiKey;
     }
 
-    public function setApiKey(string $apiKey)
+    public function setApiKey(string $apiKey): void
     {
         $this->apiKey = $apiKey;
     }
 
-    public function getApiSecret(?int $scopeCode = null):string
+    public function getApiSecret(?int $scopeCode = null, ?string $scopeType = ScopeInterface::SCOPE_STORE):string
     {
         if ($this->apiSecret) {
             return $this->apiSecret;
@@ -118,17 +132,17 @@ class WorldlineConfig
 
         $path = $this->isProductionMode($scopeCode) ? self::XML_PATH_API_SECRET . '_prod' : self::XML_PATH_API_SECRET;
         $this->apiSecret = $this->encryptor->decrypt(
-            $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $scopeCode)
+            $this->scopeConfig->getValue($path, $scopeType, $scopeCode)
         );
         return $this->apiSecret;
     }
 
-    public function setApiSecret(string $apiSecret)
+    public function setApiSecret(string $apiSecret): void
     {
         $this->apiSecret = $apiSecret;
     }
 
-    public function getApiEndpoint(?int $scopeCode = null): string
+    public function getApiEndpoint(?int $scopeCode = null, ?string $scopeType = ScopeInterface::SCOPE_STORE): string
     {
         if ($this->apiEndpoint) {
             return $this->apiEndpoint;
@@ -139,12 +153,12 @@ class WorldlineConfig
             $xmlPath = self::XML_PATH_API_PRODUCTION_ENDPOINT;
         }
 
-        $this->apiEndpoint = (string)$this->scopeConfig->getValue($xmlPath, ScopeInterface::SCOPE_STORE, $scopeCode);
+        $this->apiEndpoint = (string)$this->scopeConfig->getValue($xmlPath, $scopeType, $scopeCode);
 
         return $this->apiEndpoint;
     }
 
-    public function setApiEndpoint(string $apiEndpoint)
+    public function setApiEndpoint(string $apiEndpoint): void
     {
         $this->apiEndpoint = $apiEndpoint;
     }

@@ -1,0 +1,20 @@
+<?php
+/** @var Worldline\PaymentCore\Block\Info $block */
+$specificInfo = $block->getSpecificInformation();
+$cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
+?>
+<?= $block->escapeHtml($block->getPaymentTitle()) ?>
+<?php if ($cardNumbers): ?>
+    <?= $block->escapeHtml(__('ending')) ?> <?= $block->escapeHtml($cardNumbers) ?>
+<?php endif; ?>
+    {{pdf_row_separator}}
+
+<?php if ($specificInfo): ?>
+        <?php foreach ($specificInfo as $item): ?>
+            <?= $block->escapeHtml(__($item['label'])) ?>
+            <?= $block->escapeHtml(__(':')) ?>
+            <?= $block->escapeHtml(__($item['value'])) ?>
+                {{pdf_row_separator}}
+        <?php endforeach; ?>
+<?php endif;?>
+    {{pdf_row_separator}}

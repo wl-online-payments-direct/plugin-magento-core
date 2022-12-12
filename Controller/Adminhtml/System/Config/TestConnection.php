@@ -6,12 +6,15 @@ namespace Worldline\PaymentCore\Controller\Adminhtml\System\Config;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\ResultFactory;
 use Worldline\PaymentCore\Model\Config\ConnectionTest\FromAjaxRequest;
 
-class TestConnection extends Action
+class TestConnection extends Action implements HttpPostActionInterface
 {
+    private const SUCCESS_RESULT = 'OK';
+
     /**
      * Authorization level of a basic admin session
      *
@@ -37,11 +40,12 @@ class TestConnection extends Action
     {
         /** @var Json $resultPage */
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+        $result = $this->connectionTester->test();
 
         return $resultPage->setData(
-            ($errorMessage = $this->connectionTester->test())
-                ? ['success' => false, 'errorMessage' => $errorMessage]
-                : ['success' => true]
+            ($result === self::SUCCESS_RESULT)
+                ? ['success' => true]
+                : ['success' => false, 'errorMessage' => $result]
         );
     }
 }

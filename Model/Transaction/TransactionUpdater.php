@@ -8,7 +8,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Api\PaymentRepositoryInterface;
-use Worldline\PaymentCore\Api\Service\GetPaymentDetailsRequestInterface;
+use Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface;
 use Worldline\PaymentCore\Model\Transaction\ResourceModel\Transaction as TransactionResource;
 
 class TransactionUpdater
@@ -19,7 +19,7 @@ class TransactionUpdater
     private $paymentRepository;
 
     /**
-     * @var GetPaymentDetailsRequestInterface
+     * @var GetPaymentDetailsServiceInterface
      */
     private $detailsRequest;
 
@@ -35,7 +35,7 @@ class TransactionUpdater
 
     public function __construct(
         PaymentRepositoryInterface $paymentRepository,
-        GetPaymentDetailsRequestInterface $detailsRequest,
+        GetPaymentDetailsServiceInterface $detailsRequest,
         TransactionResource $transactionResource,
         LoggerInterface $logger
     ) {
@@ -57,7 +57,7 @@ class TransactionUpdater
     {
         try {
             $wlPayment = $this->paymentRepository->get($incrementId);
-            $response = $this->detailsRequest->get((string) $wlPayment->getPaymentId(), $storeId);
+            $response = $this->detailsRequest->execute((string) $wlPayment->getPaymentId(), $storeId);
             $operations = $response->getOperations();
             if (!$operations) {
                 return false;

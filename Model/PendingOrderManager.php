@@ -7,11 +7,15 @@ use Magento\Checkout\Model\Session;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
+use Magento\Sales\Model\OrderIncrementIdChecker;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 use Worldline\PaymentCore\Model\ResourceModel\FailedPaymentLog;
 use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
 use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
+ */
 class PendingOrderManager implements PendingOrderManagerInterface
 {
     /**
@@ -49,6 +53,11 @@ class PendingOrderManager implements PendingOrderManagerInterface
      */
     private $failedPaymentLog;
 
+    /**
+     * @var OrderIncrementIdChecker
+     */
+    private $orderIncrementIdChecker;
+
     public function __construct(
         EmailSender $emailSender,
         Session $checkoutSession,
@@ -56,7 +65,8 @@ class PendingOrderManager implements PendingOrderManagerInterface
         QuoteResource $quoteResource,
         QuoteManagement $quoteManagement,
         StatusCodeRetriever $statusCodeRetriever,
-        FailedPaymentLog $failedPaymentLog
+        FailedPaymentLog $failedPaymentLog,
+        OrderIncrementIdChecker $orderIncrementIdChecker
     ) {
         $this->emailSender = $emailSender;
         $this->checkoutSession = $checkoutSession;
@@ -65,6 +75,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
         $this->quoteManagement = $quoteManagement;
         $this->statusCodeRetriever = $statusCodeRetriever;
         $this->failedPaymentLog = $failedPaymentLog;
+        $this->orderIncrementIdChecker = $orderIncrementIdChecker;
     }
 
     public function processPendingOrder(string $incrementId): bool
@@ -77,14 +88,16 @@ class PendingOrderManager implements PendingOrderManagerInterface
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
         $statusCode = $this->statusCodeRetriever->getStatusCode($quote->getPayment());
 
-        if (in_array(
+        $canPlaceOrder = in_array(
             $statusCode,
             [
                 TransactionStatusInterface::PENDING_CAPTURE_CODE,
                 TransactionStatusInterface::CAPTURED_CODE,
                 TransactionStatusInterface::CAPTURE_REQUESTED,
             ]
-        )) {
+        );
+
+        if ($canPlaceOrder && !$this->orderIncrementIdChecker->isIncrementIdUsed($incrementId)) {
             $order = $this->quoteManagement->submit($quote);
 
             $this->checkoutSession->setLastOrderId($order->getId());
@@ -102,18 +115,16 @@ class PendingOrderManager implements PendingOrderManagerInterface
 
     private function checkStatusOnRefused(CartInterface $quote, ?int $statusCode): void
     {
-        if (!in_array(
+        $isPaymentRefused = in_array(
             $statusCode,
             [
                 TransactionStatusInterface::AUTHORISATION_DECLINED,
                 TransactionStatusInterface::AUTHORISED_AND_CANCELLED,
                 TransactionStatusInterface::PAYMENT_REFUSED
             ]
-        )) {
-            return;
-        }
+        );
 
-        if ($this->emailSender->sendPaymentRefusedEmail($quote)) {
+        if ($isPaymentRefused && $this->emailSender->sendPaymentRefusedEmail($quote)) {
             $this->failedPaymentLog->saveQuotePaymentId((int) $quote->getPayment()->getId());
         }
     }

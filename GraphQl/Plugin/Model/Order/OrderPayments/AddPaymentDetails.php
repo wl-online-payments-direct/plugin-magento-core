@@ -6,7 +6,7 @@ namespace Worldline\PaymentCore\GraphQl\Plugin\Model\Order\OrderPayments;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\SalesGraphQl\Model\Order\OrderPayments;
 use Worldline\PaymentCore\Model\Transaction\PaymentInfoBuilder;
-use Worldline\PaymentCore\Model\Ui\PaymentIconsProvider;
+use Worldline\PaymentCore\Ui\PaymentIconsProvider;
 
 class AddPaymentDetails
 {

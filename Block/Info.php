@@ -9,10 +9,10 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Model\MethodInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
+use Worldline\PaymentCore\Api\Data\PaymentProductsDetailsInterface;
 use Worldline\PaymentCore\Api\InfoFormatterInterface;
 use Worldline\PaymentCore\Model\Transaction\PaymentInfoBuilder;
-use Worldline\PaymentCore\Model\Ui\PaymentIconsProvider;
-use Worldline\PaymentCore\Model\Ui\PaymentProductsProvider;
+use Worldline\PaymentCore\Ui\PaymentIconsProvider;
 
 class Info extends Template
 {
@@ -38,6 +38,11 @@ class Info extends Template
      */
     private $paymentInformation;
 
+    /**
+     * @var string
+     */
+    protected $_template = 'Worldline_PaymentCore::info/default.phtml';
+
     public function __construct(
         Context $context,
         PaymentIconsProvider $paymentIconProvider,
@@ -51,11 +56,6 @@ class Info extends Template
         $this->infoFormatter = $infoFormatter;
     }
 
-    public function getTemplate(): string
-    {
-        return 'Worldline_PaymentCore::info/default.phtml';
-    }
-
     public function getSpecificInformation(): array
     {
         return $this->infoFormatter->format($this->getPaymentInformation());
@@ -65,7 +65,7 @@ class Info extends Template
     {
         $paymentProductId = $this->getPaymentInformation()->getPaymentProductId();
         $methodUsed = ($paymentProductId)
-            ? PaymentProductsProvider::PAYMENT_PRODUCTS[$paymentProductId]['label']
+            ? PaymentProductsDetailsInterface::PAYMENT_PRODUCTS[$paymentProductId]['label']
             : __('Payment');
 
         return __('%1 with Worldline', $methodUsed)->render();
@@ -124,5 +124,11 @@ class Info extends Template
     public function getMethod(): MethodInterface
     {
         return $this->getInfo()->getOrder()->getPayment()->getMethodInstance();
+    }
+
+    public function toPdf(): string
+    {
+        $this->setTemplate('Worldline_PaymentCore::info/pdf/worldline_payment.phtml');
+        return $this->toHtml();
     }
 }

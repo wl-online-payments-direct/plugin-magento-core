@@ -6,11 +6,12 @@ namespace Worldline\PaymentCore\Controller\Returns;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
 
-class Waiting extends Action
+class Waiting extends Action implements HttpGetActionInterface
 {
     /**
      * @var QuoteResource

@@ -28,7 +28,7 @@ abstract class AbstractTransaction implements ClientInterface
      * @return array
      * @throws ClientException
      */
-    public function placeRequest(TransferInterface $transferObject)
+    public function placeRequest(TransferInterface $transferObject): array
     {
         try {
             $response['object'] = $this->process($transferObject->getBody());
@@ -42,6 +42,7 @@ abstract class AbstractTransaction implements ClientInterface
 
     /**
      * Process http request
+     *
      * @param array $data
      */
     abstract protected function process(array $data);

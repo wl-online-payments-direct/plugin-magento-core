@@ -8,10 +8,10 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterfaceFactory;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
+use Worldline\PaymentCore\Api\Data\PaymentProductsDetailsInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Api\PaymentRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
-use Worldline\PaymentCore\Model\Ui\PaymentProductsProvider;
 
 class PaymentInfoBuilder
 {
@@ -63,11 +63,12 @@ class PaymentInfoBuilder
     ): void {
         $paymentInfo->setAuthorizedAmount($this->formatAmount((int) $payment->getAmount()));
         $paymentInfo->setFraudResult((string)$payment->getFraudResult());
-        $paymentMethod = PaymentProductsProvider::PAYMENT_PRODUCTS[$payment->getPaymentProductId()]['group'] ?? '';
-        $paymentInfo->setPaymentMethod($paymentMethod);
         $paymentInfo->setCardLastNumbers((string) $payment->getCardNumber());
         $paymentInfo->setPaymentProductId((int) $payment->getPaymentProductId());
         $paymentInfo->setCurrency((string)$payment->getCurrency());
+        $paymentInfo->setPaymentMethod(
+            PaymentProductsDetailsInterface::PAYMENT_PRODUCTS[$payment->getPaymentProductId()]['group'] ?? ''
+        );
     }
 
     private function calculateTransactionAmounts(

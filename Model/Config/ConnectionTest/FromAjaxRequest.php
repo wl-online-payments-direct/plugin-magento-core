@@ -6,10 +6,8 @@ namespace Worldline\PaymentCore\Model\Config\ConnectionTest;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Framework\Filter\StripTags;
 use Magento\Store\Model\ScopeInterface;
-use Worldline\PaymentCore\Model\ClientProvider;
+use Worldline\PaymentCore\Api\Service\Services\TestConnectionServiceInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 class FromAjaxRequest
@@ -26,89 +24,44 @@ class FromAjaxRequest
     private $request;
 
     /**
-     * @var ClientProvider
-     */
-    private $clientProvider;
-
-    /**
-     * @var StripTags
-     */
-    private $tagFilter;
-
-    /**
      * @var WorldlineConfig
      */
     private $worldlineConfig;
 
     /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * @var EncryptorInterface
-     */
-    private $encryptor;
-
-    /**
      * @var int
      */
-    private $envMode = -1;
+    private $envMode;
+
+    /**
+     * @var TestConnectionServiceInterface
+     */
+    private $testConnectionService;
 
     public function __construct(
-        ClientProvider $clientProvider,
-        StripTags $tagFilter,
         WorldlineConfig $worldlineConfig,
         RequestInterface $request,
-        ScopeConfigInterface $scopeConfig,
-        EncryptorInterface $encryptor
+        TestConnectionServiceInterface $testConnectionService
     ) {
-        $this->clientProvider = $clientProvider;
-        $this->tagFilter = $tagFilter;
         $this->worldlineConfig = $worldlineConfig;
         $this->request = $request;
-        $this->scopeConfig = $scopeConfig;
-        $this->encryptor = $encryptor;
+        $this->testConnectionService = $testConnectionService;
     }
 
     public function test(): string
     {
-        try {
-            $this->initConfigParameters();
-            $this->clientProvider->getClient()
-                ->merchant($this->worldlineConfig->getMerchantId())
-                ->services()
-                ->testConnection();
-
-            return '';
-        } catch (\Exception $e) {
-            return $this->tagFilter->filter($e->getMessage());
-        }
-    }
-
-    private function initConfigParameters(): void
-    {
+        $this->worldlineConfig->setProductionModeFlag((bool) $this->getEnvMode());
         $this->worldlineConfig->setApiEndpoint($this->getEndpoint());
         $this->worldlineConfig->setMerchantId($this->getMerchantId());
+        $this->worldlineConfig->setApiKey($this->getApiKey());
+        $this->worldlineConfig->setApiSecret($this->getApiSecret());
 
-        $apiKey = $this->getApiKey();
-        $this->worldlineConfig->setApiKey(
-            $this->isObscured($apiKey)
-                ? $this->encryptor->decrypt($this->getFromConfig(self::API_KEY[$this->getEnvMode()]))
-                : $apiKey
-        );
-
-        $apiSecret = $this->getApiSecret();
-        $this->worldlineConfig->setApiSecret(
-            $this->isObscured($apiSecret)
-                ? $this->encryptor->decrypt($this->getFromConfig(self::API_SECRET[$this->getEnvMode()]))
-                : $apiSecret
-        );
+        return $this->testConnectionService->execute();
     }
 
     private function getEnvMode(): int
     {
-        if ($this->envMode === -1) {
+        if (null === $this->envMode) {
             $this->envMode = (int) $this->request->getParam(self::ENV_MODE);
         }
 
@@ -117,22 +70,42 @@ class FromAjaxRequest
 
     private function getEndpoint(): string
     {
-        return (string) $this->request->getParam(self::API_ENDPOINT[$this->getEnvMode()]);
+        $endpoint = (string) $this->request->getParam(self::API_ENDPOINT[$this->getEnvMode()]);
+        if ($endpoint) {
+            return $endpoint;
+        }
+
+        return $this->worldlineConfig->getApiEndpoint(...$this->getScope());
     }
 
     private function getMerchantId(): string
     {
-        return (string) $this->request->getParam(self::MERCHANT_ID[$this->getEnvMode()]);
+        $merchantId = (string) $this->request->getParam(self::MERCHANT_ID[$this->getEnvMode()]);
+        if ($merchantId) {
+            return $merchantId;
+        }
+
+        return $this->worldlineConfig->getMerchantId(...$this->getScope());
     }
 
     private function getApiKey(): string
     {
-        return trim((string) $this->request->getParam(self::API_KEY[$this->getEnvMode()]));
+        $apiKey = trim((string) $this->request->getParam(self::API_KEY[$this->getEnvMode()]));
+        if ($apiKey && !$this->isObscured($apiKey)) {
+            return $apiKey;
+        }
+
+        return $this->worldlineConfig->getApiKey(...$this->getScope());
     }
 
     private function getApiSecret(): string
     {
-        return trim((string) $this->request->getParam(self::API_SECRET[$this->getEnvMode()]));
+        $apiSecretKey = trim((string) $this->request->getParam(self::API_SECRET[$this->getEnvMode()]));
+        if ($apiSecretKey && !$this->isObscured($apiSecretKey)) {
+            return $apiSecretKey;
+        }
+
+        return $this->worldlineConfig->getApiSecret(...$this->getScope());
     }
 
     private function isObscured(string $value): bool
@@ -140,15 +113,10 @@ class FromAjaxRequest
         return (bool) preg_match('/^[\*]+$/', $value);
     }
 
-    private function getFromConfig(string $key): string
-    {
-        return (string) $this->scopeConfig->getValue("worldline_connection/connection/$key", ...$this->getScope());
-    }
-
     private function getScope(): array
     {
         return ($this->request->getParam(ScopeInterface::SCOPE_WEBSITE) !== null)
-            ? [ScopeInterface::SCOPE_WEBSITE, (int) $this->request->getParam(ScopeInterface::SCOPE_WEBSITE)]
-            : [ScopeConfigInterface::SCOPE_TYPE_DEFAULT, null];
+            ? [(int) $this->request->getParam(ScopeInterface::SCOPE_WEBSITE)]
+            : [0, ScopeConfigInterface::SCOPE_TYPE_DEFAULT];
     }
 }

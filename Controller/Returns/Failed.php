@@ -6,11 +6,12 @@ namespace Worldline\PaymentCore\Controller\Returns;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Quote\Api\CartRepositoryInterface;
 
-class Failed extends Action
+class Failed extends Action implements HttpGetActionInterface
 {
     /**
      * @var Session

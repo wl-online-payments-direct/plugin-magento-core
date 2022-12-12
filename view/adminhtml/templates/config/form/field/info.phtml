@@ -1,0 +1,92 @@
+<?php
+/** @var Worldline\PaymentCore\Block\Adminhtml\System\Config\Info $block */
+?>
+
+<div class="about-worldline">
+    <div>
+        <img src="<?= $block->escapeUrl($block->getLogoUrl()) ?>"
+             alt="<?= $block->escapeHtml($block->getHtmlId()) ?>" />
+    </div>
+
+    <div class="title">
+        <?= $block->escapeHtml(__('About Worldline')) ?>
+    </div>
+    <div class="description">
+        <?= $block->escapeHtml(
+            __('Increase conversion rates by offering your customers their preferred methods of payment. '
+            . 'Implement the best payment solutions quickly, while addressing key needs such as fraud prevention, '
+            . 'data analytics, security, and compliance, whether local or cross-border.')
+        ) ?>
+    </div>
+
+    <div class="sub-title">
+        <?= $block->escapeHtml(__('Create a test account')) ?>
+    </div>
+    <div class="description">
+        <?= $block->escapeHtml(
+            __('With a test account, you can develop your website and irrigate our payment system at your own pace. '
+            . 'In our test environment, you perform test transactions with the confidence and peace of mind that '
+            . 'no transaction is actually going to go through.')
+        ) ?>
+    </div>
+    <div class="button">
+        <input type="button"
+               onclick="window.open('<?= $block->escapeUrl($block->getAccountUrl()) ?>', '_blank')"
+               class="action-secondary"
+               value="<?= $block->escapeHtml(__('Create a test account')) ?>" />
+    </div>
+
+    <div class="sub-title">
+        <?= $block->escapeHtml(__('Check out documentation')) ?>
+    </div>
+    <div class="description">
+        <?= $block->escapeHtml(
+            __('Browse our API reference, '
+                . 'our documentation and keep yourself up to date with the latest payment trends.')
+        ) ?>
+    </div>
+    <div class="button">
+        <input type="button"
+               onclick="window.open('<?= $block->escapeUrl($block->getSupportUrl()) ?>', '_blank')"
+               class="action-secondary"
+               value="<?= $block->escapeHtml(__('Visit our support site')) ?>" />
+    </div>
+
+
+    <div class="sub-title">
+        <?= $block->escapeHtml(__('Get in touch')) ?>
+    </div>
+    <div class="description">
+        <?= $block->escapeHtml(__('With decades of experience and experts who are specialized in every field, '
+            . 'Worldline offers the ideal solution your company. As a leading innovator, we support the latest payment '
+            . 'technology and we can answer all your questions related to your business activities.')) ?>
+    </div>
+    <div class="button">
+        <input type="button"
+               onclick="window.open('<?= $block->escapeUrl($block->getSalesTeamUrl()) ?>', '_blank')"
+               class="action-secondary"
+               value="<?= $block->escapeHtml(__('Contact our sales team')) ?>" />
+    </div>
+
+    <hr>
+
+    <div class="version-block">
+        <span class="sub-title version-title">
+            <?= $block->escapeHtml(__('Worldline online payments version %1', $block->getCurrentVersion())) ?>
+        </span>
+        <br><br>
+        <?php if ($block->getLatestVersion()): ?>
+        <span class="description">
+            <?= $block->escapeHtml(
+                __('The latest version of the plugin is %1. Check for any updates.', $block->getLatestVersion())
+            ) ?>
+        </span>
+        <?php endif; ?>
+        <input type="button"
+               onclick="window.open('<?= $block->escapeUrl($block->getGitHubUrl()) ?>', '_blank')"
+               class="action-secondary github-button"
+               value="<?= $block->escapeHtml(__('Check for updates')) ?>" />
+    </div>
+
+    <hr class="bottom-line">
+</div>
