@@ -44,10 +44,8 @@ class PendingOrderProvider
         $this->addTimeToFilter($collection);
         $this->addAllowedPaymentMethods($collection);
         $this->addWithoutOrderFilter($collection);
-
-        $collection->getSelect()
-            ->reset(Select::COLUMNS)
-            ->columns(['main_table.reserved_order_id']);
+        $this->excludeQuotesWithoutReservedOrderId($collection);
+        $this->adjustSelectedColumns($collection);
 
         return $collection->getConnection()->fetchCol($collection->getSelect());
     }
@@ -88,5 +86,18 @@ class PendingOrderProvider
                 'main_table.entity_id = so.quote_id'
             )
             ->where('so.increment_id IS NULL');
+    }
+
+    private function excludeQuotesWithoutReservedOrderId(QuoteCollection $collection): void
+    {
+        $collection->getSelect()
+            ->where('main_table.reserved_order_id IS NOT NULL');
+    }
+
+    private function adjustSelectedColumns(QuoteCollection $collection): void
+    {
+        $collection->getSelect()
+            ->reset(Select::COLUMNS)
+            ->columns(['main_table.reserved_order_id']);
     }
 }

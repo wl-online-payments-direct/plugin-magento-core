@@ -5,10 +5,11 @@ namespace Worldline\PaymentCore\Controller\Returns;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 
-class PendingOrder extends Action
+class PendingOrder extends Action implements HttpPostActionInterface
 {
     /**
      * @var PendingOrderManagerInterface

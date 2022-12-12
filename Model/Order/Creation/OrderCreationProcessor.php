@@ -43,7 +43,7 @@ class OrderCreationProcessor
         }
 
         foreach ($this->quoteProvider->getReservedOrderIds() as $reservedOrderId) {
-            $this->placeOrder($reservedOrderId);
+            $this->placeOrder((string) $reservedOrderId);
         }
     }
 

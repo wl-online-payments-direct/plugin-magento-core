@@ -1,14 +1,15 @@
+"Payment method","Payment method"
+Status,Status
+"Status code","Status code"
+"Fraud result","Fraud result"
+"Transaction number","Transaction number"
+Total,Total
+"Amount available for capture","Amount available for capture"
+"Refunded amount","Refunded amount"
+"Amount available for refund","Amount available for refund"
 label,label
-"<b>Online payments solutions for every type of business.</b><br />Regardless of the size, markets and scope of your business, we partner with you for growth.","<b>Online payments solutions for every type of business.</b><br />Regardless of the size, markets and scope of your business, we partner with you for growth."
-"<a href=""%1"" target=""_blank"">Click here</a> to apply for an account.","<a href=""%1"" target=""_blank"">Click here</a> to apply for an account."
-"Or contact our <a href=""%1"" target=""_blank"">sales team</a> for more details about our products.","Or contact our <a href=""%1"" target=""_blank"">sales team</a> for more details about our products."
-"For extension support, please, visit the <a href=""%1"" target=""_blank"">support site</a>.","For extension support, please, visit the <a href=""%1"" target=""_blank"">support site</a>."
-"Or visit <a href=""%1"" target=""_blank"">developer's portal</a> for the API reference and documentation.","Or visit <a href=""%1"" target=""_blank"">developer's portal</a> for the API reference and documentation."
 "Worldline Online Payments configuration is located under the dedicated configuration section.","Worldline Online Payments configuration is located under the dedicated configuration section."
 "Please, <a href=""%1"">click here</a> to proceed.","Please, <a href=""%1"">click here</a> to proceed."
-"Current extension version is %1.","Current extension version is %1."
-"Latest version available is %1.","Latest version available is %1."
-"Worldline extension is compatible with Adobe Commerce 2.3.x / 2.4.x & Magento Open Source 2.3.x / 2.4.x.","Worldline extension is compatible with Adobe Commerce 2.3.x / 2.4.x & Magento Open Source 2.3.x / 2.4.x."
 "To retrieve the webhooks credentials, login to the Worldline Back Office.","To retrieve the webhooks credentials, login to the Worldline Back Office."
 "Go to Configuration > Technical information > API settings > Webhooks Configuration","Go to Configuration > Technical information > API settings > Webhooks Configuration"
 "and perform the following steps:","and perform the following steps:"
@@ -19,48 +20,24 @@ label,label
 "Webhook URL","Webhook URL"
 "This URL must be specified in the worldline admin panel","This URL must be specified in the worldline admin panel"
 Copy,Copy
+Payment,Payment
 "%1 with Worldline","%1 with Worldline"
 title,title
-Total,Total
-Status,Status
-"Status code","Status code"
-"Transaction number (payment)","Transaction number (payment)"
-"Payment method","Payment method"
-"Fraud result","Fraud result"
-"Transaction number (refund)","Transaction number (refund)"
-"Refund amount","Refund amount"
 "The credit memo's total must be positive.","The credit memo's total must be positive."
 "You created the credit memo.","You created the credit memo."
+"The credit memo request has been sent.","The credit memo request has been sent."
 "We can't save the credit memo right now.","We can't save the credit memo right now."
+"Payment details have been updated.","Payment details have been updated."
 "A total of %1 record(s) have been updated.","A total of %1 record(s) have been updated."
 "Something went wrong while updating log.","Something went wrong while updating log."
 "Worldline Request Logs","Worldline Request Logs"
-"The payment has failed, please, try again","The payment has failed, please, try again"
-"Thank you for your order %1.","Thank you for your order %1."
-"Your order is still being processed and you will receive a confirmation e-mail.","Your order is still being processed and you will receive a confirmation e-mail."
-"Please <a href="%1">Contact us</a> in case you don\'t receive the confirmation within %2 minutes.","Please <a href="%1">Contact us</a> in case you don\'t receive the confirmation within %2 minutes."
-"Please correct the sent data.","Please correct the sent data."
-"WorldLine refund has failed. Please contact the provider.","WorldLine refund has failed. Please contact the provider."
-"Payment id is missing","Payment id is missing"
-"Wrong amount","Wrong amount"
-"No authorization transaction to proceed capture.","No authorization transaction to proceed capture."
-"Required parameter ""worldline"" for ""payment_method"" is missing.","Required parameter ""worldline"" for ""payment_method"" is missing."
-"No public_hash provided","No public_hash provided"
-"Required parameter ""cart_id"" is missing.","Required parameter ""cart_id"" is missing."
-"Required parameter ""code"" for ""payment_method"" is missing.","Required parameter ""code"" for ""payment_method"" is missing."
+"Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes.","Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes."
+"Your payment is being processed","Your payment is being processed"
+"The payment has rejected, please, try again","The payment has rejected, please, try again"
+"Waiting for payment confirmation","Waiting for payment confirmation"
 "Sorry, but something went wrong","Sorry, but something went wrong"
+"No authorization transaction to proceed capture.","No authorization transaction to proceed capture."
 """code"" value should be specified","""code"" value should be specified"
-"The current customer isn't authorized.","The current customer isn't authorized."
-Unique,Unique
-Recurring,Recurring
-SMS,SMS
-UNSIGNED,UNSIGNED
-"Hosted checkout id is missing","Hosted checkout id is missing"
-"Worldline Incorrect Response","Worldline Incorrect Response"
-"Invalid request","Invalid request"
-"Cancelled by consumer","Cancelled by consumer"
-"Wrong return id","Wrong return id"
-Shipping,Shipping
 "Log error requests only","Log error requests only"
 "Log all requests","Log all requests"
 "Worldline payment methods require your attention.","Worldline payment methods require your attention."
@@ -71,13 +48,6 @@ Shipping,Shipping
 "Specific Customer Groups","Specific Customer Groups"
 "Final Authorization","Final Authorization"
 Pre-Authorization,Pre-Authorization
-"American Express","American Express"
-"Carte Bancaire","Carte Bancaire"
-"Diners Club","Diners Club"
-JCB,JCB
-Maestro,Maestro
-Mastercard,Mastercard
-Visa,Visa
 Test,Test
 Production,Production
 Authorize,Authorize
@@ -86,22 +56,65 @@ Authorize,Authorize
 "Cannot delete Log with id ""%1""","Cannot delete Log with id ""%1"""
 "Could not save Log: %1","Could not save Log: %1"
 "Could not save request to refund: %1","Could not save request to refund: %1"
-"Missing increment id","Missing increment id"
+"Payment details update has failed","Payment details update has failed"
+"Invalid output model","Invalid output model"
+"Invalid response model","Invalid response model"
+"CancelPaymentApi has failed. Please contact the provider.","CancelPaymentApi has failed. Please contact the provider."
+"CapturePayment request has failed","CapturePayment request has failed"
+"GetPaymentDetailsApi request has failed","GetPaymentDetailsApi request has failed"
+"GetPaymentProducts request has failed","GetPaymentProducts request has failed"
+"GetPaymentApi request has failed. Please contact the provider.","GetPaymentApi request has failed. Please contact the provider."
+"WorldLine refund has failed. Please contact the provider.","WorldLine refund has failed. Please contact the provider."
+"WorldLine delete token has failed. Please contact the provider.","WorldLine delete token has failed. Please contact the provider."
+"Thank you for your order %1.","Thank you for your order %1."
+"Your order is still being processed and you will receive a confirmation e-mail.","Your order is still being processed and you will receive a confirmation e-mail."
+"Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes.","Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes."
+"Order %1 - Check the payment","Order %1 - Check the payment"
+"Please wait, the payment is being processed...","Please wait, the payment is being processed..."
+"About Worldline","About Worldline"
+"Increase conversion rates by offering your customers their preferred methods of payment. Implement the best payment solutions quickly, while addressing key needs such as fraud prevention, data analytics, security, and compliance, whether local or cross-border.","Increase conversion rates by offering your customers their preferred methods of payment. Implement the best payment solutions quickly, while addressing key needs such as fraud prevention, data analytics, security, and compliance, whether local or cross-border."
+"Create a test account","Create a test account"
+"With a test account, you can develop your website and irrigate our payment system at your own pace. In our test environment, you perform test transactions with the confidence and peace of mind that no transaction is actually going to go through.","With a test account, you can develop your website and irrigate our payment system at your own pace. In our test environment, you perform test transactions with the confidence and peace of mind that no transaction is actually going to go through."
+"Check out documentation","Check out documentation"
+"Browse our API reference, our documentation and keep yourself up to date with the latest payment trends.","Browse our API reference, our documentation and keep yourself up to date with the latest payment trends."
+"Visit our support site","Visit our support site"
+"Get in touch","Get in touch"
+"With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities.","With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities."
+"Contact our sales team","Contact our sales team"
+"Worldline online payments version %1","Worldline online payments version %1"
+"The latest version of the plugin is %1. Check for any updates.","The latest version of the plugin is %1. Check for any updates."
+"Check for updates","Check for updates"
 "Successful! Test again?","Successful! Test again?"
 "Connection failed! Test again?","Connection failed! Test again?"
 ending,ending
+:,:
+value,value
+"Continue Shopping","Continue Shopping"
+Loading...,Loading...
+"Order Summary","Order Summary"
+"Cart Subtotal","Cart Subtotal"
+Discount,Discount
+Shipping,Shipping
+Tax,Tax
+"Order Total","Order Total"
+"Item in Cart","Item in Cart"
+Qty,Qty
+"Update data from Worldline","Update data from Worldline"
+"Payment Refused","Payment Refused"
+"Your payment has been refused.","Your payment has been refused."
 expires,expires
 "Place Order","Place Order"
-"Please use one of the following extensions : html, htm, dhtml","Please use one of the following extensions : html, htm, dhtml"
 Success!,Success!
+"Payment details have been updated. The page will be reloaded.","Payment details have been updated. The page will be reloaded."
+"There is nothing to update.","There is nothing to update."
+Error!,Error!
+"Something went wrong during getting data from the service.","Something went wrong during getting data from the service."
+"Please use one of the following extensions : html, htm, dhtml","Please use one of the following extensions : html, htm, dhtml"
 Save,Save
 "Something went wrong. Please check your credentials","Something went wrong. Please check your credentials"
-"Your payment couldn't be completed, please try again","Your payment couldn't be completed, please try again"
 Worldline,Worldline
 "Request Logs","Request Logs"
 "Worldline Online Payments","Worldline Online Payments"
-General,General
-"General Information","General Information"
 Connection,Connection
 "Environment Mode","Environment Mode"
 "API Key","API Key"
@@ -115,48 +128,19 @@ Key,Key
 "Secret Key","Secret Key"
 "To retrieve webhooks credentials, login to the Worldline Back Office","To retrieve webhooks credentials, login to the Worldline Back Office"
 "Payment Methods","Payment Methods"
-"Credit Cards (iFrame)","Credit Cards (iFrame)"
-"Enable Module","Enable Module"
-"Enable Saved Payment (Vault)","Enable Saved Payment (Vault)"
-"Vault Title","Vault Title"
-Title,Title
-Debug,Debug
-"HTML Template ID","HTML Template ID"
-Sort,Sort
-"Payment Action","Payment Action"
-"Authorization Mode","Authorization Mode"
-"Default Order Status","Default Order Status"
-"Payment from Applicable Countries","Payment from Applicable Countries"
-"Payment from Specific Countries","Payment from Specific Countries"
-"Payment from Applicable Currencies","Payment from Applicable Currencies"
-"Payment from Specific Currencies","Payment from Specific Currencies"
-"Payment from Applicable Customer Groups","Payment from Applicable Customer Groups"
-"Payment from Specific Customer Groups","Payment from Specific Customer Groups"
-"Minimum Order Total","Minimum Order Total"
-"Maximum Order Total","Maximum Order Total"
-"Available Credit Card Types","Available Credit Card Types"
-"Custom Return URL","Custom Return URL"
-"Should be set only if you use PWA Studio or any other 3rd party frontend.","Should be set only if you use PWA Studio or any other 3rd party frontend."
-"Saved Payment Sort order","Saved Payment Sort order"
-"Skip 3DSecure Authentication","Skip 3DSecure Authentication"
-"This option should not be turned off if the merchant is based in a EU country","This option should not be turned off if the merchant is based in a EU country"
-"Hosted Checkout (Redirect to Worldline)","Hosted Checkout (Redirect to Worldline)"
-"Submit Customer Cart Items Data to Worldline","Submit Customer Cart Items Data to Worldline"
-"Direct Debit Recurrence Type","Direct Debit Recurrence Type"
-"Direct Debit Signature Type","Direct Debit Signature Type"
-"Order Status Updater","Order Status Updater"
+"Dynamic order status synchronization","Dynamic order status synchronization"
+General,General
 "Fallback Timeout","Fallback Timeout"
 "If the payment process is failed, change the order status after the specified time.","If the payment process is failed, change the order status after the specified time."
-"Specify fallback timeout in minutes.","Specify fallback timeout in minutes."
+"Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
 "Fallback Timeout Limit","Fallback Timeout Limit"
 "If the payment process is failed, change the order status after the specified time in ""Fallback Timeout"" till the value specified in this field.<br/>In other words, the request will be executed during the specified time limit.","If the payment process is failed, change the order status after the specified time in ""Fallback Timeout"" till the value specified in this field.<br/>In other words, the request will be executed during the specified time limit."
-"Specify fallback timeout limit in hours.","Specify fallback timeout limit in hours."
+"Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
 "Schedule (Cron Syntax)","Schedule (Cron Syntax)"
-"Default value: every 5 minutes. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>","Default value: every 5 minutes. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>"
-"Abandoned Orders","Abandoned Orders"
-"Waiting Time","Waiting Time"
-"Auto cancellation of orders that are stuck in the payment review status after the specified time. The time is in minutes.","Auto cancellation of orders that are stuck in the payment review status after the specified time. The time is in minutes."
-"<a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>","<a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>"
+"Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>","Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>"
+"Payment Refused Email Template","Payment Refused Email Template"
+"Email Sender","Email Sender"
+Debug,Debug
 "Logging Records Lifetime (Days)","Logging Records Lifetime (Days)"
 "Debug Logs","Debug Logs"
 "Download Debug Log","Download Debug Log"
@@ -173,8 +157,3 @@ ID,ID
 "Response Code","Response Code"
 Processed,Processed
 "Created At","Created At"
-"Waiting for payment confirmation","Waiting for payment confirmation"
-"Please wait, the payment is being processed...","Please wait, the payment is being processed..."
-"The cart isn\'t active.","The cart is not active."
-"Your payment is being processed","Your payment is being processed"
-"Order %1 - Check the payment","Order %1 - Check the payment"

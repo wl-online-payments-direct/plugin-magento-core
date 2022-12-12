@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Controller\Returns;
 
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 
-class Reject extends Action
+class Reject extends Action implements HttpGetActionInterface
 {
     public function execute(): Redirect
     {

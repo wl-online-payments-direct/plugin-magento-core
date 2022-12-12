@@ -6,11 +6,12 @@ namespace Worldline\PaymentCore\Controller\Adminhtml\System\Config;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Model\Log\ResourceModel\Log;
 
-class EraseDebugLog extends Action
+class EraseDebugLog extends Action implements HttpGetActionInterface
 {
     /**
      * @var Log
@@ -29,9 +30,6 @@ class EraseDebugLog extends Action
         $this->logger = $logger;
     }
 
-    /**
-     * @return Redirect
-     */
     public function execute(): Redirect
     {
         /** @var Redirect $resultRedirect */

@@ -14,18 +14,11 @@
             </group>
         </section>
         <section id="worldline_general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>General</label>
+            <label>About Worldline</label>
             <tab>worldline</tab>
             <resource>Worldline_PaymentCore::config_worldline</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>General Information</label>
-                <attribute type="expanded">1</attribute>
-                <field id="info" translate="comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\Info</frontend_model>
-                </field>
-                <field id="version" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\Version</frontend_model>
-                </field>
+                <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\Info</frontend_model>
             </group>
         </section>
         <section id="worldline_connection" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">

@@ -1,21 +1,21 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Service\Payment;
 
 use Magento\Framework\Exception\LocalizedException;
-use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
-use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParams;
-use Worldline\PaymentCore\Api\Service\GetPaymentProductsRequestInterface;
+use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface;
 use Worldline\PaymentCore\Model\ClientProvider;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 /**
- * Implementation for GetPaymentProducts
+ * Implementation for GetPaymentDetailsApi
  *
- * @see: https://support.direct.ingenico.com/en/documentation/api/reference/#tag/Products/operation/GetPaymentProducts
+ * @see: https://support.direct.ingenico.com/en/documentation/api/reference/#tag/Payments/operation/GetPaymentDetailsApi
  */
-class GetPaymentProductsRequest implements GetPaymentProductsRequestInterface
+class GetPaymentDetailsService implements GetPaymentDetailsServiceInterface
 {
     /**
      * @var ClientProvider
@@ -36,20 +36,22 @@ class GetPaymentProductsRequest implements GetPaymentProductsRequestInterface
     }
 
     /**
-     * @param GetPaymentProductsParams $queryParams
+     * Retrieve payment detail data
+     *
+     * @param string $paymentId
      * @param int|null $storeId
-     * @return GetPaymentProductsResponse
+     * @return PaymentDetailsResponse
      * @throws LocalizedException
      */
-    public function get(GetPaymentProductsParams $queryParams, ?int $storeId = null): GetPaymentProductsResponse
+    public function execute(string $paymentId, ?int $storeId = null): PaymentDetailsResponse
     {
         try {
             return $this->clientProvider->getClient($storeId)
                 ->merchant($this->worldlineConfig->getMerchantId($storeId))
-                ->products()
-                ->getPaymentProducts($queryParams);
+                ->payments()
+                ->getPaymentDetails($paymentId);
         } catch (\Exception $e) {
-            throw new LocalizedException(__('GetPaymentProducts request has failed'));
+            throw new LocalizedException(__('GetPaymentDetailsApi request has failed'));
         }
     }
 }

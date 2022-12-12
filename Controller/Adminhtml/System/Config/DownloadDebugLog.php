@@ -6,11 +6,13 @@ namespace Worldline\PaymentCore\Controller\Adminhtml\System\Config;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Raw;
 use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\Exception\FileSystemException;
 use Worldline\PaymentCore\Logger\ContentProcessor;
 
-class DownloadDebugLog extends Action
+class DownloadDebugLog extends Action implements HttpGetActionInterface
 {
     /**
      * @var RawFactory
@@ -34,7 +36,7 @@ class DownloadDebugLog extends Action
 
     /**
      * @return Raw
-     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws FileSystemException
      */
     public function execute(): Raw
     {

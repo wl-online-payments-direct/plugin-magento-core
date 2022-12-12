@@ -13,6 +13,7 @@ use OnlinePayments\Sdk\RequestObject;
 use OnlinePayments\Sdk\ResponseBuilder;
 use OnlinePayments\Sdk\ResponseClassMap;
 use OnlinePayments\Sdk\ResponseException;
+use UnexpectedValueException;
 use Worldline\PaymentCore\Logger\RequestLogManager;
 use Worldline\PaymentCore\Model\TrackerDataProvider;
 

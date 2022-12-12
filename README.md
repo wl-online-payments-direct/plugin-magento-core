@@ -4,6 +4,12 @@
 
 Change log:
 
+1.4.0
+- Improved design of general settings page
+- General code improvements and bug fixes
+- Improvements and support for 2.3.x magento versions
+- Support the 4.5.0 version of the Worldline SDK
+
 1.3.1
 - Improve work for multi-website instances
 

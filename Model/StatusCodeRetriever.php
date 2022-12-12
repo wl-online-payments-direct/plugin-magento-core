@@ -20,11 +20,29 @@ class StatusCodeRetriever
 
     public function getStatusCode(Payment $payment): ?int
     {
-        $retriever = $this->statusCodePool->getStatusCodeRetriever($payment->getMethod());
+        $retriever = $this->statusCodePool->getStatusCodeRetriever($this->extractMethodName($payment));
         if (!$retriever) {
             return null;
         }
 
         return $retriever->getStatusCode($payment);
+    }
+
+    /**
+     * Remove all unnecessary numbers and `vault` from the name, if any
+     *
+     * @param Payment $payment
+     * @return string
+     */
+    private function extractMethodName(Payment $payment): string
+    {
+        $methodName = $payment->getMethod();
+        if (preg_match('~[0-9]+~', $methodName)) {
+            $methodName = preg_replace('/[0-9]+/', '', $methodName);
+            $methodName = rtrim($methodName, 'vault');
+            $methodName = rtrim($methodName, '_');
+        }
+
+        return $methodName;
     }
 }

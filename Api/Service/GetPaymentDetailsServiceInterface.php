@@ -12,7 +12,7 @@ use Magento\Framework\Exception\LocalizedException;
  *
  * @see: https://support.direct.ingenico.com/en/documentation/api/reference/#tag/Payments/operation/GetPaymentDetailsApi
  */
-interface GetPaymentDetailsRequestInterface
+interface GetPaymentDetailsServiceInterface
 {
     /**
      * Retrieve payment detail data
@@ -22,5 +22,5 @@ interface GetPaymentDetailsRequestInterface
      * @return PaymentDetailsResponse
      * @throws LocalizedException
      */
-    public function get(string $paymentId, ?int $storeId = null): PaymentDetailsResponse;
+    public function execute(string $paymentId, ?int $storeId = null): PaymentDetailsResponse;
 }

@@ -22,9 +22,6 @@ class EraseDebugLog extends Field
         return $this->_decorateRowHtml($element, $this->_getElementHtml($element));
     }
 
-    /**
-     * @return EraseDebugLog
-     */
     protected function _prepareLayout(): EraseDebugLog
     {
         parent::_prepareLayout();
@@ -32,10 +29,6 @@ class EraseDebugLog extends Field
         return $this;
     }
 
-    /**
-     * @param AbstractElement $element
-     * @return string
-     */
     protected function _getElementHtml(AbstractElement $element): string
     {
         $originalData = $element->getOriginalData();

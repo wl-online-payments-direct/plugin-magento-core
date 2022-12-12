@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Worldline\PaymentCore\Model\Ui;
+namespace Worldline\PaymentCore\Ui;
 
 use Magento\Framework\App\Area;
 use Magento\Framework\App\RequestInterface;
@@ -57,6 +57,10 @@ class PaymentIconsProvider
         return $this->getIcons($storeId)[$id] ?? [];
     }
 
+    /**
+     * @param int $storeId
+     * @return array
+     */
     public function getIcons(int $storeId): array
     {
         if (!empty($this->icons)) {

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\ViewModel;
 
+use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Helper\Product;
 use Magento\Catalog\Model\Product as ModelProduct;
 use Magento\Framework\App\RequestInterface;
@@ -46,13 +47,19 @@ class WaitingPageDataProvider implements ArgumentInterface
      */
     private $priceCurrency;
 
+    /**
+     * @var Image
+     */
+    private $imageHelper;
+
     public function __construct(
         Product $productHelper,
         RequestInterface $request,
         UrlInterface $urlBuilder,
         QuoteResource $quoteResource,
         StoreManagerInterface $storeManager,
-        PriceCurrencyInterface $priceCurrency
+        PriceCurrencyInterface $priceCurrency,
+        Image $imageHelper
     ) {
         $this->productHelper = $productHelper;
         $this->request = $request;
@@ -60,6 +67,7 @@ class WaitingPageDataProvider implements ArgumentInterface
         $this->quoteResource = $quoteResource;
         $this->storeManager = $storeManager;
         $this->priceCurrency = $priceCurrency;
+        $this->imageHelper = $imageHelper;
     }
 
     public function getNotificationMessage(): Phrase
@@ -119,6 +127,14 @@ class WaitingPageDataProvider implements ArgumentInterface
     public function getSmallImageUrl(ModelProduct $product)
     {
         return $this->productHelper->getSmallImageUrl($product);
+    }
+
+    public function getResizedImageUrl(ModelProduct $product)
+    {
+        return $this->imageHelper->init($product, 'product_page_image_small')
+            ->setImageFile($product->getSmallImage())
+            ->resize(75, 75)
+            ->getUrl();
     }
 
     public function convertAndFormatPrice(float $price): string
