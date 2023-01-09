@@ -79,4 +79,15 @@
             <column name="entity_id"/>
         </constraint>
     </table>
+    <table name="worldline_fraud_information" resource="default" engine="innodb" comment="Worldline Fraud Information">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="int" name="worldline_payment_id" unsigned="false" nullable="false"/>
+        <column xsi:type="varchar" name="result" nullable="true" length="32" comment="Result"/>
+        <column xsi:type="varchar" name="liability" nullable="true" length="32" comment="Liability"/>
+        <column xsi:type="varchar" name="exemption" nullable="true" length="32" comment="Exemption"/>
+        <column xsi:type="varchar" name="authentication_status" nullable="true" length="32" comment="Authentication status"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
 </schema>

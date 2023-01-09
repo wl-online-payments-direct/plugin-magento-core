@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="payment_additional_info">
+            <block class="Magento\Backend\Block\Template"
+                   name="worldline_order_view_fraud_data"
+                   template="Worldline_PaymentCore::order/view/fraud.phtml">
+                <arguments>
+                    <argument name="fraud_data_provider" xsi:type="object">Worldline\PaymentCore\ViewModel\Adminhtml\Order\View\Info\FraudDataProvider</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

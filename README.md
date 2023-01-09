@@ -4,6 +4,16 @@
 
 Change log:
 
+2.4.0
+- Raise the version in order to display the actual version for those who install single solutions.
+- Add "groupCards" functionality (for hosted checkout) : group all card under one single payment button.
+- Add payment method Intersolve and process the split payment.
+- Improve Worldline payment box design: split in payment and fraud results.
+- Add a feature to request 3DS exemption for transactions below 30 EUR.
+- Add translations.
+- Add integration tests (for credit card).
+- General code improvements and bug fixes.
+
 1.4.0
 - Improved design of general settings page
 - General code improvements and bug fixes

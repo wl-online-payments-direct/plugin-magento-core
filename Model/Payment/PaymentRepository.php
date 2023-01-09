@@ -8,10 +8,13 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInterfaceFactory;
+use Worldline\PaymentCore\Api\PaymentRepositoryInterface;
 use Worldline\PaymentCore\Model\Payment\ResourceModel\Payment as PaymentResource;
 use Worldline\PaymentCore\Model\Payment\ResourceModel\Payment\CollectionFactory;
-use Worldline\PaymentCore\Api\PaymentRepositoryInterface;
 
+/**
+ * Repository for worldline payment entity
+ */
 class PaymentRepository implements PaymentRepositoryInterface
 {
     /**

@@ -20,6 +20,14 @@
     <preference type="Worldline\PaymentCore\Model\Payment\PaymentRepository" for="Worldline\PaymentCore\Api\PaymentRepositoryInterface" />
     <preference type="Worldline\PaymentCore\Model\Payment\PaymentManager" for="Worldline\PaymentCore\Api\PaymentManagerInterface" />
 
+    <preference type="Worldline\PaymentCore\Model\Fraud\Fraud" for="Worldline\PaymentCore\Api\Data\FraudInterface" />
+    <preference type="Worldline\PaymentCore\Model\Fraud\FraudRepository" for="Worldline\PaymentCore\Api\FraudRepositoryInterface" />
+    <preference type="Worldline\PaymentCore\Model\Fraud\FraudManager" for="Worldline\PaymentCore\Api\FraudManagerInterface" />
+
+    <preference type="Worldline\PaymentCore\Model\PaymentDataManager" for="Worldline\PaymentCore\Api\PaymentDataManagerInterface" />
+
+    <preference type="Worldline\PaymentCore\Model\Order\CanPlaceContext" for="Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterface" />
+
     <preference type="Worldline\PaymentCore\Service\Payment\CancelPaymentService" for="Worldline\PaymentCore\Api\Service\Payment\CancelPaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Payment\CapturePaymentService" for="Worldline\PaymentCore\Api\Service\Payment\CapturePaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentDetailsService" for="Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface" />
@@ -28,6 +36,11 @@
     <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentService" for="Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Services\TestConnectionService" for="Worldline\PaymentCore\Api\Service\Services\TestConnectionServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Token\DeleteTokenService" for="Worldline\PaymentCore\Api\Service\Token\DeleteTokenServiceInterface" />
+    <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\AmountDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\AmountDataBuilderInterface" />
+    <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\CustomerDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\CustomerDataBuilderInterface" />
+    <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\ReferenceDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\ReferenceDataBuilderInterface" />
+    <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\ShippingAddressDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\ShippingAddressDataBuilderInterface" />
+    <preference type="Worldline\PaymentCore\Service\CreateRequest\ThreeDSecureDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureDataBuilderInterface" />
     <!-- End Preference -->
 
     <type name="Worldline\PaymentCore\Block\Info">
@@ -46,6 +59,16 @@
                 <item name="payment.refunded" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
                 <item name="payment.rejected" xsi:type="object">Worldline\PaymentCore\Model\Webhook\RejectPaymentProcessor</item>
                 <item name="refund.refund_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Worldline\PaymentCore\Model\Order\CanPlaceValidator">
+        <arguments>
+            <argument name="validatorPool" xsi:type="array">
+                <item name="status.code" xsi:type="object">Worldline\PaymentCore\Model\Order\ValidatorPool\StatusCodeValidator\Proxy</item>
+                <item name="acquired.amount" xsi:type="object">Worldline\PaymentCore\Model\Order\ValidatorPool\AcquiredAmountValidator\Proxy</item>
+                <item name="increment.id" xsi:type="object">Worldline\PaymentCore\Model\Order\ValidatorPool\IncrementIdValidator\Proxy</item>
             </argument>
         </arguments>
     </type>

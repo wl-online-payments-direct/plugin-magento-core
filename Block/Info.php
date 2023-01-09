@@ -116,11 +116,6 @@ class Info extends Template
         return $this->paymentInformation;
     }
 
-    /**
-     * Return checkout method
-     *
-     * @return MethodInterface
-     */
     public function getMethod(): MethodInterface
     {
         return $this->getInfo()->getOrder()->getPayment()->getMethodInstance();

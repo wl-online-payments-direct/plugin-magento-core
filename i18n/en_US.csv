@@ -1,7 +1,6 @@
 "Payment method","Payment method"
 Status,Status
 "Status code","Status code"
-"Fraud result","Fraud result"
 "Transaction number","Transaction number"
 Total,Total
 "Amount available for capture","Amount available for capture"
@@ -55,6 +54,9 @@ Authorize,Authorize
 "Unable to find Log with ID ""%1""","Unable to find Log with ID ""%1"""
 "Cannot delete Log with id ""%1""","Cannot delete Log with id ""%1"""
 "Could not save Log: %1","Could not save Log: %1"
+"Acquired amount is not reached","Acquired amount is not reached"
+"Increment ID has been used","Increment ID has been used"
+"Code %1 is not valid for order creation","Code %1 is not valid for order creation"
 "Could not save request to refund: %1","Could not save request to refund: %1"
 "Payment details update has failed","Payment details update has failed"
 "Invalid output model","Invalid output model"
@@ -66,6 +68,10 @@ Authorize,Authorize
 "GetPaymentApi request has failed. Please contact the provider.","GetPaymentApi request has failed. Please contact the provider."
 "WorldLine refund has failed. Please contact the provider.","WorldLine refund has failed. Please contact the provider."
 "WorldLine delete token has failed. Please contact the provider.","WorldLine delete token has failed. Please contact the provider."
+Result,Result
+Liability,Liability
+Exemption,Exemption
+"Authentication status","Authentication status"
 "Thank you for your order %1.","Thank you for your order %1."
 "Your order is still being processed and you will receive a confirmation e-mail.","Your order is still being processed and you will receive a confirmation e-mail."
 "Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes.","Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes."
@@ -79,7 +85,7 @@ Authorize,Authorize
 "Browse our API reference, our documentation and keep yourself up to date with the latest payment trends.","Browse our API reference, our documentation and keep yourself up to date with the latest payment trends."
 "Visit our support site","Visit our support site"
 "Get in touch","Get in touch"
-"With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities.","With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities."
+"With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution for your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities.","With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution for your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities."
 "Contact our sales team","Contact our sales team"
 "Worldline online payments version %1","Worldline online payments version %1"
 "The latest version of the plugin is %1. Check for any updates.","The latest version of the plugin is %1. Check for any updates."
@@ -89,6 +95,7 @@ Authorize,Authorize
 ending,ending
 :,:
 value,value
+"Fraud Information","Fraud Information"
 "Continue Shopping","Continue Shopping"
 Loading...,Loading...
 "Order Summary","Order Summary"
@@ -147,6 +154,7 @@ Debug,Debug
 "Erase Debug Log","Erase Debug Log"
 "Request Log Grid","Request Log Grid"
 "Log mode","Log mode"
+CSV,CSV
 "Mark as processed","Mark as processed"
 No,No
 Yes,Yes

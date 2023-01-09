@@ -11,7 +11,11 @@ use OnlinePayments\Sdk\Domain\RefundResponse;
 use Worldline\PaymentCore\Api\Data\TransactionInterfaceFactory;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
+use Worldline\PaymentCore\Model\Transaction\ResourceModel\Transaction as TransactionResource;
 
+/**
+ * Manage to format, fill and save transaction data
+ */
 class TransactionWLResponseManager implements TransactionWLResponseManagerInterface
 {
     /**
@@ -24,22 +28,31 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
      */
     private $transactionRepository;
 
+    /**
+     * @var TransactionResource
+     */
+    private $transactionResource;
+
     public function __construct(
         TransactionInterfaceFactory $transactionFactory,
-        TransactionRepositoryInterface $transactionRepository
+        TransactionRepositoryInterface $transactionRepository,
+        TransactionResource $transactionResource
     ) {
         $this->transactionFactory = $transactionFactory;
         $this->transactionRepository = $transactionRepository;
+        $this->transactionResource = $transactionResource;
     }
 
     /**
+     * Fill and save transaction
+     *
      * @param DataObject $worldlineResponse (PaymentResponse|RefundResponse)
      * @return void
      * @throws LocalizedException
      */
     public function saveTransaction(DataObject $worldlineResponse): void
     {
-        if (!$this->isValid($worldlineResponse)) {
+        if ($this->transactionResource->isSaved((string)$worldlineResponse->getId())) {
             return;
         }
 
@@ -56,6 +69,8 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
     }
 
     /**
+     * Extract output object
+     *
      * @param DataObject $response
      * @return DataObject
      * @throws LocalizedException
@@ -76,25 +91,5 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
         }
 
         return $output;
-    }
-
-    private function isValid(DataObject $worldlineResponse): bool
-    {
-        $output = $this->getOutput($worldlineResponse);
-        $incrementId = (string)$output->getReferences()->getMerchantReference();
-        $statusCode = (int)$worldlineResponse->getStatusOutput()->getStatusCode();
-        $transaction = $this->transactionRepository->getLastTransaction($incrementId);
-
-        if (!$transaction) {
-            return true;
-        }
-
-        if ((int)$transaction->getStatusCode() === $statusCode
-            && (string) $transaction->getTransactionId() === (string)$worldlineResponse->getId()
-        ) {
-            return false;
-        }
-
-        return (int)$transaction->getTransactionId() === (int)$worldlineResponse->getId();
     }
 }
