@@ -7,6 +7,9 @@ namespace Worldline\PaymentCore\Api;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 
+/**
+ * Repository interface for worldline payment entity
+ */
 interface PaymentRepositoryInterface
 {
     /**

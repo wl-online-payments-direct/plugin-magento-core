@@ -1,0 +1,25 @@
+<?php
+/**
+ * @var Magento\Framework\View\Element\Template $block
+ * @var Worldline\PaymentCore\ViewModel\Adminhtml\Order\View\Info\FraudDataProvider $fraudDataProvider
+ */
+
+$fraudDataProvider = $block->getFraudDataProvider();
+if (!$fraudDataProvider->getFraudInformation()) {
+    return;
+}
+?>
+<?php  ?>
+<div class="worldline-order-view-fraud-information">
+    <div class="admin__page-section-item-title">
+        <span class="title"><?= $block->escapeHtml(__('Fraud Information')) ?></span>
+    </div>
+    <table class="data-table admin__table-secondary">
+        <?php foreach ($fraudDataProvider->getFraudInformation() as $item): ?>
+            <tr>
+                <th><?= $block->escapeHtml($item['label']) ?>:</th>
+                <td><?= $block->escapeHtml($item['value']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+</div>

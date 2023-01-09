@@ -12,8 +12,9 @@ use Psr\Log\LoggerInterface;
 
 class VersionProvider
 {
-    private const EXTENSION_NAME = 'Worldline_Payment';
-    private const GITHUB_API = 'https://api.github.com/repos/wl-online-payments-direct/plugin-magento/releases/latest';
+    private const EXTENSION_NAME = 'Worldline_PaymentCore';
+    private const GITHUB_API =
+        'https://api.github.com/repos/wl-online-payments-direct/plugin-magento-core/releases/latest';
 
     /**
      * @var PackageInfo

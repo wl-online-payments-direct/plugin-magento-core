@@ -13,9 +13,6 @@
     <type name="Worldline\PaymentCore\Block\Info">
         <arguments>
             <argument name="infoFormatter" xsi:type="object">Worldline\PaymentCore\Block\Adminhtml\InfoFormatter</argument>
-            <argument name="data" xsi:type="array">
-                <item name="display_update_button" xsi:type="string">1</item>
-            </argument>
         </arguments>
     </type>
 

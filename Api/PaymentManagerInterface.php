@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Api;
 
 use OnlinePayments\Sdk\DataObject;
+use Worldline\PaymentCore\Api\Data\PaymentInterface;
 
+/**
+ * Manager interface for worldline payment entity
+ */
 interface PaymentManagerInterface
 {
-    public function savePayment(DataObject $worldlineResponse): void;
+    public function savePayment(DataObject $worldlineResponse): PaymentInterface;
 }

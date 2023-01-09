@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\Payment;
 
 use OnlinePayments\Sdk\DataObject;
-use OnlinePayments\Sdk\Domain\PaymentResponse;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\PaymentManagerInterface;
 use Worldline\PaymentCore\Api\PaymentRepositoryInterface;
 
+/**
+ * Manager for worldline payment entity
+ */
 class PaymentManager implements PaymentManagerInterface
 {
     /**
@@ -23,19 +25,19 @@ class PaymentManager implements PaymentManagerInterface
         $this->paymentRepository = $paymentRepository;
     }
 
-    public function savePayment(DataObject $worldlineResponse): void
+    public function savePayment(DataObject $worldlineResponse): PaymentInterface
     {
         $incrementId = $worldlineResponse->getPaymentOutput()->getReferences()->getMerchantReference();
         $wlPayment = $this->paymentRepository->get($incrementId);
-        if (!$worldlineResponse instanceof PaymentResponse || $wlPayment->getId()) {
-            return;
+        if ($wlPayment->getId()) {
+            return $wlPayment;
         }
 
         $this->addCardPaymentMethodData($worldlineResponse, $wlPayment);
         $this->addRedirectPaymentMethodData($worldlineResponse, $wlPayment);
         $this->addSepaPaymentMethodData($worldlineResponse, $wlPayment);
 
-        $this->paymentRepository->save($wlPayment);
+        return $this->paymentRepository->save($wlPayment);
     }
 
     private function addCardPaymentMethodData(DataObject $worldlineResponse, PaymentInterface $wlPayment): void
@@ -48,7 +50,6 @@ class PaymentManager implements PaymentManagerInterface
 
         $wlPayment->setIncrementId($output->getReferences()->getMerchantReference());
         $wlPayment->setPaymentId($worldlineResponse->getId());
-        $wlPayment->setFraudResult(ucfirst($cardPaymentMethod->getFraudResults()->getFraudServiceResult()));
         $wlPayment->setPaymentProductId($cardPaymentMethod->getPaymentProductId());
         $wlPayment->setCardNumber(trim($cardPaymentMethod->getCard()->getCardNumber(), '*'));
         $wlPayment->setAmount((int) $output->getAmountOfMoney()->getAmount());
@@ -65,7 +66,6 @@ class PaymentManager implements PaymentManagerInterface
 
         $wlPayment->setIncrementId($output->getReferences()->getMerchantReference());
         $wlPayment->setPaymentId($worldlineResponse->getId());
-        $wlPayment->setFraudResult(ucfirst($redirectPaymentMethod->getFraudResults()->getFraudServiceResult()));
         $wlPayment->setPaymentProductId($redirectPaymentMethod->getPaymentProductId());
         $wlPayment->setAmount((int) $output->getAmountOfMoney()->getAmount());
         $wlPayment->setCurrency($output->getAmountOfMoney()->getCurrencyCode());

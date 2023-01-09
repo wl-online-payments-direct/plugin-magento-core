@@ -4,25 +4,25 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model;
 
 use Magento\Checkout\Model\Session;
-use Magento\Quote\Api\Data\CartInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
-use Magento\Sales\Model\OrderIncrementIdChecker;
+use OnlinePayments\Sdk\Domain\PaymentResponse;
+use Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterfaceFactory;
+use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
-use Worldline\PaymentCore\Model\ResourceModel\FailedPaymentLog;
+use Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface;
+use Worldline\PaymentCore\Model\Order\CanPlaceValidator;
 use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
-use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
 /**
+ * Validate payment information and create an order
+ *
  * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
  */
 class PendingOrderManager implements PendingOrderManagerInterface
 {
-    /**
-     * @var EmailSender
-     */
-    private $emailSender;
-
     /**
      * @var Session
      */
@@ -39,43 +39,55 @@ class PendingOrderManager implements PendingOrderManagerInterface
     private $quoteResource;
 
     /**
-     * @var StatusCodeRetriever
-     */
-    private $statusCodeRetriever;
-
-    /**
      * @var QuoteManagement
      */
     private $quoteManagement;
 
     /**
-     * @var FailedPaymentLog
+     * @var CanPlaceValidator
      */
-    private $failedPaymentLog;
+    private $canPlaceValidator;
 
     /**
-     * @var OrderIncrementIdChecker
+     * @var RefusedStatusProcessor
      */
-    private $orderIncrementIdChecker;
+    private $refusedStatusProcessor;
+
+    /**
+     * @var GetPaymentServiceInterface
+     */
+    private $paymentService;
+
+    /**
+     * @var PaymentDataManagerInterface
+     */
+    private $paymentDataManager;
+
+    /**
+     * @var CanPlaceOrderContextInterfaceFactory
+     */
+    private $canPlaceOrderContextFactory;
 
     public function __construct(
-        EmailSender $emailSender,
         Session $checkoutSession,
         OrderFactory $orderFactory,
         QuoteResource $quoteResource,
         QuoteManagement $quoteManagement,
-        StatusCodeRetriever $statusCodeRetriever,
-        FailedPaymentLog $failedPaymentLog,
-        OrderIncrementIdChecker $orderIncrementIdChecker
+        CanPlaceValidator $canPlaceValidator,
+        RefusedStatusProcessor $refusedStatusProcessor,
+        GetPaymentServiceInterface $paymentService,
+        PaymentDataManagerInterface $paymentDataManager,
+        CanPlaceOrderContextInterfaceFactory $canPlaceOrderContextFactory
     ) {
-        $this->emailSender = $emailSender;
         $this->checkoutSession = $checkoutSession;
         $this->orderFactory = $orderFactory;
         $this->quoteResource = $quoteResource;
         $this->quoteManagement = $quoteManagement;
-        $this->statusCodeRetriever = $statusCodeRetriever;
-        $this->failedPaymentLog = $failedPaymentLog;
-        $this->orderIncrementIdChecker = $orderIncrementIdChecker;
+        $this->canPlaceValidator = $canPlaceValidator;
+        $this->refusedStatusProcessor = $refusedStatusProcessor;
+        $this->paymentService = $paymentService;
+        $this->paymentDataManager = $paymentDataManager;
+        $this->canPlaceOrderContextFactory = $canPlaceOrderContextFactory;
     }
 
     public function processPendingOrder(string $incrementId): bool
@@ -86,19 +98,16 @@ class PendingOrderManager implements PendingOrderManagerInterface
         }
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
-        $statusCode = $this->statusCodeRetriever->getStatusCode($quote->getPayment());
+        $paymentResponse = $this->getWlPaymentResponse($quote->getPayment());
+        if (!$paymentResponse) {
+            return false;
+        }
 
-        $canPlaceOrder = in_array(
-            $statusCode,
-            [
-                TransactionStatusInterface::PENDING_CAPTURE_CODE,
-                TransactionStatusInterface::CAPTURED_CODE,
-                TransactionStatusInterface::CAPTURE_REQUESTED,
-            ]
-        );
+        $statusCode = (int)$paymentResponse->getStatusOutput()->getStatusCode();
 
-        if ($canPlaceOrder && !$this->orderIncrementIdChecker->isIncrementIdUsed($incrementId)) {
+        if ($this->canPlaceOrder($statusCode, $quote)) {
             $order = $this->quoteManagement->submit($quote);
+            $this->paymentDataManager->savePaymentData($paymentResponse);
 
             $this->checkoutSession->setLastOrderId($order->getId());
             $this->checkoutSession->setLastRealOrderId($incrementId);
@@ -108,24 +117,37 @@ class PendingOrderManager implements PendingOrderManagerInterface
             return true;
         }
 
-        $this->checkStatusOnRefused($quote, $statusCode);
+        $this->refusedStatusProcessor->process($quote, $statusCode);
 
         return false;
     }
 
-    private function checkStatusOnRefused(CartInterface $quote, ?int $statusCode): void
+    private function getWlPaymentResponse(PaymentInterface $payment): ?PaymentResponse
     {
-        $isPaymentRefused = in_array(
-            $statusCode,
-            [
-                TransactionStatusInterface::AUTHORISATION_DECLINED,
-                TransactionStatusInterface::AUTHORISED_AND_CANCELLED,
-                TransactionStatusInterface::PAYMENT_REFUSED
-            ]
-        );
+        $wlPaymentId = ((int)$payment->getAdditionalInformation('payment_id') . '_0');
+        $storeId = (int)$payment->getMethodInstance()->getStore();
 
-        if ($isPaymentRefused && $this->emailSender->sendPaymentRefusedEmail($quote)) {
-            $this->failedPaymentLog->saveQuotePaymentId((int) $quote->getPayment()->getId());
+        try {
+            return $this->paymentService->execute($wlPaymentId, $storeId);
+        } catch (LocalizedException $e) {
+            return null;
+        }
+    }
+
+    private function canPlaceOrder(int $statusCode, $quote): bool
+    {
+        $wlPaymentId = (string)$quote->getPayment()->getAdditionalInformation('payment_id');
+        $context = $this->canPlaceOrderContextFactory->create();
+        $context->setStatusCode($statusCode);
+        $context->setWorldlinePaymentId($wlPaymentId);
+        $context->setIncrementId($quote->getReservedOrderId());
+        $context->setStoreId($quote->getStoreId());
+
+        try {
+            $this->canPlaceValidator->validate($context);
+            return true;
+        } catch (LocalizedException $e) {
+            return false;
         }
     }
 }

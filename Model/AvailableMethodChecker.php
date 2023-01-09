@@ -43,9 +43,13 @@ class AvailableMethodChecker
     {
         $isValid = true;
         if ((int) $config->getValue('allow_specific_customer_group') === 1) {
+            if ($config->getValue('customer_group') === null) {
+                return false;
+            }
+
             $availableCustomerGroups = array_map('intval', explode(
                 ',',
-                $config->getValue('customer_group')
+                (string)$config->getValue('customer_group')
             ));
             $currentCustomerGroup = $this->getCustomerGroup($quote);
             if (!in_array($currentCustomerGroup, $availableCustomerGroups)

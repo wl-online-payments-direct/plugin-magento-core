@@ -5,8 +5,6 @@ namespace Worldline\PaymentCore\Model\Webhook;
 
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\DataObject;
-use OnlinePayments\Sdk\Domain\PaymentResponse;
-use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
 
 class WebhookResponseManager

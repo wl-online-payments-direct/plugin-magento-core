@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Webhook;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Model\QuoteManagement;
-use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
-use Worldline\PaymentCore\Api\PaymentManagerInterface;
-use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
+use Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterfaceFactory;
+use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
+use Worldline\PaymentCore\Model\Order\CanPlaceValidator;
 use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
-use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
+/**
+ * Identify if a webhook can trigger the order placement process, place an order and save payment information
+ */
 class PlaceOrderProcessor implements ProcessorInterface
 {
     /**
@@ -37,53 +41,55 @@ class PlaceOrderProcessor implements ProcessorInterface
     private $webhookResponseManager;
 
     /**
-     * @var TransactionWLResponseManagerInterface
+     * @var CanPlaceValidator
      */
-    private $transactionWLResponseManager;
+    private $canPlaceValidator;
 
     /**
-     * @var PaymentManagerInterface
+     * @var PaymentDataManagerInterface
      */
-    private $paymentManager;
+    private $paymentDataManager;
+
+    /**
+     * @var CanPlaceOrderContextInterfaceFactory
+     */
+    private $canPlaceOrderContextFactory;
 
     public function __construct(
         QuoteResource $quoteResource,
         QuoteManagement $quoteManagement,
         OrderFactory $orderFactory,
         WebhookResponseManager $webhookResponseManager,
-        TransactionWLResponseManagerInterface $transactionWLResponseManager,
-        PaymentManagerInterface $paymentManager
+        CanPlaceValidator $canPlaceValidator,
+        PaymentDataManagerInterface $paymentDataManager,
+        CanPlaceOrderContextInterfaceFactory $canPlaceOrderContextFactory
     ) {
         $this->quoteResource = $quoteResource;
         $this->quoteManagement = $quoteManagement;
         $this->orderFactory = $orderFactory;
         $this->webhookResponseManager = $webhookResponseManager;
-        $this->transactionWLResponseManager = $transactionWLResponseManager;
-        $this->paymentManager = $paymentManager;
+        $this->canPlaceValidator = $canPlaceValidator;
+        $this->paymentDataManager = $paymentDataManager;
+        $this->canPlaceOrderContextFactory = $canPlaceOrderContextFactory;
     }
 
-    public function process(WebhooksEvent $webhookEvent)
+    public function process(WebhooksEvent $webhookEvent): void
     {
         /** @var PaymentResponse $paymentResponse */
         $paymentResponse = $this->webhookResponseManager->getResponse($webhookEvent);
-        $statusCode = (int)$paymentResponse->getStatusOutput()->getStatusCode();
-        if (!in_array(
-            $statusCode,
-            [
-                TransactionStatusInterface::PENDING_CAPTURE_CODE,
-                TransactionStatusInterface::CAPTURED_CODE,
-                TransactionStatusInterface::CAPTURE_REQUESTED,
-            ]
-        )) {
-            return;
-        }
-
         // remove postfix from payment id if any (11111_1 -> 11111)
         $paymentId = (string)(int)$paymentResponse->getId();
         $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($paymentId);
-        $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
+        if (!$quote->getId()) {
+            return;
+        }
 
-        $this->checkTransactionForSave($paymentResponse, $order);
+        if (!$this->isValid($paymentResponse, $quote)) {
+            return;
+        }
+
+        $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
+        $this->paymentDataManager->savePaymentData($paymentResponse);
 
         if ($order->getId()) {
             return;
@@ -92,18 +98,18 @@ class PlaceOrderProcessor implements ProcessorInterface
         $this->quoteManagement->submit($quote);
     }
 
-    private function checkTransactionForSave(PaymentResponse $paymentResponse, Order $order): void
+    private function isValid(PaymentResponse $paymentResponse, CartInterface $quote): bool
     {
-        if (!$order->getId()) {
-            $this->paymentManager->savePayment($paymentResponse);
-            $this->transactionWLResponseManager->saveTransaction($paymentResponse);
-        } else {
-            $wlPaymentId = strtok($paymentResponse->getId(), '_');
-            $orderLastTransId = strtok((string)$order->getPayment()->getLastTransId(), '_');
-            if ($orderLastTransId === $wlPaymentId) {
-                $this->paymentManager->savePayment($paymentResponse);
-                $this->transactionWLResponseManager->saveTransaction($paymentResponse);
-            }
+        $context = $this->canPlaceOrderContextFactory->create();
+        $context->setStatusCode((int)$paymentResponse->getStatusOutput()->getStatusCode());
+        $context->setWorldlinePaymentId((string)$paymentResponse->getId());
+        $context->setStoreId($quote->getStoreId());
+
+        try {
+            $this->canPlaceValidator->validate($context);
+            return true;
+        } catch (LocalizedException $e) {
+            return false;
         }
     }
 }

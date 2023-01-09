@@ -57,6 +57,10 @@ class TransactionUpdater
     {
         try {
             $wlPayment = $this->paymentRepository->get($incrementId);
+            if (!$wlPayment->getId()) {
+                return false;
+            }
+
             $response = $this->detailsRequest->execute((string) $wlPayment->getPaymentId(), $storeId);
             $operations = $response->getOperations();
             if (!$operations) {

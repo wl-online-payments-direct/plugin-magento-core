@@ -7,6 +7,9 @@ namespace Worldline\PaymentCore\Block\Adminhtml;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
 use Worldline\PaymentCore\Api\InfoFormatterInterface;
 
+/**
+ * Order view payment info formatter for the admin panel
+ */
 class InfoFormatter implements InfoFormatterInterface
 {
     public function format(PaymentInfoInterface $paymentInfo): array
@@ -15,7 +18,6 @@ class InfoFormatter implements InfoFormatterInterface
             ['label' => __('Payment method'), 'value' => $paymentInfo->getPaymentMethod()],
             ['label' => __('Status'), 'value' => $paymentInfo->getStatus()],
             ['label' => __('Status code'), 'value' => $paymentInfo->getStatusCode()],
-            ['label' => __('Fraud result'), 'value' => $paymentInfo->getFraudResult()],
             ['label' => __('Transaction number'), 'value' => $paymentInfo->getLastTransactionNumber()],
             [
                 'label' => __('Total'),
