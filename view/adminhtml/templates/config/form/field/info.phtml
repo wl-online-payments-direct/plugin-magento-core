@@ -92,5 +92,27 @@
                value="<?= $block->escapeHtml(__('Check for updates')) ?>" />
     </div>
 
+    <br>
+
+    <div data-bind="scope: 'worldline-request-feature'">
+        <!-- ko template: getTemplate() --><!-- /ko -->
+    </div>
+
     <hr class="bottom-line">
 </div>
+
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "worldline-request-feature": {
+                            "component": "Worldline_PaymentCore/js/system/config/feature-request",
+                            "sendRequestUrl": "<?= $block->escapeUrl($block->getFeatureRequestUrl()) ?>",
+                            "storeId": <?= (int)$block->getStoreId() ?>
+                        }
+                    }
+                }
+            }
+        }
+</script>

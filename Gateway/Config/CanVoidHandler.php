@@ -29,7 +29,7 @@ class CanVoidHandler implements ValueHandlerInterface
     }
 
     /**
-     * Identify if a payment can be voided or canceled
+     * Identify if a payment can be voided
      *
      * @param array $subject
      * @param int|null $storeId
@@ -40,16 +40,17 @@ class CanVoidHandler implements ValueHandlerInterface
     {
         $paymentDO = $this->subjectReader->readPayment($subject);
         $payment = $paymentDO->getPayment();
-
         if (!$payment instanceof Payment) {
             return false;
         }
 
-        $transactionId = $payment->getParentTransactionId() ?: $payment->getLastTransId();
+        if ($payment->getAmountPaid() && $payment->getAmountPaid() == $payment->getAmountAuthorized()) {
+            return false;
+        }
 
         try {
+            $transactionId = (string) ($payment->getParentTransactionId() ?: $payment->getLastTransId());
             $wlPayment = $this->getPaymentService->execute($transactionId, (int) $storeId);
-
             return $wlPayment->getStatusOutput()->getIsCancellable() && !$payment->getAmountPaid();
         } catch (LocalizedException $e) {
             return false;

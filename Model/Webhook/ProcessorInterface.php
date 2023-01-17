@@ -10,9 +10,11 @@ use OnlinePayments\Sdk\Domain\WebhooksEvent;
 interface ProcessorInterface
 {
     /**
+     * Process webhook content
+     *
      * @param WebhooksEvent $webhookEvent
      * @return void
      * @throws LocalizedException
      */
-    public function process(WebhooksEvent $webhookEvent);
+    public function process(WebhooksEvent $webhookEvent): void;
 }

@@ -11,6 +11,9 @@ use Worldline\PaymentCore\Api\Service\Payment\CancelPaymentServiceInterface;
 use Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface;
 use Worldline\PaymentCore\Gateway\Request\VoidAndCancelDataBuilder;
 
+/**
+ * Process gateway cancel action
+ */
 class TransactionCancel extends AbstractTransaction
 {
     /**
@@ -34,6 +37,8 @@ class TransactionCancel extends AbstractTransaction
     }
 
     /**
+     * Process gateway cancel action
+     *
      * @param array $data
      * @return DataObject
      * @throws LocalizedException

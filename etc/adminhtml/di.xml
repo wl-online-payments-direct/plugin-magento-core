@@ -25,4 +25,9 @@
         <plugin name="Worldline_PaymentCore::replace_save_url"
                 type="\Worldline\PaymentCore\Plugin\Magento\Sales\Block\Adminhtml\Order\Creditmemo\Create\Form\ReplaceSaveUrl"/>
     </type>
+
+    <type name="Magento\Sales\Block\Adminhtml\Order\Creditmemo\View">
+        <plugin name="Worldline_PaymentCore::UpdateStatusButton"
+                type="Worldline\PaymentCore\Plugin\Magento\Sales\Block\Adminhtml\Order\Creditmemo\View\UpdateStatusButton"/>
+    </type>
 </config>

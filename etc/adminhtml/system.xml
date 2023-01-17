@@ -159,9 +159,9 @@
             <label>Debug</label>
             <tab>worldline</tab>
             <resource>Worldline_PaymentCore::config_worldline</resource>
-            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1">
                 <label>General</label>
-                <field id="logging_lifetime" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="logging_lifetime" translate="label" type="text" sortOrder="30" showInDefault="1">
                     <label>Logging Records Lifetime (Days)</label>
                     <validate>validate-digits validate-zero-or-greater</validate>
                 </field>
@@ -186,6 +186,17 @@
                 <field id="log_mode" translate="label comment" type="select" sortOrder="20" showInDefault="1" canRestore="1">
                     <label>Log mode</label>
                     <source_model>Worldline\PaymentCore\Logger\Config\Source\LogMode</source_model>
+                </field>
+            </group>
+            <group id="webhooks" translate="label" type="text" sortOrder="40" showInDefault="1">
+                <label>Webhooks</label>
+                <field id="log" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Webhook Grid</label>
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\WebhookGrid</frontend_model>
+                </field>
+                <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1">
+                    <label>Log Webhooks</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
         </section>

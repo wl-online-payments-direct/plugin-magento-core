@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Webhook;
@@ -7,6 +8,9 @@ use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
 
+/**
+ * Extract response for different types of webhook events
+ */
 class WebhookResponseManager
 {
     /**

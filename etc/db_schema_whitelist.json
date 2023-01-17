@@ -92,5 +92,18 @@
         "constraint": {
             "PRIMARY": true
         }
+    },
+    "worldline_webhook": {
+        "column": {
+            "id": true,
+            "increment_id": true,
+            "type": true,
+            "status_code": true,
+            "body": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
     }
 }

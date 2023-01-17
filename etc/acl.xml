@@ -17,6 +17,7 @@
                 <resource id="Magento_Backend::system">
                     <resource id="Worldline_PaymentCore::general" title="Worldline" translate="title" sortOrder="75">
                         <resource id="Worldline_PaymentCore::request_logs" title="Request Logs" translate="title" sortOrder="10"/>
+                        <resource id="Worldline_PaymentCore::webhooks" title="Webhooks" translate="title" sortOrder="20"/>
                     </resource>
                 </resource>
             </resource>
