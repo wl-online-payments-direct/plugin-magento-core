@@ -8,7 +8,7 @@ namespace Worldline\PaymentCore\Api\Data;
  * Worldline fraud information entity
  *
  * @method getWorldlinePaymentId(): int
- * @method setWorldlinePaymentId(int $incrementId): FraudInterface
+ * @method setWorldlinePaymentId(int $paymentId): FraudInterface
  *
  * @method getResult(): ?string
  * @method setResult(string $result): FraudInterface

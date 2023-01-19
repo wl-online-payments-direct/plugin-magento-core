@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Webhook;
 
-use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
-use Worldline\PaymentCore\Api\Data\RefundRequestInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
-use Worldline\PaymentCore\Model\RefundRequest\CreditmemoOfflineService;
-use Worldline\PaymentCore\Model\RefundRequest\EmailNotification;
+use Worldline\PaymentCore\Model\RefundRequest\RefundProcessor;
 
 class CreditmemoProcessor implements ProcessorInterface
 {
@@ -19,9 +16,9 @@ class CreditmemoProcessor implements ProcessorInterface
     public const REFUND_UNCERTAIN_CODE = 82;
 
     /**
-     * @var CreditmemoOfflineService
+     * @var RefundProcessor
      */
-    private $refundOfflineService;
+    private $refundProcessor;
 
     /**
      * @var WebhookResponseManager
@@ -34,34 +31,20 @@ class CreditmemoProcessor implements ProcessorInterface
     private $refundRequestRepository;
 
     /**
-     * @var CreditmemoRepositoryInterface
-     */
-    private $creditmemoRepository;
-
-    /**
      * @var TransactionWLResponseManagerInterface
      */
     private $transactionWLResponseManager;
 
-    /**
-     * @var EmailNotification
-     */
-    private $emailNotification;
-
     public function __construct(
-        CreditmemoOfflineService $refundOfflineService,
+        RefundProcessor $refundProcessor,
         WebhookResponseManager $webhookResponseManager,
         RefundRequestRepositoryInterface $refundRequestRepository,
-        CreditmemoRepositoryInterface $creditmemoRepository,
-        TransactionWLResponseManagerInterface $transactionWLResponseManager,
-        EmailNotification $emailNotification
+        TransactionWLResponseManagerInterface $transactionWLResponseManager
     ) {
-        $this->refundOfflineService = $refundOfflineService;
+        $this->refundProcessor = $refundProcessor;
         $this->webhookResponseManager = $webhookResponseManager;
         $this->refundRequestRepository = $refundRequestRepository;
-        $this->creditmemoRepository = $creditmemoRepository;
         $this->transactionWLResponseManager = $transactionWLResponseManager;
-        $this->emailNotification = $emailNotification;
     }
 
     public function process(WebhooksEvent $webhookEvent): void
@@ -83,19 +66,7 @@ class CreditmemoProcessor implements ProcessorInterface
 
             $this->transactionWLResponseManager->saveTransaction($refundResponse);
 
-            $this->processRefund($refundRequest);
+            $this->refundProcessor->process($refundRequest);
         }
-    }
-
-    private function processRefund(RefundRequestInterface $refundRequest): void
-    {
-        $creditmemoEntity = $this->creditmemoRepository->get($refundRequest->getCreditMemoId());
-
-        $this->refundOfflineService->refund($creditmemoEntity);
-
-        $refundRequest->setRefunded(true);
-        $this->refundRequestRepository->save($refundRequest);
-
-        $this->emailNotification->send($creditmemoEntity);
     }
 }

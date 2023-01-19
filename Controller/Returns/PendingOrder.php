@@ -7,6 +7,8 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 
 class PendingOrder extends Action implements HttpPostActionInterface
@@ -24,13 +26,23 @@ class PendingOrder extends Action implements HttpPostActionInterface
         $this->pendingOrderManager = $pendingOrderManager;
     }
 
-    public function execute()
+    public function execute(): ResultInterface
     {
         $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-        $incrementId = $this->getRequest()->getParam('incrementId', '');
-
-        $param['status'] = $this->pendingOrderManager->processPendingOrder($incrementId);
-
-        return $result->setData($param);
+        try {
+            $incrementId = $this->getRequest()->getParam('incrementId', '');
+            $param['status'] = $this->pendingOrderManager->processPendingOrder($incrementId);
+            return $result->setData($param);
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+            return $result->setData([
+                'error' => $e->getMessage(),
+            ]);
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+            return $result->setData([
+                'error' => __('Sorry, but something went wrong'),
+            ]);
+        }
     }
 }

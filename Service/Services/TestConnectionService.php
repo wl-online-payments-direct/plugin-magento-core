@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Service\Services;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filter\StripTags;
 use Worldline\PaymentCore\Api\Service\Services\TestConnectionServiceInterface;
 use Worldline\PaymentCore\Model\ClientProvider;
@@ -39,6 +40,12 @@ class TestConnectionService implements TestConnectionServiceInterface
         $this->tagFilter = $tagFilter;
     }
 
+    /**
+     * Test connection
+     *
+     * @return string
+     * @throws LocalizedException
+     */
     public function execute(): string
     {
         try {
@@ -49,7 +56,7 @@ class TestConnectionService implements TestConnectionServiceInterface
 
             return (string) $result->getResult();
         } catch (\Exception $e) {
-            return $this->tagFilter->filter($e->getMessage());
+            throw new LocalizedException(__('The server returned an error.'));
         }
     }
 }

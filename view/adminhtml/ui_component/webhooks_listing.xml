@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">webhooks_listing.webhooks_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="clean" class="Worldline\PaymentCore\Block\Adminhtml\Webhook\Grid\ClearLogButton"/>
+        </buttons>
+        <spinner>webhooks_columns</spinner>
+        <deps>
+            <dep>webhooks_listing.webhooks_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="webhooks_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>Worldline_PaymentCore::webhooks</aclResource>
+        <dataProvider class="Magento\AsynchronousOperations\Ui\Component\DataProvider"
+                      name="webhooks_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <exportButton name="export_button" class="Worldline\PaymentCore\Ui\Component\ExportCsv">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="options_custom" xsi:type="array">
+                        <item name="cvs" xsi:type="array">
+                            <item name="value" xsi:type="string">csv</item>
+                            <item name="label" xsi:type="string" translate="true">CSV</item>
+                            <item name="url" xsi:type="string">mui/export/gridToCsv</item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </exportButton>
+        <filters name="listing_filters">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="params" xsi:type="array">
+                        <item name="filters_modifier" xsi:type="array"/>
+                    </item>
+                    <item name="observers" xsi:type="array"/>
+                </item>
+            </argument>
+            <settings>
+                <statefull>
+                    <property name="applied" xsi:type="boolean">false</property>
+                </statefull>
+            </settings>
+        </filters>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="webhooks_columns">
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="id" sortOrder="10">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">ID</label>
+            </settings>
+        </column>
+        <column name="increment_id" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Increment ID</label>
+            </settings>
+        </column>
+        <column name="type" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Type</label>
+            </settings>
+        </column>
+        <column name="status_code" sortOrder="40">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Status Code</label>
+            </settings>
+        </column>
+        <column name="body" sortOrder="50">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Body</label>
+            </settings>
+        </column>
+        <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="60">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Created At</label>
+            </settings>
+        </column>
+    </columns>
+</listing>

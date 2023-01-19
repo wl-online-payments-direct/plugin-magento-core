@@ -19,6 +19,8 @@ label,label
 "Webhook URL","Webhook URL"
 "This URL must be specified in the worldline admin panel","This URL must be specified in the worldline admin panel"
 Copy,Copy
+"Clear log","Clear log"
+"Are you sure you want to do this? All webhook data will be removed.","Are you sure you want to do this? All webhook data will be removed."
 Payment,Payment
 "%1 with Worldline","%1 with Worldline"
 title,title
@@ -30,11 +32,13 @@ title,title
 "A total of %1 record(s) have been updated.","A total of %1 record(s) have been updated."
 "Something went wrong while updating log.","Something went wrong while updating log."
 "Worldline Request Logs","Worldline Request Logs"
+"Worldline Webhooks","Worldline Webhooks"
 "Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes.","Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes."
+"Sorry, but something went wrong","Sorry, but something went wrong"
 "Your payment is being processed","Your payment is being processed"
 "The payment has rejected, please, try again","The payment has rejected, please, try again"
 "Waiting for payment confirmation","Waiting for payment confirmation"
-"Sorry, but something went wrong","Sorry, but something went wrong"
+"Void action can not be performed.","Void action can not be performed."
 "No authorization transaction to proceed capture.","No authorization transaction to proceed capture."
 """code"" value should be specified","""code"" value should be specified"
 "Log error requests only","Log error requests only"
@@ -51,9 +55,16 @@ Test,Test
 Production,Production
 Authorize,Authorize
 "Authorize & Capture","Authorize & Capture"
+"Request a new feature","Request a new feature"
+"Company Name: %1","Company Name: %1"
+"Message: %1","Message: %1"
+"PSPID: %1","PSPID: %1"
+"Magento version: %1","Magento version: %1"
+"Plugin version: %1","Plugin version: %1"
 "Unable to find Log with ID ""%1""","Unable to find Log with ID ""%1"""
 "Cannot delete Log with id ""%1""","Cannot delete Log with id ""%1"""
 "Could not save Log: %1","Could not save Log: %1"
+"Increment id is missing","Increment id is missing"
 "Acquired amount is not reached","Acquired amount is not reached"
 "Increment ID has been used","Increment ID has been used"
 "Code %1 is not valid for order creation","Code %1 is not valid for order creation"
@@ -61,12 +72,14 @@ Authorize,Authorize
 "Payment details update has failed","Payment details update has failed"
 "Invalid output model","Invalid output model"
 "Invalid response model","Invalid response model"
+"Update Status","Update Status"
 "CancelPaymentApi has failed. Please contact the provider.","CancelPaymentApi has failed. Please contact the provider."
 "CapturePayment request has failed","CapturePayment request has failed"
 "GetPaymentDetailsApi request has failed","GetPaymentDetailsApi request has failed"
 "GetPaymentProducts request has failed","GetPaymentProducts request has failed"
 "GetPaymentApi request has failed. Please contact the provider.","GetPaymentApi request has failed. Please contact the provider."
 "WorldLine refund has failed. Please contact the provider.","WorldLine refund has failed. Please contact the provider."
+"The server returned an error.","The server returned an error."
 "WorldLine delete token has failed. Please contact the provider.","WorldLine delete token has failed. Please contact the provider."
 Result,Result
 Liability,Liability
@@ -107,6 +120,14 @@ Tax,Tax
 "Item in Cart","Item in Cart"
 Qty,Qty
 "Update data from Worldline","Update data from Worldline"
+"If you want to leave any feature suggestions, feel free to fill in the form.","If you want to leave any feature suggestions, feel free to fill in the form."
+PSPID,PSPID
+"Company Name","Company Name"
+Message,Message
+Submit,Submit
+"The identifier of your Worldline account","The identifier of your Worldline account"
+"Your company name","Your company name"
+"Please explain how our payment plugin can be further improved","Please explain how our payment plugin can be further improved"
 "Payment Refused","Payment Refused"
 "Your payment has been refused.","Your payment has been refused."
 expires,expires
@@ -116,11 +137,14 @@ Success!,Success!
 "There is nothing to update.","There is nothing to update."
 Error!,Error!
 "Something went wrong during getting data from the service.","Something went wrong during getting data from the service."
+"Request has been sent","Request has been sent"
 "Please use one of the following extensions : html, htm, dhtml","Please use one of the following extensions : html, htm, dhtml"
 Save,Save
 "Something went wrong. Please check your credentials","Something went wrong. Please check your credentials"
+"Sorry, but something went wrong.","Sorry, but something went wrong."
 Worldline,Worldline
 "Request Logs","Request Logs"
+Webhooks,Webhooks
 "Worldline Online Payments","Worldline Online Payments"
 Connection,Connection
 "Environment Mode","Environment Mode"
@@ -154,6 +178,8 @@ Debug,Debug
 "Erase Debug Log","Erase Debug Log"
 "Request Log Grid","Request Log Grid"
 "Log mode","Log mode"
+"Webhook Grid","Webhook Grid"
+"Log Webhooks","Log Webhooks"
 CSV,CSV
 "Mark as processed","Mark as processed"
 No,No
@@ -165,3 +191,7 @@ ID,ID
 "Response Code","Response Code"
 Processed,Processed
 "Created At","Created At"
+"Increment ID","Increment ID"
+Type,Type
+"Status Code","Status Code"
+Body,Body

@@ -1,8 +1,31 @@
 # Worldline Online Payments
 
 ## Core extension
+[![M2 Coding Standard](https://github.com/wl-online-payments-direct/plugin-magento-core/actions/workflows/coding-standard.yml/badge.svg?branch=develop)](https://github.com/wl-online-payments-direct/plugin-magento-core/actions/workflows/coding-standard.yml)
+[![M2 Mess Detector](https://github.com/wl-online-payments-direct/plugin-magento-core/actions/workflows/mess-detector.yml/badge.svg?branch=develop)](https://github.com/wl-online-payments-direct/plugin-magento-core/actions/workflows/mess-detector.yml)
 
-Change log:
+This is a core module that are used with Worldline payment solutions.
+
+To install these solutions, you may use
+[adobe commerce marketplace](https://marketplace.magento.com/worldline-module-magento-payment.html)
+or install them from the github:
+- [all payment methods](https://github.com/wl-online-payments-direct/plugin-magento) at once
+- only [credit card](https://github.com/wl-online-payments-direct/plugin-magento-creditcard)
+- only [hosted checkout](https://github.com/wl-online-payments-direct/plugin-magento-hostedcheckout)
+- [redirect payments (single payment buttons)](https://github.com/wl-online-payments-direct/plugin-magento-redirect-payments)
+
+
+### Change log:
+
+2.5.0
+- Add the "Mealvouchers" payment method.
+- Add the “Update Status” button for “View Memo”. This allows you to refresh in real time the status of your credit memos.
+- Render webhooks updates in the order details.
+- Add grid with Webhooks for debug purposes.
+- Improve cancel and void actions logic.
+- Add uninstall script.
+- Update release notes.
+- General code improvements and bug fixes.
 
 2.4.0
 - Raise the version in order to display the actual version for those who install single solutions.

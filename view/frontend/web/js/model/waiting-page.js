@@ -1,7 +1,8 @@
 define([
     'uiComponent',
-    'jquery'
-], function (Component, $) {
+    'jquery',
+    'mage/translate'
+], function (Component, $, $t) {
     'use strict';
 
     return Component.extend({
@@ -42,16 +43,17 @@ define([
                 if (result.status) {
                     window.location.replace(self.successUrl);
                 } else {
-                    if (self.count < 15) {
-                        setTimeout(self.sendRequest, 1000, self);
+                    if (self.count < 7) {
+                        setTimeout(self.sendRequest, 2000, self);
                     } else {
-                        self.processPendingOrder(self);
+                        setTimeout(function () {
+                            this.processPendingOrder(this);
+                        }.bind(self), 1000);
                     }
-
                 }
             })
-            .fail(function(result) {
-                self.showMessage('The payment has failed, please, try again.');
+            .fail(function() {
+                self.showMessage($t('Sorry, but something went wrong.'));
             });
         },
 
@@ -65,14 +67,18 @@ define([
                 }
             })
             .done(function(result) {
+                if (result.error) {
+                    return;
+                }
+
                 if (result.status) {
                     window.location.replace(self.successUrl);
                 } else {
                     window.location.replace(self.pendingPageUrl);
                 }
             })
-            .fail(function(result) {
-                self.showMessage('The payment has failed, please, try again.');
+            .fail(function() {
+                self.showMessage($t('Sorry, but something went wrong.'));
             });
         }
     });

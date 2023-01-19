@@ -1,0 +1,55 @@
+<div class="new-feature-block">
+    <label class="label">
+        <span data-bind="i18n: 'If you want to leave any feature suggestions, feel free to fill in the form.'"></span>
+    </label>
+    <button type="button"
+            class="action-secondary open-close-request-form-button"
+            data-bind="click: openCloseForm">
+        <span data-bind="i18n: 'Request a new feature'"></span>
+    </button>
+</div>
+<br><br>
+<!-- ko if: isShowForm() -->
+<form class="form wordline-feature-form" data-worldline-js="feature-form">
+    <fieldset>
+        <div class="field pspid">
+            <label class="label"><span data-bind="i18n: 'PSPID'"></span></label>
+            <div class="control">
+                <input class="input-text"
+                       type="text"
+                       id="pspid"
+                       name="pspid"
+                       data-bind="attr: {placeholder: $t('The identifier of your Worldline account')}">
+            </div>
+        </div>
+        <div class="field required company-name">
+            <label class="label"><span data-bind="i18n: 'Company Name'"></span></label>
+            <div class="control">
+                <input class="input-text"
+                       type="text"
+                       id="company-name"
+                       name="company_name"
+                       data-validate="{required:true}"
+                       data-bind="attr: {placeholder: $t('Your company name')}">
+            </div>
+        </div>
+        <div class="field required body-message">
+            <label class="label"><span data-bind="i18n: 'Message'"></span></label>
+            <div class="control">
+                <textarea class="input-text form-textarea"
+                       type="text"
+                       rows="1"
+                       id="body-message"
+                       name="body_message"
+                       data-validate="{required:true}"
+                          data-bind="attr: {placeholder: $t('Please explain how our payment plugin can be further improved')}"></textarea>
+            </div>
+        </div>
+        <button type="button"
+                class="action action-submit-form -submit"
+                data-bind="click: submitForm">
+            <span data-bind="i18n: 'Submit'"></span>
+        </button>
+    </fieldset>
+</form>
+<!-- /ko -->

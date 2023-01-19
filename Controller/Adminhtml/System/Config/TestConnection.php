@@ -9,6 +9,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Worldline\PaymentCore\Model\Config\ConnectionTest\FromAjaxRequest;
 
 class TestConnection extends Action implements HttpPostActionInterface
@@ -40,7 +41,11 @@ class TestConnection extends Action implements HttpPostActionInterface
     {
         /** @var Json $resultPage */
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-        $result = $this->connectionTester->test();
+        try {
+            $result = $this->connectionTester->test();
+        } catch (LocalizedException $e) {
+            $result = $e->getMessage();
+        }
 
         return $resultPage->setData(
             ($result === self::SUCCESS_RESULT)

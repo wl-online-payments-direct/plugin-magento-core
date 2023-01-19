@@ -22,6 +22,17 @@
             <column name="id"/>
         </constraint>
     </table>
+    <table name="worldline_webhook" resource="default" engine="innodb" comment="Worldline Webhook Table">
+        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="varchar" name="increment_id" nullable="true" length="32" comment="Increment Order ID"/>
+        <column xsi:type="varchar" name="type" nullable="true" length="32" comment="Type"/>
+        <column xsi:type="smallint" name="status_code" unsigned="false" nullable="true" comment="Status Code"/>
+        <column xsi:type="text" name="body"/>
+        <column xsi:type="timestamp" name="created_at" default="CURRENT_TIMESTAMP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
     <table name="worldline_payment_refund_request" resource="default" engine="innodb" comment="Worldline Refund Request">
         <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true"/>
         <column xsi:type="int" name="invoice_id" padding="10" unsigned="true" nullable="false" comment="Invoice ID"/>

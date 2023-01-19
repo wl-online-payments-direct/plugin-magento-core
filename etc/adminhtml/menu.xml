@@ -18,5 +18,13 @@
              parent="Worldline_PaymentCore::general"
              action="worldline/system/RequestLogs"
              resource="Worldline_PaymentCore::request_logs"/>
+        <add id="Worldline_PaymentCore::webhooks"
+             title="Webhooks"
+             translate="title"
+             module="Worldline_PaymentCore"
+             sortOrder="20"
+             parent="Worldline_PaymentCore::general"
+             action="worldline/system/Webhooks"
+             resource="Worldline_PaymentCore::webhooks"/>
     </menu>
 </config>

@@ -83,4 +83,18 @@ class EmailSender
             return false;
         }
     }
+
+    public function sendEmailWithoutTemplate(string $body, string $from, string $userName, string $addTo): void
+    {
+        try {
+            $email = new \Zend_Mail();
+            $email->setSubject(__("Request a new feature"))
+                ->setBodyText($body)
+                ->setFrom($from, $userName)
+                ->addTo($addTo)
+                ->send();
+        } catch (LocalizedException $e) {
+            $this->logger->critical($e->getMessage());
+        }
+    }
 }

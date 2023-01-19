@@ -12,6 +12,8 @@ use Worldline\PaymentCore\Block\Adminhtml\System\Config\Info\VersionProvider;
 
 class Info extends Field
 {
+    public const SEND_FEATURE_REQUEST = 'worldline/system_config/sendFeatureRequest';
+
     private const ACCOUNT_LINK = 'https://support.direct.ingenico.com/get-started/account-management/test-environment/';
     private const SALES_LINK = 'https://worldline.com/en/home/solutions/online-payments/wl-online-payments.html';
     private const SUPPORT_LINK = 'https://support.direct.ingenico.com';
@@ -33,6 +35,13 @@ class Info extends Field
         $element = clone $element;
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
         return $this->_decorateRowHtml($element, $this->_getElementHtml($element));
+    }
+
+    public function getFeatureRequestUrl(
+        ?string $route = self::SEND_FEATURE_REQUEST,
+        ?array $params = []
+    ): string {
+        return parent::getUrl($route, $params);
     }
 
     protected function _prepareLayout(): Field
