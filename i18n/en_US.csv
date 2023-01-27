@@ -119,6 +119,14 @@ Tax,Tax
 "Order Total","Order Total"
 "Item in Cart","Item in Cart"
 Qty,Qty
+"Order creation failed","Order creation failed"
+"Store id","Store id"
+"Reserved order id","Reserved order id"
+"Worldline payment id","Worldline payment id"
+"Date and time (UTC)","Date and time (UTC)"
+"Customer email","Customer email"
+"Error message","Error message"
+space,space
 "Update data from Worldline","Update data from Worldline"
 "If you want to leave any feature suggestions, feel free to fill in the form.","If you want to leave any feature suggestions, feel free to fill in the form."
 PSPID,PSPID
@@ -141,7 +149,6 @@ Error!,Error!
 "Please use one of the following extensions : html, htm, dhtml","Please use one of the following extensions : html, htm, dhtml"
 Save,Save
 "Something went wrong. Please check your credentials","Something went wrong. Please check your credentials"
-"Sorry, but something went wrong.","Sorry, but something went wrong."
 Worldline,Worldline
 "Request Logs","Request Logs"
 Webhooks,Webhooks
@@ -171,6 +178,11 @@ General,General
 "Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>","Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>"
 "Payment Refused Email Template","Payment Refused Email Template"
 "Email Sender","Email Sender"
+Notification,Notification
+Enabled,Enabled
+Sender,Sender
+Recipient,Recipient
+"Email Template","Email Template"
 Debug,Debug
 "Logging Records Lifetime (Days)","Logging Records Lifetime (Days)"
 "Debug Logs","Debug Logs"

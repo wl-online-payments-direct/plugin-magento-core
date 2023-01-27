@@ -47,7 +47,7 @@ class OrderCreationProcessor
         }
     }
 
-    private function placeOrder(string $reservedOrderId)
+    private function placeOrder(string $reservedOrderId): void
     {
         try {
             $this->pendingOrderManager->processPendingOrder($reservedOrderId);

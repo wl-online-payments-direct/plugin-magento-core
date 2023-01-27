@@ -13,10 +13,12 @@ use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterfaceFactory;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
 use Worldline\PaymentCore\Model\Order\CanPlaceValidator;
+use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
 use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
 
 /**
  * Identify if a webhook can trigger the order placement process, place an order and save payment information
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PlaceOrderProcessor implements ProcessorInterface
 {
@@ -55,6 +57,11 @@ class PlaceOrderProcessor implements ProcessorInterface
      */
     private $canPlaceOrderContextFactory;
 
+    /**
+     * @var FailedOrderCreationNotification
+     */
+    private $failedOrderCreationNotification;
+
     public function __construct(
         QuoteResource $quoteResource,
         QuoteManagement $quoteManagement,
@@ -62,7 +69,8 @@ class PlaceOrderProcessor implements ProcessorInterface
         WebhookResponseManager $webhookResponseManager,
         CanPlaceValidator $canPlaceValidator,
         PaymentDataManagerInterface $paymentDataManager,
-        CanPlaceOrderContextInterfaceFactory $canPlaceOrderContextFactory
+        CanPlaceOrderContextInterfaceFactory $canPlaceOrderContextFactory,
+        FailedOrderCreationNotification $failedOrderCreationNotification
     ) {
         $this->quoteResource = $quoteResource;
         $this->quoteManagement = $quoteManagement;
@@ -71,6 +79,7 @@ class PlaceOrderProcessor implements ProcessorInterface
         $this->canPlaceValidator = $canPlaceValidator;
         $this->paymentDataManager = $paymentDataManager;
         $this->canPlaceOrderContextFactory = $canPlaceOrderContextFactory;
+        $this->failedOrderCreationNotification = $failedOrderCreationNotification;
     }
 
     public function process(WebhooksEvent $webhookEvent): void
@@ -95,7 +104,15 @@ class PlaceOrderProcessor implements ProcessorInterface
             return;
         }
 
-        $this->quoteManagement->submit($quote);
+        try {
+            $this->quoteManagement->submit($quote);
+        } catch (\Exception $e) {
+            $this->failedOrderCreationNotification->notify(
+                $quote->getReservedOrderId(),
+                $e->getMessage(),
+                FailedOrderCreationNotification::WEBHOOK_SPACE
+            );
+        }
     }
 
     private function isValid(PaymentResponse $paymentResponse, CartInterface $quote): bool

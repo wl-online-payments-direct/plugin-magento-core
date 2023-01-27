@@ -8,6 +8,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Sales\Model\OrderFactory;
 
 class CheckOrder extends Action implements HttpPostActionInterface
@@ -32,7 +33,7 @@ class CheckOrder extends Action implements HttpPostActionInterface
         $this->orderFactory = $orderFactory;
     }
 
-    public function execute()
+    public function execute(): ResultInterface
     {
         $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
 
