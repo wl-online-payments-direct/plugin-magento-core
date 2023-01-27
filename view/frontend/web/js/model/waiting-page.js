@@ -39,8 +39,8 @@ define([
                     "incrementId": self.incrementId
                 }
             })
-            .done(function(result) {
-                if (result.status) {
+            .always(function(result) {
+                if (result.status === true) {
                     window.location.replace(self.successUrl);
                 } else {
                     if (self.count < 7) {
@@ -51,9 +51,6 @@ define([
                         }.bind(self), 1000);
                     }
                 }
-            })
-            .fail(function() {
-                self.showMessage($t('Sorry, but something went wrong.'));
             });
         },
 
@@ -68,6 +65,7 @@ define([
             })
             .done(function(result) {
                 if (result.error) {
+                    window.location.replace(self.pendingPageUrl);
                     return;
                 }
 
@@ -78,7 +76,7 @@ define([
                 }
             })
             .fail(function() {
-                self.showMessage($t('Sorry, but something went wrong.'));
+                window.location.replace(self.pendingPageUrl);
             });
         }
     });

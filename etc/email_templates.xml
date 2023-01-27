@@ -1,4 +1,15 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
-    <template id="worldline_order_creator_general_refused_payment_template" label="Payment Refused" file="payment_refused.html" type="html" module="Worldline_PaymentCore" area="frontend"/>
+    <template id="worldline_order_creator_general_refused_payment_template"
+              label="Payment Refused"
+              file="payment_refused.html"
+              type="html"
+              module="Worldline_PaymentCore"
+              area="frontend"/>
+    <template id="worldline_order_creator_notification_email_template"
+              label="Order creation failed"
+              file="order_creation_failed.html"
+              type="html"
+              module="Worldline_PaymentCore"
+              area="frontend"/>
 </config>

@@ -5,7 +5,6 @@ namespace Worldline\PaymentCore\Model;
 
 use Magento\Framework\App\Area;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\MailException;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Translate\Inline\StateInterface;
 use Magento\Quote\Api\Data\CartInterface;
@@ -60,13 +59,23 @@ class EmailSender
         return $this->sendEmail($emailTemplate, $storeId, $sendFrom, $sendTo);
     }
 
-    public function sendEmail(string $template, int $storeId, $sendFrom, $sendTo, array $vars = []): bool
-    {
+    public function sendEmail(
+        string $template,
+        int $storeId,
+        string $sendFrom,
+        string $sendTo,
+        array $vars = [],
+        array $options = []
+    ): bool {
+        if (!$options) {
+            $options = ['area' => Area::AREA_FRONTEND, 'store' => $storeId];
+        }
+
         try {
             $this->inlineTranslation->suspend();
             $transport = $this->transportBuilder
                 ->setTemplateIdentifier($template)
-                ->setTemplateOptions(['area' => Area::AREA_FRONTEND, 'store' => $storeId])
+                ->setTemplateOptions($options)
                 ->setTemplateVars($vars)
                 ->setFromByScope($sendFrom, $storeId)
                 ->addTo($sendTo)

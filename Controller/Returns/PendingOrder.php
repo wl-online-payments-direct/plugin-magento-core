@@ -10,6 +10,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
+use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
 
 class PendingOrder extends Action implements HttpPostActionInterface
 {
@@ -18,31 +19,48 @@ class PendingOrder extends Action implements HttpPostActionInterface
      */
     private $pendingOrderManager;
 
+    /**
+     * @var FailedOrderCreationNotification
+     */
+    private $failedOrderCreationNotification;
+
     public function __construct(
         Context $context,
-        PendingOrderManagerInterface $pendingOrderManager
+        PendingOrderManagerInterface $pendingOrderManager,
+        FailedOrderCreationNotification $failedOrderCreationNotification
     ) {
         parent::__construct($context);
         $this->pendingOrderManager = $pendingOrderManager;
+        $this->failedOrderCreationNotification = $failedOrderCreationNotification;
     }
 
     public function execute(): ResultInterface
     {
         $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+        $incrementId = $this->getRequest()->getParam('incrementId', '');
+
         try {
-            $incrementId = $this->getRequest()->getParam('incrementId', '');
             $param['status'] = $this->pendingOrderManager->processPendingOrder($incrementId);
             return $result->setData($param);
         } catch (LocalizedException $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
             return $result->setData([
-                'error' => $e->getMessage(),
+                'error' => $this->processException($incrementId, $e->getMessage()),
             ]);
         } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
             return $result->setData([
-                'error' => __('Sorry, but something went wrong'),
+                'error' => $this->processException($incrementId, __('Sorry, but something went wrong')),
             ]);
         }
+    }
+
+    private function processException($incrementId, $errorMessage)
+    {
+        $this->failedOrderCreationNotification->notify(
+            $incrementId,
+            $errorMessage,
+            FailedOrderCreationNotification::WAITING_PAGE_SPACE
+        );
+        $this->messageManager->addErrorMessage($errorMessage);
+        return $errorMessage;
     }
 }

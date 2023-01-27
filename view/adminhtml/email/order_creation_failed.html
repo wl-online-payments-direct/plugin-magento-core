@@ -1,0 +1,71 @@
+<!--@subject {{trans "Order creation failed"}} @-->
+<!--@vars {
+"var store_id":"store id",
+"var reserved_order_id":"reserved order id",
+"var wl_payment_id":"wl payment id",
+"var customer_email":"customer email",
+"var date":"date",
+"var error_message":"error message",
+"var space":"space"
+} @-->
+
+<div>
+    <table>
+        <tr>
+            <td>
+                <p>{{trans 'Store id'}}</p>
+            </td>
+            <td>
+                <p>{{var store_id}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>{{trans 'Reserved order id'}}</p>
+            </td>
+            <td>
+                <p>{{var reserved_order_id}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>{{trans 'Worldline payment id'}}</p>
+            </td>
+            <td>
+                <p>{{var wl_payment_id}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>{{trans 'Date and time (UTC)'}}</p>
+            </td>
+            <td>
+                <p>{{var date}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>{{trans 'Customer email'}}</p>
+            </td>
+            <td>
+                <p>{{var customer_email}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>{{trans 'Error message'}}</p>
+            </td>
+            <td>
+                <p>{{var error_message}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>{{trans 'space'}}</p>
+            </td>
+            <td>
+                <p>{{var space}}</p>
+            </td>
+        </tr>
+    </table>
+</div>
