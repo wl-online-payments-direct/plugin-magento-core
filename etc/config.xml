@@ -9,6 +9,11 @@
                 <testing_api_url>https://payment.preprod.direct.worldline-solutions.com</testing_api_url>
             </connection>
         </worldline_connection>
+        <worldline_payment>
+            <general_settings>
+                <enable_3d>1</enable_3d>
+            </general_settings>
+        </worldline_payment>
         <worldline_order_creator>
             <general>
                 <fallback_timeout>10</fallback_timeout>

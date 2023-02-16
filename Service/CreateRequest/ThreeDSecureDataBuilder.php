@@ -11,6 +11,7 @@ use OnlinePayments\Sdk\Domain\RedirectionDataFactory;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Domain\ThreeDSecureFactory;
 use Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureDataBuilderInterface;
+use Worldline\PaymentCore\Model\Config\GeneralSettingsConfig;
 use Worldline\PaymentCore\Model\MethodNameExtractor;
 use Worldline\PaymentCore\Model\ThreeDSecure\ParamsHandler;
 
@@ -37,22 +38,29 @@ class ThreeDSecureDataBuilder implements ThreeDSecureDataBuilderInterface
     private $threeDSecureParamsHandler;
 
     /**
-     * @var Config[]
+     * @var GeneralSettingsConfig
      */
-    private $configProviders;
+    private $generalSettings;
+
+    /**
+     * @var string[]
+     */
+    private $returnUrls;
 
     public function __construct(
         ThreeDSecureFactory $threeDSecureFactory,
         RedirectionDataFactory $redirectionDataFactory,
         MethodNameExtractor $methodNameExtractor,
         ParamsHandler $threeDSecureParamsHandler,
-        array $configProviders = []
+        GeneralSettingsConfig $generalSettings,
+        array $returnUrls = []
     ) {
         $this->threeDSecureFactory = $threeDSecureFactory;
         $this->redirectionDataFactory = $redirectionDataFactory;
         $this->methodNameExtractor = $methodNameExtractor;
         $this->threeDSecureParamsHandler = $threeDSecureParamsHandler;
-        $this->configProviders = $configProviders;
+        $this->generalSettings = $generalSettings;
+        $this->returnUrls = $returnUrls;
     }
 
     /**
@@ -61,34 +69,22 @@ class ThreeDSecureDataBuilder implements ThreeDSecureDataBuilderInterface
     public function build(CartInterface $quote): ThreeDSecure
     {
         $methodCode = $this->methodNameExtractor->extract($quote->getPayment());
-        $config = $this->configProviders[$methodCode] ?? null;
-        if (!$config instanceof Config) {
-            throw new InvalidArgumentException(sprintf('Config Provider must extends %s', Config::class));
-        }
+        $returnUrl = $this->returnUrls[$methodCode] ?? '';
 
         $storeId = (int)$quote->getStoreId();
         $threeDSecure = $this->threeDSecureFactory->create();
 
-        $isSkipAuthentication = $config->hasSkipAuthentication($storeId);
-        if (!$isSkipAuthentication) {
-            $this->threeDSecureParamsHandler->handle(
-                $threeDSecure,
-                (float)$quote->getBaseSubtotal(),
-                $config->isThreeDExemptionEnabled($storeId),
-                $config->isTriggerAnAuthentication($storeId)
-            );
-        }
+        $this->threeDSecureParamsHandler->handle($threeDSecure, (float)$quote->getBaseSubtotal(), $storeId);
 
-        $threeDSecure->setSkipAuthentication($isSkipAuthentication);
-        $threeDSecure->setRedirectionData($this->getRedirectionData($config, $storeId));
+        $threeDSecure->setRedirectionData($this->getRedirectionData($returnUrl, $storeId));
 
         return $threeDSecure;
     }
 
-    private function getRedirectionData(Config $config, int $storeId): RedirectionData
+    private function getRedirectionData(string $returnUrl, int $storeId): RedirectionData
     {
         $redirectionData = $this->redirectionDataFactory->create();
-        $redirectionData->setReturnUrl($config->getReturnUrl($storeId));
+        $redirectionData->setReturnUrl($this->generalSettings->getReturnUrl($returnUrl, $storeId));
 
         return $redirectionData;
     }

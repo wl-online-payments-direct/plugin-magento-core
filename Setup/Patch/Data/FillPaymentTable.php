@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Setup\Patch\Data;
@@ -8,6 +7,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Psr\Log\LoggerInterface;
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Model\Payment\ResourceModel\Payment as PaymentResource;
@@ -31,14 +31,21 @@ class FillPaymentTable implements DataPatchInterface
      */
     private $moduleDataSetup;
 
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         TransactionCollectionFactory $transactionCollectionFactory,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        AmountFormatterInterface $amountFormatter
     ) {
         $this->transactionCollectionFactory = $transactionCollectionFactory;
         $this->logger = $logger;
         $this->moduleDataSetup = $moduleDataSetup;
+        $this->amountFormatter = $amountFormatter;
     }
 
     public function apply(): FillPaymentTable
@@ -59,7 +66,8 @@ class FillPaymentTable implements DataPatchInterface
                 PaymentInterface::PAYMENT_ID => $item->getTransactionId(),
                 PaymentInterface::PAYMENT_PRODUCT_ID =>
                     $item->getAdditionalData()[PaymentInterface::PAYMENT_PRODUCT_ID] ?? 0,
-                PaymentInterface::AMOUNT => round($item->getAmount() * 100),
+                PaymentInterface::AMOUNT =>
+                    $this->amountFormatter->formatToInteger((float) $item->getAmount(), (string) $item->getCurrency()),
                 PaymentInterface::CURRENCY => $item->getCurrency(),
                 PaymentInterface::FRAUD_RESULT => $item->getAdditionalData()[PaymentInterface::FRAUD_RESULT] ?? '',
                 PaymentInterface::CARD_NUMBER => $item->getAdditionalData()[PaymentInterface::CARD_NUMBER] ?? '',

@@ -51,17 +51,22 @@ class PendingPaymentPageDataProvider implements ArgumentInterface
         $this->orderSynchronizationConfig = $orderSynchronizationConfig;
     }
 
-    public function getNotificationMessage(): string
+    public function getNotificationMessage(string $messagePostfix = ''): string
     {
         $message = __('Thank you for your order %1.', $this->getIncrementId());
         $message .= '<br> ';
         $message .= __('Your order is still being processed and you will receive a confirmation e-mail.');
         $message .= '<br> ';
-        $message .= __(
-            'Please <a href="%1">Contact us</a> in case you don\'t receive the confirmation within %2 minutes.',
-            $this->getMailTo(),
-            $this->getFallbackTimeout()
-        );
+
+        if (!$messagePostfix) {
+            $messagePostfix = __(
+                'Please <a href="%1">Contact us</a> in case you don\'t receive the confirmation within %2 minutes.',
+                $this->getMailTo(),
+                $this->getFallbackTimeout()
+            );
+        }
+
+        $message .= $messagePostfix;
 
         return $message;
     }

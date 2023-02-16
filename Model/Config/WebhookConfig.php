@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Config;
@@ -42,7 +41,7 @@ class WebhookConfig
         return $this->encryptor->decrypt($this->getValue('secret_key', $storeId));
     }
 
-    private function getValue(string $configName, ?int $storeId = null): string
+    public function getValue(string $configName, ?int $storeId = null): string
     {
         $xmlConfigPath = $this->data[$configName] ?? '';
         if (!$xmlConfigPath) {

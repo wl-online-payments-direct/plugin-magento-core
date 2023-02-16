@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Setup\Patch\Data;
@@ -8,6 +7,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Psr\Log\LoggerInterface;
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Model\Transaction\ResourceModel\Transaction as TransactionResource;
 use Worldline\PaymentCore\Model\Transaction\ResourceModel\Transaction\Collection as TransactionCollection;
@@ -30,14 +30,21 @@ class UpdateTransactionTable implements DataPatchInterface
      */
     private $moduleDataSetup;
 
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         TransactionCollectionFactory $transactionCollectionFactory,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        AmountFormatterInterface $amountFormatter
     ) {
         $this->transactionCollectionFactory = $transactionCollectionFactory;
         $this->logger = $logger;
         $this->moduleDataSetup = $moduleDataSetup;
+        $this->amountFormatter = $amountFormatter;
     }
 
     public function apply(): UpdateTransactionTable
@@ -51,7 +58,10 @@ class UpdateTransactionTable implements DataPatchInterface
 
         /** @var TransactionInterface $item */
         foreach ($collection->getItems() as $item) {
-            $amount = round($item->getAmount() * 100);
+            $amount = $this->amountFormatter->formatToInteger(
+                (float) $item->getAmount(),
+                (string) $item->getCurrency()
+            );
             try {
                 $connection->update($table, ['amount' => $amount], ['entity_id = ?' => $item->getId()]);
             } catch (LocalizedException $e) {

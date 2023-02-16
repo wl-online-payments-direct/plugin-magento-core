@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\RefundRequest;
 
-use Exception;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Creditmemo;
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Data\RefundRequestInterfaceFactory;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 
@@ -36,16 +35,23 @@ class CreditmemoOnlineService
      */
     private $orderRepository;
 
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
     public function __construct(
         RefundRequestRepositoryInterface $refundRequestRepository,
         CreditmemoRepositoryInterface $creditmemoRepository,
         RefundRequestInterfaceFactory $refundRequestFactory,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        AmountFormatterInterface $amountFormatter
     ) {
         $this->refundRequestRepository = $refundRequestRepository;
         $this->creditmemoRepository = $creditmemoRepository;
         $this->refundRequestFactory = $refundRequestFactory;
         $this->orderRepository = $orderRepository;
+        $this->amountFormatter = $amountFormatter;
     }
 
     /**
@@ -55,27 +61,26 @@ class CreditmemoOnlineService
      */
     public function refund(CreditmemoInterface $creditmemo): CreditmemoInterface
     {
-        try {
-            $order = $creditmemo->getOrder();
-            $invoice = $creditmemo->getInvoice();
-            $invoiceId = (int)$invoice->getId();
-            $payment = $order->getPayment();
-            $baseAmountToRefund = $payment->formatAmount($creditmemo->getBaseGrandTotal());
-            $gateway = $payment->getMethodInstance();
-            $gateway->setStore($order->getStoreId());
-            $gateway->refund($payment, $baseAmountToRefund);
+        $order = $creditmemo->getOrder();
+        $invoice = $creditmemo->getInvoice();
+        $invoiceId = (int)$invoice->getId();
+        $payment = $order->getPayment();
+        $baseAmountToRefund = $payment->formatAmount($creditmemo->getBaseGrandTotal());
+        $gateway = $payment->getMethodInstance();
+        $gateway->setStore($order->getStoreId());
+        $gateway->refund($payment, $baseAmountToRefund);
 
-            $payment->addTransaction(TransactionInterface::TYPE_REFUND, $creditmemo, true);
+        $payment->addTransaction(TransactionInterface::TYPE_REFUND, $creditmemo, true);
 
-            $creditmemo->setState(Creditmemo::STATE_OPEN);
-            $this->creditmemoRepository->save($creditmemo);
+        $creditmemo->setState(Creditmemo::STATE_OPEN);
+        $this->creditmemoRepository->save($creditmemo);
 
-            $amount = (int) round($creditmemo->getGrandTotal() * 100);
-            $this->saveRefundRequest($invoiceId, $order->getIncrementId(), (int)$creditmemo->getId(), $amount);
-            $this->orderRepository->save($order); //need to save $order->getCustomerNoteNotify() flag changes
-        } catch (Exception $e) {
-            throw new LocalizedException(__($e->getMessage()));
-        }
+        $amount = $this->amountFormatter->formatToInteger(
+            (float) $creditmemo->getGrandTotal(),
+            (string) $creditmemo->getOrderCurrencyCode()
+        );
+        $this->saveRefundRequest($invoiceId, $order->getIncrementId(), (int)$creditmemo->getId(), $amount);
+        $this->orderRepository->save($order); //need to save $order->getCustomerNoteNotify() flag changes
 
         return $creditmemo;
     }

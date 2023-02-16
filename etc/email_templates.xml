@@ -11,5 +11,5 @@
               file="order_creation_failed.html"
               type="html"
               module="Worldline_PaymentCore"
-              area="frontend"/>
+              area="adminhtml"/>
 </config>

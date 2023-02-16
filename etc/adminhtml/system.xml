@@ -121,6 +121,35 @@
             <label>Payment Methods</label>
             <tab>worldline</tab>
             <resource>Worldline_PaymentCore::config_worldline</resource>
+            <group id="general_settings" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enable_3d" translate="label tooltip" type="select" sortOrder="10" showInDefault="1" showInWebsite="1">
+                    <label>Enable 3-D Secure Authentication</label>
+                    <tooltip>Activating this option allows the issuer of the customer card to request the 3-D Secure process to be triggered. This means that both the challenge flow (where strong customer authentication is needed) and the frictionless flow (where the issuing bank will take full liability) can be triggered.</tooltip>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="enforce_authentication" translate="label tooltip" type="select" sortOrder="20" showInDefault="1" showInWebsite="1">
+                    <label>Enforce Strong Customer Authentication for Every Payment</label>
+                    <tooltip>Activating this option will request the issuer to always go for a challenge flow during the 3-D Secure process.</tooltip>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable_3d">1</field>
+                    </depends>
+                </field>
+                <field id="authentication_exemption" translate="label tooltip" type="select" sortOrder="30" showInDefault="1" showInWebsite="1">
+                    <label>Request Authentication Exemption for Low-value Baskets</label>
+                    <tooltip>Activating this option will request to issuer not to request a strong customer authentication for the payment if the value of the basket is below 30 EUR. This exemption can only be requested for EU customers, as it is linked to the PSD2 European regulation. Note that activating this option will transfer the liability to you, as a merchant, in case of fraud.</tooltip>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enable_3d">1</field>
+                        <field id="enforce_authentication">0</field>
+                    </depends>
+                </field>
+                <field id="pwa_route" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Return URL</label>
+                    <comment><![CDATA[Should be set only if you use PWA Studio or any other 3rd party frontend.]]></comment>
+                </field>
+            </group>
         </section>
         <section id="worldline_order_creator" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Dynamic order status synchronization</label>

@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\RefundRequest;
 
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
+use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
 use Worldline\PaymentCore\Model\Transaction\TransactionUpdater;
 
 /**
@@ -33,16 +35,30 @@ class CreditmemoUpdater
      */
     private $transactionRepository;
 
+    /**
+     * @var QuoteResource
+     */
+    private $quoteResource;
+
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
     public function __construct(
         TransactionUpdater $transactionUpdater,
         RefundProcessor $refundProcessor,
         RefundRequestRepositoryInterface $refundRequestRepository,
-        TransactionRepositoryInterface $transactionRepository
+        TransactionRepositoryInterface $transactionRepository,
+        QuoteResource $quoteResource,
+        AmountFormatterInterface $amountFormatter
     ) {
         $this->transactionUpdater = $transactionUpdater;
         $this->refundProcessor = $refundProcessor;
         $this->refundRequestRepository = $refundRequestRepository;
         $this->transactionRepository = $transactionRepository;
+        $this->quoteResource = $quoteResource;
+        $this->amountFormatter = $amountFormatter;
     }
 
     public function update(string $incrementId, string $grandTotal, int $storeId): void
@@ -52,7 +68,12 @@ class CreditmemoUpdater
             return;
         }
 
-        $currentAmount = (int) round($grandTotal * 100);
+        $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+        $currentAmount = $this->amountFormatter->formatToInteger(
+            (float) $grandTotal,
+            (string) $quote->getCurrency()->getQuoteCurrencyCode()
+        );
+
         if (!$this->isExistCreditmemo($incrementId, $currentAmount)) {
             return;
         }

@@ -1,10 +1,10 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Transaction;
 
 use Magento\Sales\Api\Data\OrderInterface;
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterfaceFactory;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
@@ -30,14 +30,21 @@ class PaymentInfoBuilder
      */
     private $paymentRepository;
 
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
     public function __construct(
         PaymentInfoInterfaceFactory $paymentInfoFactory,
         TransactionRepositoryInterface $transactionRepository,
-        PaymentRepositoryInterface $paymentRepository
+        PaymentRepositoryInterface $paymentRepository,
+        AmountFormatterInterface $amountFormatter
     ) {
         $this->paymentInfoFactory = $paymentInfoFactory;
         $this->transactionRepository = $transactionRepository;
         $this->paymentRepository = $paymentRepository;
+        $this->amountFormatter = $amountFormatter;
     }
 
     public function build(OrderInterface $order): PaymentInfoInterface
@@ -61,7 +68,9 @@ class PaymentInfoBuilder
         PaymentInfoInterface $paymentInfo,
         PaymentInterface $payment
     ): void {
-        $paymentInfo->setAuthorizedAmount($this->formatAmount((int) $payment->getAmount()));
+        $paymentInfo->setAuthorizedAmount(
+            $this->formatAmount((int) $payment->getAmount(), (string) $payment->getCurrency())
+        );
         $paymentInfo->setFraudResult((string)$payment->getFraudResult());
         $paymentInfo->setCardLastNumbers((string) $payment->getCardNumber());
         $paymentInfo->setPaymentProductId((int) $payment->getPaymentProductId());
@@ -79,10 +88,12 @@ class PaymentInfoBuilder
         $authorizedAmount = $payment->getAmount();
         $capturedAmount = $this->transactionRepository->getCaptureTransactionsAmount($incrementId);
         $amountAvailableForCapture = (int) round($authorizedAmount - $capturedAmount);
-        $paymentInfo->setAmountAvailableForCapture($this->formatAmount($amountAvailableForCapture));
+        $paymentInfo->setAmountAvailableForCapture(
+            $this->formatAmount($amountAvailableForCapture, (string) $payment->getCurrency())
+        );
 
         $refundAmount = (int) $this->transactionRepository->getRefundedTransactionsAmount($incrementId);
-        $paymentInfo->setRefundedAmount($this->formatAmount($refundAmount));
+        $paymentInfo->setRefundedAmount($this->formatAmount($refundAmount, (string) $payment->getCurrency()));
 
         if (!$capturedAmount) {
             return;
@@ -90,7 +101,9 @@ class PaymentInfoBuilder
 
         $pendingRefundAmount = $this->transactionRepository->getPendingRefundTransactionsAmount($incrementId);
         $amountAvailableForRefund = (int) round($capturedAmount - $pendingRefundAmount - $refundAmount);
-        $paymentInfo->setAmountAvailableForRefund($this->formatAmount($amountAvailableForRefund));
+        $paymentInfo->setAmountAvailableForRefund(
+            $this->formatAmount($amountAvailableForRefund, (string) $payment->getCurrency())
+        );
 
         if ($amountAvailableForRefund > 0 || $authorizedAmount > $capturedAmount) {
             $captureTransaction = $this->transactionRepository->getCaptureTransaction($incrementId);
@@ -112,8 +125,8 @@ class PaymentInfoBuilder
         }
     }
 
-    private function formatAmount(int $amount): float
+    private function formatAmount(int $amount, string $currency): float
     {
-        return (float) ($amount / 100);
+        return $this->amountFormatter->formatToFloat($amount, $currency);
     }
 }

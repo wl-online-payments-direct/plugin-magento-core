@@ -1,11 +1,11 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Gateway\Request;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Gateway\SubjectReader;
 use Worldline\PaymentCore\Service\Payment\CapturePaymentRequestBuilder;
 
@@ -25,12 +25,19 @@ class CaptureDataBuilder implements BuilderInterface
      */
     private $capturePaymentBuilder;
 
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
     public function __construct(
         SubjectReader $subjectReader,
-        CapturePaymentRequestBuilder $capturePaymentBuilder
+        CapturePaymentRequestBuilder $capturePaymentBuilder,
+        AmountFormatterInterface $amountFormatter
     ) {
         $this->subjectReader = $subjectReader;
         $this->capturePaymentBuilder = $capturePaymentBuilder;
+        $this->amountFormatter = $amountFormatter;
     }
 
     /**
@@ -48,7 +55,10 @@ class CaptureDataBuilder implements BuilderInterface
             throw new LocalizedException(__('No authorization transaction to proceed capture.'));
         }
 
-        $amount = (int) round($this->subjectReader->readAmount($buildSubject) * 100);
+        $amount = $this->amountFormatter->formatToInteger(
+            (float) $this->subjectReader->readAmount($buildSubject),
+            (string) $payment->getOrder()->getOrderCurrencyCode()
+        );
 
         return [
             self::PAYMENT_ID => $paymentId,
