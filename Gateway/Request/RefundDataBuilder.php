@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Gateway\Request;
@@ -9,6 +8,7 @@ use Magento\Sales\Model\Order\Payment;
 use OnlinePayments\Sdk\Domain\AmountOfMoneyFactory;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundRequestFactory;
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Gateway\SubjectReader;
 
 class RefundDataBuilder implements BuilderInterface
@@ -32,14 +32,21 @@ class RefundDataBuilder implements BuilderInterface
      */
     private $amountOfMoneyFactory;
 
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
     public function __construct(
         SubjectReader $subjectReader,
         RefundRequestFactory $refundRequestFactory,
-        AmountOfMoneyFactory $amountOfMoneyFactory
+        AmountOfMoneyFactory $amountOfMoneyFactory,
+        AmountFormatterInterface $amountFormatter
     ) {
         $this->subjectReader = $subjectReader;
         $this->refundRequestFactory = $refundRequestFactory;
         $this->amountOfMoneyFactory = $amountOfMoneyFactory;
+        $this->amountFormatter = $amountFormatter;
     }
 
     public function build(array $buildSubject): array
@@ -64,8 +71,11 @@ class RefundDataBuilder implements BuilderInterface
 
     private function getRefundRequest(array $buildSubject, Payment $payment): RefundRequest
     {
-        $amount = (int) round($this->subjectReader->readAmount($buildSubject) * 100);
         $currencyCode = $payment->getOrder()->getOrderCurrencyCode();
+        $amount = $this->amountFormatter->formatToInteger(
+            (float) $this->subjectReader->readAmount($buildSubject),
+            (string) $currencyCode
+        );
 
         $amountOfMoney = $this->amountOfMoneyFactory->create();
         $amountOfMoney->setAmount($amount);

@@ -1,12 +1,13 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\ResourceModel;
 
+use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\CartInterface;
-use Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory as QuotePaymentCollectionFactory;
 use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
+use Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory as QuotePaymentCollectionFactory;
+use Worldline\PaymentCore\Api\Data\PaymentInterface;
 
 class Quote
 {
@@ -21,16 +22,23 @@ class Quote
     private $quoteCollectionFactory;
 
     /**
+     * @var CartRepositoryInterface
+     */
+    private $cartRepository;
+
+    /**
      * @var array
      */
     private $quotes = [];
 
     public function __construct(
         QuotePaymentCollectionFactory $quotePaymentCollectionFactory,
-        QuoteCollectionFactory $quoteCollectionFactory
+        QuoteCollectionFactory $quoteCollectionFactory,
+        CartRepositoryInterface $cartRepository
     ) {
         $this->quotePaymentCollectionFactory = $quotePaymentCollectionFactory;
         $this->quoteCollectionFactory = $quoteCollectionFactory;
+        $this->cartRepository = $cartRepository;
     }
 
     public function getQuoteByReservedOrderId(string $reservedOrderId): CartInterface
@@ -57,5 +65,12 @@ class Quote
         $collection->addFieldToFilter('entity_id', ['eq' => $quotePayment->getQuoteId()]);
         $collection->getSelect()->limit(1);
         return $collection->getFirstItem();
+    }
+
+    public function setPaymentIdAndSave(CartInterface $quote, int $paymentProductId): void
+    {
+        $quote->getPayment()
+            ->setAdditionalInformation(PaymentInterface::PAYMENT_PRODUCT_ID, $paymentProductId);
+        $this->cartRepository->save($quote);
     }
 }

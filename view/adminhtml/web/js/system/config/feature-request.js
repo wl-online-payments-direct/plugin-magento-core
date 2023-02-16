@@ -55,6 +55,10 @@ define([
                         content: $.mage.__(response.errorMessage)
                     });
                 }
+            })).always($.proxy(function () {
+                $('#pspid').val('');
+                $('#company-name').val('');
+                $('#body-message').val('');
             }, this));
         },
     });

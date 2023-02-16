@@ -17,6 +17,9 @@
     <preference type="Worldline\PaymentCore\Model\OrderState" for="Worldline\PaymentCore\Api\Data\OrderStateInterface" />
     <preference type="Worldline\PaymentCore\Model\CacheIdentifier" for="Worldline\PaymentCore\Api\Data\CacheIdentifierInterface" />
 
+    <preference type="Worldline\PaymentCore\WebApi\Checkout\QuoteManager" for="Worldline\PaymentCore\Api\WebApi\Checkout\QuoteManagerInterface" />
+    <preference type="Worldline\PaymentCore\WebApi\Checkout\BaseCreatePaymentManagement" for="Worldline\PaymentCore\Api\WebApi\Checkout\BaseCreatePaymentManagementInterface" />
+
     <preference type="Worldline\PaymentCore\Model\Payment\Payment" for="Worldline\PaymentCore\Api\Data\PaymentInterface" />
     <preference type="Worldline\PaymentCore\Model\Payment\PaymentRepository" for="Worldline\PaymentCore\Api\PaymentRepositoryInterface" />
     <preference type="Worldline\PaymentCore\Model\Payment\PaymentManager" for="Worldline\PaymentCore\Api\PaymentManagerInterface" />
@@ -32,6 +35,8 @@
 
     <preference type="Worldline\PaymentCore\Model\QuoteRestoration" for="Worldline\PaymentCore\Api\QuoteRestorationInterface" />
 
+    <preference type="Worldline\PaymentCore\Model\AmountFormatter" for="Worldline\PaymentCore\Api\AmountFormatterInterface" />
+
     <preference type="Worldline\PaymentCore\Service\Payment\CancelPaymentService" for="Worldline\PaymentCore\Api\Service\Payment\CancelPaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Payment\CapturePaymentService" for="Worldline\PaymentCore\Api\Service\Payment\CapturePaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentDetailsService" for="Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface" />
@@ -40,11 +45,15 @@
     <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentService" for="Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Services\TestConnectionService" for="Worldline\PaymentCore\Api\Service\Services\TestConnectionServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Token\DeleteTokenService" for="Worldline\PaymentCore\Api\Service\Token\DeleteTokenServiceInterface" />
+    <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\GeneralDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\GeneralDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\AmountDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\AmountDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\CustomerDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\CustomerDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\ReferenceDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\ReferenceDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\ShippingAddressDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\ShippingAddressDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\ThreeDSecureDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureDataBuilderInterface" />
+
+    <preference type="Worldline\PaymentCore\Test\Infrastructure\ServiceStubSwitcher" for="Worldline\PaymentCore\Api\Test\Infrastructure\ServiceStubSwitcherInterface" />
+    <preference type="Worldline\PaymentCore\Test\Infrastructure\WebhookStubSender" for="Worldline\PaymentCore\Api\Test\Infrastructure\WebhookStubSenderInterface" />
     <!-- End Preference -->
 
     <type name="Worldline\PaymentCore\Block\Info">
@@ -82,6 +91,14 @@
     <type name="OnlinePayments\Sdk\Communicator">
         <plugin name="Worldline_PaymentCore::debug_logger"
                 type="Worldline\PaymentCore\Logger\Plugin\OnlinePayments\Sdk\Communicator\DebugLog"/>
+    </type>
+    <type name="Worldline\PaymentCore\Service\Payment\GetPaymentDetailsService">
+        <plugin name="Worldline_PaymentCore::test_infrastructure_get_payment_details_service"
+                type="Worldline\PaymentCore\Test\Infrastructure\Plugin\Service\Payment\GetPaymentDetailsServiceMock"/>
+    </type>
+    <type name="Worldline\PaymentCore\Service\Payment\GetPaymentService">
+        <plugin name="Worldline_PaymentCore::test_infrastructure_get_payment_service"
+                type="Worldline\PaymentCore\Test\Infrastructure\Plugin\Service\Payment\GetPaymentServiceMock"/>
     </type>
     <!-- End Plugin -->
 
@@ -146,6 +163,8 @@
                 <item name="secret_key" xsi:type="string">worldline_connection/webhook/secret_key</item>
             </argument>
         </arguments>
+        <plugin name="Worldline_PaymentCore::decrypt_keys_for_tests"
+                type="Worldline\PaymentCore\Test\Infrastructure\Plugin\WebhookConfig\DecryptedKey"/>
     </type>
     <type name="Worldline\PaymentCore\Logger\Config\ConfigDebugProvider">
         <arguments>

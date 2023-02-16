@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Gateway;
@@ -63,28 +62,6 @@ class SubjectReader
             || !$transaction instanceof DataObject
         ) {
             throw new InvalidArgumentException('The object is not a class \OnlinePayments\Sdk\DataObject.');
-        }
-
-        return $transaction;
-    }
-
-    /**
-     * Reads action from the subject.
-     *
-     * @param array $subject
-     * @return DataObject | null
-     * @throws InvalidArgumentException if the subject doesn't contain transaction details.
-     */
-    public function readMerchantAction(array $subject)
-    {
-        if (!isset($subject['object']) || !is_object($subject['object'])) {
-            throw new InvalidArgumentException('Response object does not exist.');
-        }
-
-        if ($subject['object'] instanceof CreatePaymentResponse) {
-            $transaction = $subject['object']->getMerchantAction();
-        } else {
-            $transaction = $subject['object'];
         }
 
         return $transaction;

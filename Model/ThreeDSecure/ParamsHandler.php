@@ -4,23 +4,37 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\ThreeDSecure;
 
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
+use Worldline\PaymentCore\Model\Config\GeneralSettingsConfig;
 
 class ParamsHandler
 {
     public const THRESHOLD_VALUE = 30;
 
-    public function handle(
-        ThreeDSecure $threeDSecure,
-        float $baseSubtotal,
-        bool $isThreeDExemptionEnabled,
-        bool $isAuthenticationTriggerEnabled
-    ): void {
-        if ($isThreeDExemptionEnabled && $baseSubtotal < self::THRESHOLD_VALUE) {
+    /**
+     * @var GeneralSettingsConfig
+     */
+    private $generalSettings;
+
+    public function __construct(GeneralSettingsConfig $generalSettings)
+    {
+        $this->generalSettings = $generalSettings;
+    }
+
+    public function handle(ThreeDSecure $threeDSecure, float $baseSubtotal, int $storeId): void
+    {
+        $isThreeDEnabled = $this->generalSettings->isThreeDEnabled($storeId);
+        $threeDSecure->setSkipAuthentication(!$isThreeDEnabled);
+
+        if (!$isThreeDEnabled) {
+            return;
+        }
+
+        if ($this->generalSettings->isAuthExemptionEnabled($storeId) && $baseSubtotal < self::THRESHOLD_VALUE) {
             $threeDSecure->setExemptionRequest('low-value');
             return;
         }
 
-        if ($isAuthenticationTriggerEnabled) {
+        if ($this->generalSettings->isEnforceAuthEnabled($storeId)) {
             $threeDSecure->setChallengeIndicator('challenge-required');
         }
     }

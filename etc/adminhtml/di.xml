@@ -5,6 +5,7 @@
         <arguments>
             <argument name="messages" xsi:type="array">
                 <item name="worldline_request_error_notification" xsi:type="string">Worldline\PaymentCore\Logger\Notification\AdminNotification</item>
+                <item name="worldline_moved_three_d_settings_notification" xsi:type="string">Worldline\PaymentCore\Model\ThreeDSecure\Notification\AdminNotification</item>
             </argument>
         </arguments>
     </type>
@@ -27,7 +28,7 @@
     </type>
 
     <type name="Magento\Sales\Block\Adminhtml\Order\Creditmemo\View">
-        <plugin name="Worldline_PaymentCore::UpdateStatusButton"
+        <plugin name="Worldline_PaymentCore::update_status_button"
                 type="Worldline\PaymentCore\Plugin\Magento\Sales\Block\Adminhtml\Order\Creditmemo\View\UpdateStatusButton"/>
     </type>
 </config>

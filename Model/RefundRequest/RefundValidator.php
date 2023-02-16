@@ -1,10 +1,10 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\RefundRequest;
 
 use Magento\Sales\Model\Order;
+use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 
 class RefundValidator
@@ -19,21 +19,29 @@ class RefundValidator
      */
     private $result;
 
-    public function __construct(RefundRequestRepositoryInterface $refundRequestRepository)
-    {
+    /**
+     * @var AmountFormatterInterface
+     */
+    private $amountFormatter;
+
+    public function __construct(
+        RefundRequestRepositoryInterface $refundRequestRepository,
+        AmountFormatterInterface $amountFormatter
+    ) {
         $this->refundRequestRepository = $refundRequestRepository;
+        $this->amountFormatter = $amountFormatter;
     }
 
     public function canRefund(Order $order): bool
     {
         if ($this->result === null) {
-            $this->result = $this->getResult($order);
+            $this->result = $this->canRefundResult($order);
         }
 
         return $this->result;
     }
 
-    private function getResult(Order $order): bool
+    private function canRefundResult(Order $order): bool
     {
         $incrementId = $order->getIncrementId();
         $refundRequests  = $this->refundRequestRepository->getListByIncrementId($incrementId);
@@ -46,11 +54,10 @@ class RefundValidator
             $refundAmount += $refundRequest->getAmount();
         }
 
-        $orderAmount = (int) round($order->getGrandTotal() * 100);
-        if ($orderAmount === $refundAmount) {
-            return false;
-        }
-
-        return true;
+        $orderAmount = $this->amountFormatter->formatToInteger(
+            (float) $order->getGrandTotal(),
+            (string) $order->getOrderCurrencyCode()
+        );
+        return $orderAmount !== $refundAmount;
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Service\Payment;
@@ -9,7 +8,6 @@ use OnlinePayments\Sdk\Domain\PaymentResponse;
 use Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface;
 use Worldline\PaymentCore\Model\ClientProvider;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
-use Worldline\PaymentCore\Service\Payment\Exception;
 
 /**
  * @link: https://support.direct.ingenico.com/documentation/api/reference/#operation/GetPaymentApi

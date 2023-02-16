@@ -19,6 +19,11 @@ class OrderState implements OrderStateInterface
     private $incrementId = '';
 
     /**
+     * @var string
+     */
+    private $methodCode = '';
+
+    /**
      * @var Phrase|string
      */
     private $message = '';
@@ -41,6 +46,16 @@ class OrderState implements OrderStateInterface
     public function setIncrementId(string $incrementId): void
     {
         $this->incrementId = $incrementId;
+    }
+
+    public function getPaymentMethod(): string
+    {
+        return $this->methodCode;
+    }
+
+    public function setPaymentMethod(string $methodCode): void
+    {
+        $this->methodCode = $methodCode;
     }
 
     /**

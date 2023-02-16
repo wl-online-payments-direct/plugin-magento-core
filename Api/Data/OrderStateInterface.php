@@ -15,6 +15,10 @@ interface OrderStateInterface
 
     public function setIncrementId(string $incrementId): void;
 
+    public function getPaymentMethod(): string;
+
+    public function setPaymentMethod(string $methodCode): void;
+
     /**
      * @return Phrase|string
      */
