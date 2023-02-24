@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.6.1
+- Support the 13.0.0 version of PWA.
+
 #### 2.6.0
 - Add price restrictions for currencies having specific decimals rules (like JPY).
 - Add Multibanco payment method.

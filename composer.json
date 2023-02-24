@@ -7,10 +7,8 @@
         "wl-online-payments-direct/sdk-php": "4.6.0"
     },
     "type": "magento2-module",
-    "version": "2.6.0",
-    "license": [
-        "OSL-3.0"
-    ],
+    "version": "2.6.1",
+    "license": ["MIT"],
     "authors": [
         {
             "name": "Worldline Online Payments",

@@ -19,6 +19,10 @@ interface OrderStateInterface
 
     public function setPaymentMethod(string $methodCode): void;
 
+    public function getPaymentProductId(): ?int;
+
+    public function setPaymentProductId(?int $paymentProductId = null): void;
+
     /**
      * @return Phrase|string
      */

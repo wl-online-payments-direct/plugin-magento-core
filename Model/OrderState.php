@@ -24,6 +24,11 @@ class OrderState implements OrderStateInterface
     private $methodCode = '';
 
     /**
+     * @var int|null
+     */
+    private $paymentProductId;
+
+    /**
      * @var Phrase|string
      */
     private $message = '';
@@ -56,6 +61,16 @@ class OrderState implements OrderStateInterface
     public function setPaymentMethod(string $methodCode): void
     {
         $this->methodCode = $methodCode;
+    }
+
+    public function getPaymentProductId(): ?int
+    {
+        return $this->paymentProductId;
+    }
+
+    public function setPaymentProductId(int $paymentProductId = null): void
+    {
+        $this->paymentProductId = $paymentProductId;
     }
 
     /**
