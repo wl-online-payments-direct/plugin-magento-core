@@ -149,6 +149,11 @@
                     <label>Custom Return URL</label>
                     <comment><![CDATA[Should be set only if you use PWA Studio or any other 3rd party frontend.]]></comment>
                 </field>
+                <field id="apply_surcharge" type="select" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1">
+                    <label>Apply Surcharge</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip><![CDATA[Surcharging will allow you to ask an additional amount to your customer based on the card used. Note that this feature will only work in Australia.]]></tooltip>
+                </field>
             </group>
         </section>
         <section id="worldline_order_creator" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">

@@ -51,7 +51,7 @@ class PaymentManager implements PaymentManagerInterface
         $wlPayment->setPaymentId($worldlineResponse->getId());
         $wlPayment->setPaymentProductId($cardPaymentMethod->getPaymentProductId());
         $wlPayment->setCardNumber(trim($cardPaymentMethod->getCard()->getCardNumber(), '*'));
-        $wlPayment->setAmount((int) $output->getAmountOfMoney()->getAmount());
+        $wlPayment->setAmount($this->getAmount($output));
         $wlPayment->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
     }
 
@@ -66,7 +66,7 @@ class PaymentManager implements PaymentManagerInterface
         $wlPayment->setIncrementId($output->getReferences()->getMerchantReference());
         $wlPayment->setPaymentId($worldlineResponse->getId());
         $wlPayment->setPaymentProductId($redirectPaymentMethod->getPaymentProductId());
-        $wlPayment->setAmount((int) $output->getAmountOfMoney()->getAmount());
+        $wlPayment->setAmount($this->getAmount($output));
         $wlPayment->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
     }
 
@@ -81,7 +81,17 @@ class PaymentManager implements PaymentManagerInterface
         $wlPayment->setIncrementId($output->getReferences()->getMerchantReference());
         $wlPayment->setPaymentId($worldlineResponse->getId());
         $wlPayment->setPaymentProductId($sepaPaymentMethod->getPaymentProductId());
-        $wlPayment->setAmount((int) $output->getAmountOfMoney()->getAmount());
+        $wlPayment->setAmount($this->getAmount($output));
         $wlPayment->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
+    }
+
+    private function getAmount(DataObject $output): int
+    {
+        $amount = (int)$output->getAmountOfMoney()->getAmount();
+        if ($output->getSurchargeSpecificOutput()) {
+            $amount += (int)$output->getSurchargeSpecificOutput()->getSurchargeAmount()->getAmount();
+        }
+
+        return $amount;
     }
 }

@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model;
 
 use Magento\Quote\Model\Quote\Payment;
+use Worldline\PaymentCore\Api\MethodNameExtractorInterface;
 
-class MethodNameExtractor
+class MethodNameExtractor implements MethodNameExtractorInterface
 {
     /**
      * Remove all unnecessary numbers and `vault` from the name, if any

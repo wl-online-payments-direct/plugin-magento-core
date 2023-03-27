@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\Webhook\Payment;
 
 use Magento\Framework\Exception\LocalizedException;
+use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
+use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
-use Worldline\PaymentCore\Model\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\Webhook\WebhookResponseManager;
 
 /**
@@ -42,7 +43,8 @@ class CancelledProcessor implements ProcessorInterface
      */
     public function process(WebhooksEvent $webhookEvent): void
     {
-        $response = $this->webhookResponseManager->getResponse($webhookEvent);
+        /** @var PaymentResponse $response */
+        $response = $webhookEvent->getPayment();
         $statusCode = (int)$response->getStatusOutput()->getStatusCode();
         if ($statusCode !== TransactionStatusInterface::AUTHORISED_AND_CANCELLED) {
             return;

@@ -3,30 +3,26 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model;
 
-use Magento\Checkout\Model\Session;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Quote\Api\Data\PaymentInterface;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
-use OnlinePayments\Sdk\Domain\PaymentResponse;
-use Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterfaceFactory;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
-use Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface;
-use Worldline\PaymentCore\Model\Order\CanPlaceValidator;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
+use Worldline\PaymentCore\Api\SessionDataManagerInterface;
+use Worldline\PaymentCore\Api\SurchargingQuoteManagerInterface;
+use Worldline\PaymentCore\Model\Order\CanPlaceOrderContextManager;
+use Worldline\PaymentCore\Model\PaymentOrderManager\PaymentService;
 
 /**
  * Validate payment information and create an order
- *
- * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
  */
 class PendingOrderManager implements PendingOrderManagerInterface
 {
     /**
-     * @var Session
+     * @var SessionDataManagerInterface
      */
-    private $checkoutSession;
+    private $sessionDataManager;
 
     /**
      * @var OrderFactory
@@ -34,7 +30,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
     private $orderFactory;
 
     /**
-     * @var QuoteResource
+     * @var QuoteResourceInterface
      */
     private $quoteResource;
 
@@ -44,9 +40,9 @@ class PendingOrderManager implements PendingOrderManagerInterface
     private $quoteManagement;
 
     /**
-     * @var CanPlaceValidator
+     * @var CanPlaceOrderContextManager
      */
-    private $canPlaceValidator;
+    private $canPlaceOrderContextManager;
 
     /**
      * @var RefusedStatusProcessor
@@ -54,7 +50,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
     private $refusedStatusProcessor;
 
     /**
-     * @var GetPaymentServiceInterface
+     * @var PaymentService
      */
     private $paymentService;
 
@@ -64,30 +60,50 @@ class PendingOrderManager implements PendingOrderManagerInterface
     private $paymentDataManager;
 
     /**
-     * @var CanPlaceOrderContextInterfaceFactory
+     * @var SurchargingQuoteManagerInterface
      */
-    private $canPlaceOrderContextFactory;
+    private $surchargingQuoteManager;
 
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
+    /**
+     * @param SessionDataManagerInterface $sessionDataManager
+     * @param OrderFactory $orderFactory
+     * @param QuoteResourceInterface $quoteResource
+     * @param QuoteManagement $quoteManagement
+     * @param CanPlaceOrderContextManager $canPlaceOrderContextManager
+     * @param RefusedStatusProcessor $refusedStatusProcessor
+     * @param PaymentService $paymentService
+     * @param PaymentDataManagerInterface $paymentDataManager
+     * @param SurchargingQuoteManagerInterface $surchargingQuoteManager
+     * @param EventManager $eventManager
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
-        Session $checkoutSession,
+        SessionDataManagerInterface $sessionDataManager,
         OrderFactory $orderFactory,
-        QuoteResource $quoteResource,
+        QuoteResourceInterface $quoteResource,
         QuoteManagement $quoteManagement,
-        CanPlaceValidator $canPlaceValidator,
+        CanPlaceOrderContextManager $canPlaceOrderContextManager,
         RefusedStatusProcessor $refusedStatusProcessor,
-        GetPaymentServiceInterface $paymentService,
+        PaymentService $paymentService,
         PaymentDataManagerInterface $paymentDataManager,
-        CanPlaceOrderContextInterfaceFactory $canPlaceOrderContextFactory
+        SurchargingQuoteManagerInterface $surchargingQuoteManager,
+        EventManager $eventManager
     ) {
-        $this->checkoutSession = $checkoutSession;
+        $this->sessionDataManager = $sessionDataManager;
         $this->orderFactory = $orderFactory;
         $this->quoteResource = $quoteResource;
         $this->quoteManagement = $quoteManagement;
-        $this->canPlaceValidator = $canPlaceValidator;
+        $this->canPlaceOrderContextManager = $canPlaceOrderContextManager;
         $this->refusedStatusProcessor = $refusedStatusProcessor;
         $this->paymentService = $paymentService;
         $this->paymentDataManager = $paymentDataManager;
-        $this->canPlaceOrderContextFactory = $canPlaceOrderContextFactory;
+        $this->surchargingQuoteManager = $surchargingQuoteManager;
+        $this->eventManager = $eventManager;
     }
 
     public function processPendingOrder(string $incrementId): bool
@@ -98,21 +114,23 @@ class PendingOrderManager implements PendingOrderManagerInterface
         }
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
-        $paymentResponse = $this->getWlPaymentResponse($quote->getPayment());
+        $paymentResponse = $this->paymentService->getPaymentResponse($quote->getPayment());
         if (!$paymentResponse) {
             return false;
         }
 
+        if ($surchargeSO = $paymentResponse->getPaymentOutput()->getSurchargeSpecificOutput()) {
+            $this->surchargingQuoteManager->formatAndSaveSurchargingQuote($quote, $surchargeSO);
+        }
+
         $statusCode = (int)$paymentResponse->getStatusOutput()->getStatusCode();
-
-        if ($this->canPlaceOrder($statusCode, $quote)) {
-            $order = $this->quoteManagement->submit($quote);
+        $context = $this->canPlaceOrderContextManager->createContext($quote, $statusCode);
+        if ($this->canPlaceOrderContextManager->canPlaceOrder($context)) {
             $this->paymentDataManager->savePaymentData($paymentResponse);
+            $order = $this->quoteManagement->submit($quote);
+            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
 
-            $this->checkoutSession->setLastOrderId($order->getId());
-            $this->checkoutSession->setLastRealOrderId($incrementId);
-            $this->checkoutSession->setLastQuoteId($quote->getId());
-            $this->checkoutSession->setLastSuccessQuoteId($quote->getId());
+            $this->sessionDataManager->setOrderData($order);
 
             return true;
         }
@@ -120,34 +138,5 @@ class PendingOrderManager implements PendingOrderManagerInterface
         $this->refusedStatusProcessor->process($quote, $statusCode);
 
         return false;
-    }
-
-    private function getWlPaymentResponse(PaymentInterface $payment): ?PaymentResponse
-    {
-        $wlPaymentId = ((int)$payment->getAdditionalInformation('payment_id') . '_0');
-        $storeId = (int)$payment->getMethodInstance()->getStore();
-
-        try {
-            return $this->paymentService->execute($wlPaymentId, $storeId);
-        } catch (LocalizedException $e) {
-            return null;
-        }
-    }
-
-    private function canPlaceOrder(int $statusCode, $quote): bool
-    {
-        $wlPaymentId = (string)$quote->getPayment()->getAdditionalInformation('payment_id');
-        $context = $this->canPlaceOrderContextFactory->create();
-        $context->setStatusCode($statusCode);
-        $context->setWorldlinePaymentId($wlPaymentId);
-        $context->setIncrementId($quote->getReservedOrderId());
-        $context->setStoreId($quote->getStoreId());
-
-        try {
-            $this->canPlaceValidator->validate($context);
-            return true;
-        } catch (LocalizedException $e) {
-            return false;
-        }
     }
 }

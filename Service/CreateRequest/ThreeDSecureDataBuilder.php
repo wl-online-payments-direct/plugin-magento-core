@@ -4,14 +4,13 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Service\CreateRequest;
 
 use InvalidArgumentException;
-use Magento\Payment\Gateway\Config\Config;
 use Magento\Quote\Api\Data\CartInterface;
 use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RedirectionDataFactory;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Domain\ThreeDSecureFactory;
 use Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureDataBuilderInterface;
-use Worldline\PaymentCore\Model\Config\GeneralSettingsConfig;
+use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 use Worldline\PaymentCore\Model\MethodNameExtractor;
 use Worldline\PaymentCore\Model\ThreeDSecure\ParamsHandler;
 
@@ -38,7 +37,7 @@ class ThreeDSecureDataBuilder implements ThreeDSecureDataBuilderInterface
     private $threeDSecureParamsHandler;
 
     /**
-     * @var GeneralSettingsConfig
+     * @var GeneralSettingsConfigInterface
      */
     private $generalSettings;
 
@@ -52,7 +51,7 @@ class ThreeDSecureDataBuilder implements ThreeDSecureDataBuilderInterface
         RedirectionDataFactory $redirectionDataFactory,
         MethodNameExtractor $methodNameExtractor,
         ParamsHandler $threeDSecureParamsHandler,
-        GeneralSettingsConfig $generalSettings,
+        GeneralSettingsConfigInterface $generalSettings,
         array $returnUrls = []
     ) {
         $this->threeDSecureFactory = $threeDSecureFactory;

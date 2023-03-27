@@ -3,29 +3,21 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Webhook;
 
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Quote\Api\Data\CartInterface;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
-use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
-use Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterfaceFactory;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
-use Worldline\PaymentCore\Model\Order\CanPlaceValidator;
+use Worldline\PaymentCore\Api\SurchargingQuoteManagerInterface;
+use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
+use Worldline\PaymentCore\Api\Webhook\PlaceOrderManagerInterface;
 
 /**
  * Identify if a webhook can trigger the order placement process, place an order and save payment information
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PlaceOrderProcessor implements ProcessorInterface
 {
-    /**
-     * @var QuoteResource
-     */
-    private $quoteResource;
-
     /**
      * @var QuoteManagement
      */
@@ -37,95 +29,75 @@ class PlaceOrderProcessor implements ProcessorInterface
     private $orderFactory;
 
     /**
-     * @var WebhookResponseManager
-     */
-    private $webhookResponseManager;
-
-    /**
-     * @var CanPlaceValidator
-     */
-    private $canPlaceValidator;
-
-    /**
      * @var PaymentDataManagerInterface
      */
     private $paymentDataManager;
-
-    /**
-     * @var CanPlaceOrderContextInterfaceFactory
-     */
-    private $canPlaceOrderContextFactory;
 
     /**
      * @var FailedOrderCreationNotification
      */
     private $failedOrderCreationNotification;
 
+    /**
+     * @var PlaceOrderManagerInterface
+     */
+    private $placeOrderManager;
+
+    /**
+     * @var SurchargingQuoteManagerInterface
+     */
+    private $surchargingQuoteManager;
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     public function __construct(
-        QuoteResource $quoteResource,
         QuoteManagement $quoteManagement,
         OrderFactory $orderFactory,
-        WebhookResponseManager $webhookResponseManager,
-        CanPlaceValidator $canPlaceValidator,
         PaymentDataManagerInterface $paymentDataManager,
-        CanPlaceOrderContextInterfaceFactory $canPlaceOrderContextFactory,
-        FailedOrderCreationNotification $failedOrderCreationNotification
+        FailedOrderCreationNotification $failedOrderCreationNotification,
+        PlaceOrderManagerInterface $placeOrderManager,
+        SurchargingQuoteManagerInterface $surchargingQuoteManager,
+        EventManager $eventManager
     ) {
-        $this->quoteResource = $quoteResource;
         $this->quoteManagement = $quoteManagement;
         $this->orderFactory = $orderFactory;
-        $this->webhookResponseManager = $webhookResponseManager;
-        $this->canPlaceValidator = $canPlaceValidator;
         $this->paymentDataManager = $paymentDataManager;
-        $this->canPlaceOrderContextFactory = $canPlaceOrderContextFactory;
         $this->failedOrderCreationNotification = $failedOrderCreationNotification;
+        $this->placeOrderManager = $placeOrderManager;
+        $this->surchargingQuoteManager = $surchargingQuoteManager;
+        $this->eventManager = $eventManager;
     }
 
     public function process(WebhooksEvent $webhookEvent): void
     {
-        /** @var PaymentResponse $paymentResponse */
-        $paymentResponse = $this->webhookResponseManager->getResponse($webhookEvent);
-        // remove postfix from payment id if any (11111_1 -> 11111)
-        $paymentId = (string)(int)$paymentResponse->getId();
-        $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($paymentId);
-        if (!$quote->getId()) {
-            return;
-        }
-
-        if (!$this->isValid($paymentResponse, $quote)) {
+        $quote = $this->placeOrderManager->getValidatedQuote($webhookEvent);
+        if (!$quote) {
             return;
         }
 
         $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
-        $this->paymentDataManager->savePaymentData($paymentResponse);
+        $this->paymentDataManager->savePaymentData($webhookEvent->getPayment());
 
         if ($order->getId()) {
             return;
         }
 
+        if ($surchargeSO = $webhookEvent->getPayment()->getPaymentOutput()->getSurchargeSpecificOutput()) {
+            $this->surchargingQuoteManager->formatAndSaveSurchargingQuote($quote, $surchargeSO);
+        }
+
         try {
-            $this->quoteManagement->submit($quote);
+            $order = $this->quoteManagement->submit($quote);
+            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
         } catch (\Exception $e) {
             $this->failedOrderCreationNotification->notify(
                 $quote->getReservedOrderId(),
                 $e->getMessage(),
                 FailedOrderCreationNotification::WEBHOOK_SPACE
             );
-        }
-    }
-
-    private function isValid(PaymentResponse $paymentResponse, CartInterface $quote): bool
-    {
-        $context = $this->canPlaceOrderContextFactory->create();
-        $context->setStatusCode((int)$paymentResponse->getStatusOutput()->getStatusCode());
-        $context->setWorldlinePaymentId((string)$paymentResponse->getId());
-        $context->setStoreId($quote->getStoreId());
-
-        try {
-            $this->canPlaceValidator->validate($context);
-            return true;
-        } catch (LocalizedException $e) {
-            return false;
         }
     }
 }

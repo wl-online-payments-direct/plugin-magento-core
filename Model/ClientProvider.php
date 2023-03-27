@@ -3,18 +3,18 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model;
 
-use Exception;
-use OnlinePayments\Sdk\Client as IngenicoSdkClient;
+use OnlinePayments\Sdk\Client;
 use OnlinePayments\Sdk\ClientFactory;
 use OnlinePayments\Sdk\CommunicatorConfigurationFactory;
+use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 use Worldline\PaymentCore\OnlinePayments\Sdk\Communicator;
 use Worldline\PaymentCore\OnlinePayments\Sdk\CommunicatorFactory;
 
-class ClientProvider
+class ClientProvider implements ClientProviderInterface
 {
     /**
-     * @var IngenicoSdkClient|null
+     * @var Client|null
      */
     private $client;
 
@@ -50,7 +50,7 @@ class ClientProvider
         $this->clientFactory = $clientFactory;
     }
 
-    public function getClient(?int $storeId = null): IngenicoSdkClient
+    public function getClient(?int $storeId = null): Client
     {
         if (!$this->client) {
             $this->client = $this->clientFactory->create(['communicator' => $this->getCommunicator($storeId)]);

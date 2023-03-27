@@ -36,10 +36,4 @@ interface PaymentInterface
     public const PAYMENT_PRODUCT_ID = 'payment_product_id';
     public const AMOUNT = 'amount';
     public const CURRENCY = 'currency';
-    /**
-     * @deprecared
-     */
-    public const FRAUD_RESULT = 'fraud_result';
-    public const CARD_NUMBER = 'card_number';
-    public const CREATED_AT = 'created_at';
 }

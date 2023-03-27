@@ -101,4 +101,49 @@
             <column name="entity_id"/>
         </constraint>
     </table>
+    <table name="worldline_surcharging_quote" resource="default" engine="innodb" comment="Worldline Surcharging Quote">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID" />
+        <column xsi:type="int" name="quote_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Quote ID"/>
+        <column xsi:type="int" name="invoice_id" padding="10" unsigned="true" nullable="true" identity="false" comment="Invoice ID"/>
+        <column xsi:type="varchar" name="payment_method" nullable="true" length="255" comment="Method Code"/>
+        <column xsi:type="decimal" name="amount" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="Amount"/>
+        <column xsi:type="decimal" name="base_amount" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="Base Amount"/>
+        <column xsi:type="decimal" name="quote_grand_total" scale="4" precision="20" unsigned="false" nullable="true" default="0" comment="Quote Grand Total"/>
+        <column xsi:type="smallint" name="is_invoiced" unsigned="true" nullable="false" default="0" comment="Is Invoiced Flag"/>
+        <column xsi:type="smallint" name="is_refunded" unsigned="true" nullable="false" default="0" comment="Is Refunded Flag"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign"
+                    referenceId="WORLDLINE_SURCHARGING_QUOTE_QUOTE_ID_QUOTE_ENTITY_ID"
+                    table="worldline_surcharging_quote"
+                    column="quote_id"
+                    referenceTable="quote"
+                    referenceColumn="entity_id"
+                    onDelete="NO ACTION"/>
+    </table>
+    <table name="worldline_surcharging_creditmemo" resource="default" engine="innodb" comment="Worldline Surcharging Creditmemo">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID" />
+        <column xsi:type="int" name="quote_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Quote ID"/>
+        <column xsi:type="int" name="creditmemo_id" padding="10" unsigned="true" nullable="true" identity="false" comment="Creditmemo ID"/>
+        <column xsi:type="decimal" name="amount" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="Refunded Amount"/>
+        <column xsi:type="decimal" name="base_amount" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="Refunded Base Amount"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign"
+                    referenceId="WORLDLINE_SURCHARGING_CREDITMEMO_QUOTE_ID_QUOTE_ENTITY_ID"
+                    table="worldline_surcharging_creditmemo"
+                    column="quote_id"
+                    referenceTable="quote"
+                    referenceColumn="entity_id"
+                    onDelete="NO ACTION"/>
+        <constraint xsi:type="foreign"
+                    referenceId="WORLDLINE_SURCHARGING_CREDITMEMO_CREDITMEMO_ID_SALES_CREDITMEMO_ENTITY_ID"
+                    table="worldline_surcharging_creditmemo"
+                    column="creditmemo_id"
+                    referenceTable="sales_creditmemo"
+                    referenceColumn="entity_id"
+                    onDelete="NO ACTION"/>
+    </table>
 </schema>

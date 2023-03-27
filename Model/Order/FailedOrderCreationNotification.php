@@ -10,13 +10,12 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Model\Config\OrderNotificationConfigProvider;
 use Worldline\PaymentCore\Model\EmailSender;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 
 class FailedOrderCreationNotification
 {
     public const WEBHOOK_SPACE = 'webhook';
     public const WAITING_PAGE_SPACE = 'waiting page';
-    public const CRON_SPACE = 'cron';
 
     /**
      * @var EmailSender
@@ -39,7 +38,7 @@ class FailedOrderCreationNotification
     private $dateTime;
 
     /**
-     * @var QuoteResource
+     * @var QuoteResourceInterface
      */
     private $quoteResource;
 
@@ -48,7 +47,7 @@ class FailedOrderCreationNotification
         OrderNotificationConfigProvider $orderNotificationConfigProvider,
         SenderResolverInterface $senderResolver,
         DateTime $dateTime,
-        QuoteResource $quoteResource
+        QuoteResourceInterface $quoteResource
     ) {
         $this->emailSender = $emailSender;
         $this->orderNotificationConfigProvider = $orderNotificationConfigProvider;

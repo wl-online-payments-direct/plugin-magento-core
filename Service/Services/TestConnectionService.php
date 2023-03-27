@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Service\Services;
 
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Filter\StripTags;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Service\Services\TestConnectionServiceInterface;
-use Worldline\PaymentCore\Model\ClientProvider;
+use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 /**
@@ -15,7 +15,7 @@ use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 class TestConnectionService implements TestConnectionServiceInterface
 {
     /**
-     * @var ClientProvider
+     * @var ClientProviderInterface
      */
     private $clientProvider;
 
@@ -25,18 +25,18 @@ class TestConnectionService implements TestConnectionServiceInterface
     private $worldlineConfig;
 
     /**
-     * @var StripTags
+     * @var LoggerInterface
      */
-    private $tagFilter;
+    private $logger;
 
     public function __construct(
-        ClientProvider $clientProvider,
+        ClientProviderInterface $clientProvider,
         WorldlineConfig $worldlineConfig,
-        StripTags $tagFilter
+        LoggerInterface $logger
     ) {
         $this->clientProvider = $clientProvider;
         $this->worldlineConfig = $worldlineConfig;
-        $this->tagFilter = $tagFilter;
+        $this->logger = $logger;
     }
 
     /**
@@ -55,6 +55,7 @@ class TestConnectionService implements TestConnectionServiceInterface
 
             return (string) $result->getResult();
         } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('The server returned an error.'));
         }
     }

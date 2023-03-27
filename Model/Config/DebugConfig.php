@@ -7,29 +7,20 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class DebugConfig
 {
+    public const WEBHOOK_LOG_ACTIVE = 'worldline_debug/webhooks/active';
+
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
 
-    /**
-     * @var string[]|null
-     */
-    private $data;
-
-    public function __construct(ScopeConfigInterface $scopeConfig, array $data = [])
+    public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
-        $this->data = $data;
     }
 
     public function isWebhookLogEnabled(): bool
     {
-        $xmlConfigPath = $this->data['webhook_log_active'] ?? '';
-        if (!$xmlConfigPath) {
-            return false;
-        }
-
-        return $this->scopeConfig->isSetFlag($xmlConfigPath);
+        return $this->scopeConfig->isSetFlag(self::WEBHOOK_LOG_ACTIVE);
     }
 }

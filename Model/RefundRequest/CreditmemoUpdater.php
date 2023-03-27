@@ -7,7 +7,7 @@ use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 use Worldline\PaymentCore\Model\Transaction\TransactionUpdater;
 
 /**
@@ -36,7 +36,7 @@ class CreditmemoUpdater
     private $transactionRepository;
 
     /**
-     * @var QuoteResource
+     * @var QuoteResourceInterface
      */
     private $quoteResource;
 
@@ -50,7 +50,7 @@ class CreditmemoUpdater
         RefundProcessor $refundProcessor,
         RefundRequestRepositoryInterface $refundRequestRepository,
         TransactionRepositoryInterface $transactionRepository,
-        QuoteResource $quoteResource,
+        QuoteResourceInterface $quoteResource,
         AmountFormatterInterface $amountFormatter
     ) {
         $this->transactionUpdater = $transactionUpdater;

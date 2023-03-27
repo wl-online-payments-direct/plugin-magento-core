@@ -6,8 +6,9 @@ namespace Worldline\PaymentCore\Service\Payment;
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Service\Payment\CapturePaymentServiceInterface;
-use Worldline\PaymentCore\Model\ClientProvider;
+use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 /**
@@ -21,16 +22,23 @@ class CapturePaymentService implements CapturePaymentServiceInterface
     private $worldlineConfig;
 
     /**
-     * @var ClientProvider
+     * @var ClientProviderInterface
      */
     private $clientProvider;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         WorldlineConfig $worldlineConfig,
-        ClientProvider $clientProvider
+        ClientProviderInterface $clientProvider,
+        LoggerInterface $logger
     ) {
         $this->worldlineConfig = $worldlineConfig;
         $this->clientProvider = $clientProvider;
+        $this->logger = $logger;
     }
 
     /**
@@ -53,6 +61,7 @@ class CapturePaymentService implements CapturePaymentServiceInterface
                 ->payments()
                 ->capturePayment($transactionId, $capturePaymentRequest);
         } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('CapturePayment request has failed'));
         }
     }

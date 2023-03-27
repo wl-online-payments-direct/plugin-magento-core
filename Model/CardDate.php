@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model;
 
@@ -7,8 +8,9 @@ use DateTime;
 use DateTimeZone;
 use Magento\Framework\Serialize\Serializer\Json;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificOutput;
+use Worldline\PaymentCore\Api\CardDateInterface;
 
-class CardDate
+class CardDate implements CardDateInterface
 {
     /**
      * @var Json
@@ -22,26 +24,26 @@ class CardDate
     }
 
     /**
-     * @param CardPaymentMethodSpecificOutput $cardPaymentMethodSpecificOutput
+     * @param CardPaymentMethodSpecificOutput $cardPaymentMethodSO
      * @return string
      * @throws \Exception
      */
-    public function getExpirationDateAt(CardPaymentMethodSpecificOutput $cardPaymentMethodSpecificOutput): string
+    public function getExpirationDateAt(CardPaymentMethodSpecificOutput $cardPaymentMethodSO): string
     {
-        $card = $cardPaymentMethodSpecificOutput->getCard();
+        $card = $cardPaymentMethodSO->getCard();
         $expirationDateAt = $this->processDate($card->getExpiryDate());
         $expirationDateAt->add(new DateInterval('P1M'));
         return $expirationDateAt->format('Y-m-d 00:00:00');
     }
 
     /**
-     * @param CardPaymentMethodSpecificOutput $cardPaymentMethodSpecificOutput
+     * @param CardPaymentMethodSpecificOutput $cardPaymentMethodSO
      * @return string
      * @throws \Exception
      */
-    public function getExpirationDate(CardPaymentMethodSpecificOutput $cardPaymentMethodSpecificOutput): string
+    public function getExpirationDate(CardPaymentMethodSpecificOutput $cardPaymentMethodSO): string
     {
-        $card = $cardPaymentMethodSpecificOutput->getCard();
+        $card = $cardPaymentMethodSO->getCard();
         $expirationDate = $this->processDate($card->getExpiryDate());
         return $expirationDate->format('m/Y');
     }

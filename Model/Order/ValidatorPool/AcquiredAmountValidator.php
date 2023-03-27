@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\Order\ValidatorPool;
 
 use Magento\Framework\Exception\LocalizedException;
+use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
 use Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface;
 use Worldline\PaymentCore\Model\Order\CanPlaceContext;
 
@@ -17,18 +18,32 @@ class AcquiredAmountValidator implements PlaceOrderValidatorInterface
      */
     private $getPaymentDetailsService;
 
-    public function __construct(GetPaymentDetailsServiceInterface $getPaymentDetailsService)
-    {
+    /**
+     * @var PaymentIdFormatterInterface
+     */
+    private $paymentIdFormatter;
+
+    public function __construct(
+        GetPaymentDetailsServiceInterface $getPaymentDetailsService,
+        PaymentIdFormatterInterface $paymentIdFormatter
+    ) {
         $this->getPaymentDetailsService = $getPaymentDetailsService;
+        $this->paymentIdFormatter = $paymentIdFormatter;
     }
 
     public function validate(CanPlaceContext $context): void
     {
-        $paymentId = ((int)$context->getWorldlinePaymentId() . '_0');
+        $wlPaymentId = $this->paymentIdFormatter->validateAndFormat(
+            (string) $context->getWorldlinePaymentId(),
+            true
+        );
 
-        $response = $this->getPaymentDetailsService->execute($paymentId, (int) $context->getStoreId());
+        $response = $this->getPaymentDetailsService->execute($wlPaymentId, (int) $context->getStoreId());
         $paymentOutput = $response->getPaymentOutput();
-        if (!$paymentOutput->getAcquiredAmount()) {
+        if (!$paymentOutput->getAcquiredAmount()
+            || $paymentOutput->getSurchargeSpecificOutput()
+            || $paymentOutput->getSepaDirectDebitPaymentMethodSpecificOutput()
+        ) {
             return;
         }
 

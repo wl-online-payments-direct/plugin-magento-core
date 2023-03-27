@@ -13,7 +13,8 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
+use Worldline\PaymentCore\Api\SurchargingQuoteRepositoryInterface;
 
 class WaitingPageDataProvider implements ArgumentInterface
 {
@@ -33,7 +34,7 @@ class WaitingPageDataProvider implements ArgumentInterface
     private $urlBuilder;
 
     /**
-     * @var QuoteResource
+     * @var QuoteResourceInterface
      */
     private $quoteResource;
 
@@ -52,14 +53,20 @@ class WaitingPageDataProvider implements ArgumentInterface
      */
     private $imageHelper;
 
+    /**
+     * @var SurchargingQuoteRepositoryInterface
+     */
+    private $surchargingRepository;
+
     public function __construct(
         Product $productHelper,
         RequestInterface $request,
         UrlInterface $urlBuilder,
-        QuoteResource $quoteResource,
+        QuoteResourceInterface $quoteResource,
         StoreManagerInterface $storeManager,
         PriceCurrencyInterface $priceCurrency,
-        Image $imageHelper
+        Image $imageHelper,
+        SurchargingQuoteRepositoryInterface $surchargingRepository
     ) {
         $this->productHelper = $productHelper;
         $this->request = $request;
@@ -68,6 +75,7 @@ class WaitingPageDataProvider implements ArgumentInterface
         $this->storeManager = $storeManager;
         $this->priceCurrency = $priceCurrency;
         $this->imageHelper = $imageHelper;
+        $this->surchargingRepository = $surchargingRepository;
     }
 
     public function getNotificationMessage(): Phrase
@@ -140,5 +148,17 @@ class WaitingPageDataProvider implements ArgumentInterface
     public function convertAndFormatPrice(float $price): string
     {
         return $this->priceCurrency->convertAndFormat($price);
+    }
+
+    public function getSurchargeAmount(): float
+    {
+        $quoteId = (int)$this->getQuote()->getId();
+        $surcharging = $this->surchargingRepository->getByQuoteId($quoteId);
+        $paymentMethod = str_replace('_vault', '', (string)$this->getQuote()->getPayment()->getMethod());
+        if ($paymentMethod !== $surcharging->getPaymentMethod()) {
+            return 0.0;
+        }
+
+        return (float)$surcharging->getAmount();
     }
 }

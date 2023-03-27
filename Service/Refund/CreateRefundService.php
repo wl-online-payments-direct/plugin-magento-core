@@ -6,8 +6,9 @@ namespace Worldline\PaymentCore\Service\Refund;
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Service\Refund\CreateRefundServiceInterface;
-use Worldline\PaymentCore\Model\ClientProvider;
+use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 /**
@@ -16,7 +17,7 @@ use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 class CreateRefundService implements CreateRefundServiceInterface
 {
     /**
-     * @var ClientProvider
+     * @var ClientProviderInterface
      */
     private $clientProvider;
 
@@ -25,12 +26,19 @@ class CreateRefundService implements CreateRefundServiceInterface
      */
     private $worldlineConfig;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
-        ClientProvider $clientProvider,
-        WorldlineConfig $worldlineConfig
+        ClientProviderInterface $clientProvider,
+        WorldlineConfig $worldlineConfig,
+        LoggerInterface $logger
     ) {
         $this->clientProvider = $clientProvider;
         $this->worldlineConfig = $worldlineConfig;
+        $this->logger = $logger;
     }
 
     /**
@@ -50,6 +58,7 @@ class CreateRefundService implements CreateRefundServiceInterface
                 ->payments()
                 ->refundPayment($paymentId, $refundRequest);
         } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('WorldLine refund has failed. Please contact the provider.'));
         }
     }

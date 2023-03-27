@@ -11,14 +11,14 @@ use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
 use Worldline\PaymentCore\Api\Data\PaymentProductsDetailsInterface;
 use Worldline\PaymentCore\Api\InfoFormatterInterface;
 use Worldline\PaymentCore\Model\Transaction\PaymentInfoBuilder;
-use Worldline\PaymentCore\Ui\PaymentIconsProvider;
+use Worldline\PaymentCore\Api\Ui\PaymentIconsProviderInterface;
 
 class Info extends Template
 {
     public const MAX_HEIGHT = '40px';
 
     /**
-     * @var PaymentIconsProvider
+     * @var PaymentIconsProviderInterface
      */
     private $paymentIconProvider;
 
@@ -44,7 +44,7 @@ class Info extends Template
 
     public function __construct(
         Context $context,
-        PaymentIconsProvider $paymentIconProvider,
+        PaymentIconsProviderInterface $paymentIconProvider,
         PaymentInfoBuilder $paymentInfoBuilder,
         InfoFormatterInterface $infoFormatter,
         array $data = []

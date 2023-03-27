@@ -14,6 +14,7 @@ use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
+use Worldline\PaymentCore\Api\SurchargingQuoteRepositoryInterface;
 use Worldline\PaymentCore\Gateway\SubjectReader;
 
 /**
@@ -56,18 +57,25 @@ class CaptureStrategyCommand implements CommandInterface
      */
     private $subjectReader;
 
+    /**
+     * @var SurchargingQuoteRepositoryInterface
+     */
+    private $surchargingQuoteRepository;
+
     public function __construct(
         CommandPoolInterface $commandPool,
         TransactionRepositoryInterface $repository,
         FilterBuilder $filterBuilder,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        SubjectReader $subjectReader
+        SubjectReader $subjectReader,
+        SurchargingQuoteRepositoryInterface $surchargingQuoteRepository
     ) {
         $this->commandPool = $commandPool;
         $this->transactionRepository = $repository;
         $this->filterBuilder = $filterBuilder;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->subjectReader = $subjectReader;
+        $this->surchargingQuoteRepository = $surchargingQuoteRepository;
     }
 
     /**
@@ -82,6 +90,13 @@ class CaptureStrategyCommand implements CommandInterface
     {
         /** @var PaymentDataObjectInterface $paymentDO */
         $paymentDO = $this->subjectReader->readPayment($commandSubject);
+
+        if ($orderId = (int)$paymentDO->getOrder()->getId()) {
+            $surchargingQuote = $this->surchargingQuoteRepository->getByOrderId($orderId);
+            if ($surchargingQuote->getId()) {
+                $commandSubject['amount'] -= (float)$surchargingQuote->getAmount();
+            }
+        }
 
         $command = $this->getCommand($paymentDO);
         $this->commandPool->get($command)->execute($commandSubject);

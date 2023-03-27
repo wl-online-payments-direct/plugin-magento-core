@@ -9,18 +9,18 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 
 class Waiting extends Action implements HttpGetActionInterface
 {
     /**
-     * @var QuoteResource
+     * @var QuoteResourceInterface
      */
     private $quoteResource;
 
     public function __construct(
         Context $context,
-        QuoteResource $quoteResource
+        QuoteResourceInterface $quoteResource
     ) {
         parent::__construct($context);
         $this->quoteResource = $quoteResource;

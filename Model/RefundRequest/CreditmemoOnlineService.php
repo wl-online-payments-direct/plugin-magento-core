@@ -10,10 +10,11 @@ use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Creditmemo;
 use Worldline\PaymentCore\Api\AmountFormatterInterface;
+use Worldline\PaymentCore\Api\CreditmemoOnlineServiceInterface;
 use Worldline\PaymentCore\Api\Data\RefundRequestInterfaceFactory;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 
-class CreditmemoOnlineService
+class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
 {
     /**
      * @var RefundRequestRepositoryInterface

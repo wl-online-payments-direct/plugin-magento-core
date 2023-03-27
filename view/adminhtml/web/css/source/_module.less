@@ -6,6 +6,11 @@
 //  Common
 //  ----------------------------------------------
 
+@input-text__border-color: #007bdb;
+@input-text-error__border-color: #adadad;
+@button-submit-form__background-color: #fff;
+@button-submit-form-hover__background-color: #2a469e;
+
 & when (@media-common = true) {
     .worldline-float-right {
         float: right;
@@ -15,11 +20,11 @@
         width: 60%;
 
         hr {
-            margin-top: 60px;
-            float: left;
-            height: 1px;
             background-color: lightgrey;
             border: none;
+            float: left;
+            height: 1px;
+            margin-top: 60px;
             width: 100%;
 
             &.bottom-line {
@@ -28,21 +33,22 @@
         }
 
         .title {
-            font-weight: bold;
             font-size: 24px;
+            font-weight: bold;
         }
 
         .sub-title {
-            padding-top: 20px;
-            font-weight: bold;
             font-size: 14px;
+            font-weight: bold;
+            padding-top: 20px;
 
             &.version-title {
                 padding-top: 0;
             }
         }
 
-        .description, .button {
+        .description,
+        .button {
             padding-top: 10px;
         }
 
@@ -50,18 +56,26 @@
             margin-top: 80px;
         }
 
-        .github-button, .open-close-request-form-button {
+        .version-block .description,
+        .new-feature-block > .label {
+            display: block;
+            float: left;
+            max-width: ~'calc(100% - 162px)';
+            padding: 0;
+        }
+
+        .github-button,
+        .open-close-request-form-button {
             & {
-                margin-top: -13px;
                 background-color: royalblue;
-                float: right;
-                color: #fff;
                 border: none;
+                color: @button-submit-form__background-color;
+                float: right;
                 transition: background-color .3s ease;
             }
 
             &:hover {
-                background-color: #2a469e;
+                background-color: @button-submit-form-hover__background-color;
             }
         }
     }
@@ -72,16 +86,17 @@
 
     .form-inline .new-feature-block {
         & {
+            align-items: flex-end;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            margin-top: 20px;
             width: 100%;
         }
 
         & > .label {
-            width: 100%;
             padding: 0;
             text-align: left;
+            width: 100%;
         }
 
         & > .action-secondary {
@@ -91,9 +106,9 @@
 
     .form-inline .form.wordline-feature-form {
         .field {
+            align-items: flex-start;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
         }
 
         .label {
@@ -107,15 +122,15 @@
 
         .action-submit-form {
             & {
-                float: right;
                 background-color: royalblue;
-                color: #fff;
                 border: none;
+                color: @button-submit-form__background-color;
+                float: right;
                 transition: background-color .3s ease;
             }
 
             &:hover {
-                background-color: #2a469e;
+                background-color: @button-submit-form-hover__background-color;
             }
         }
 
@@ -125,11 +140,11 @@
 
         .input-text:not(.mage-error) {
             border: none;
-            border-bottom: 1px solid #adadad;
+            border-bottom: 1px solid @input-text-error__border-color;
 
             &:focus,
             &:active {
-                border-bottom-color: #007bdb;
+                border-bottom-color: @input-text__border-color;
             }
         }
 
@@ -140,7 +155,7 @@
 
             &:active,
             &:focus {
-                border-color: #007bdb;
+                border-color: @input-text__border-color;
                 box-shadow: none;
                 outline: 0;
             }

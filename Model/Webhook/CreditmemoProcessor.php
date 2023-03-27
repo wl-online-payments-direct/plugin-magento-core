@@ -7,6 +7,7 @@ use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
+use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\RefundRequest\RefundProcessor;
 
 class CreditmemoProcessor implements ProcessorInterface
@@ -20,11 +21,6 @@ class CreditmemoProcessor implements ProcessorInterface
     private $refundProcessor;
 
     /**
-     * @var WebhookResponseManager
-     */
-    private $webhookResponseManager;
-
-    /**
      * @var RefundRequestRepositoryInterface
      */
     private $refundRequestRepository;
@@ -36,12 +32,10 @@ class CreditmemoProcessor implements ProcessorInterface
 
     public function __construct(
         RefundProcessor $refundProcessor,
-        WebhookResponseManager $webhookResponseManager,
         RefundRequestRepositoryInterface $refundRequestRepository,
         TransactionWLResponseManagerInterface $transactionWLResponseManager
     ) {
         $this->refundProcessor = $refundProcessor;
-        $this->webhookResponseManager = $webhookResponseManager;
         $this->refundRequestRepository = $refundRequestRepository;
         $this->transactionWLResponseManager = $transactionWLResponseManager;
     }
@@ -49,7 +43,7 @@ class CreditmemoProcessor implements ProcessorInterface
     public function process(WebhooksEvent $webhookEvent): void
     {
         /** @var RefundResponse $refundResponse */
-        $refundResponse = $this->webhookResponseManager->getResponse($webhookEvent);
+        $refundResponse = $webhookEvent->getRefund();
         $statusCode = (int)$refundResponse->getStatusOutput()->getStatusCode();
         if ($statusCode === self::REFUND_UNCERTAIN_CODE) {
             return;

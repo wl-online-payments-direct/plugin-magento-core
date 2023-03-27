@@ -5,7 +5,9 @@ namespace Worldline\PaymentCore\Model;
 
 use Magento\Framework\App\Area;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Mail\MessageInterfaceFactory;
 use Magento\Framework\Mail\Template\TransportBuilder;
+use Magento\Framework\Mail\TransportInterfaceFactory;
 use Magento\Framework\Translate\Inline\StateInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Psr\Log\LoggerInterface;
@@ -33,16 +35,30 @@ class EmailSender
      */
     private $orderSynchronizationConfig;
 
+    /**
+     * @var MessageInterfaceFactory
+     */
+    private $messageFactory;
+
+    /**
+     * @var TransportInterfaceFactory
+     */
+    private $mailTransportFactory;
+
     public function __construct(
         StateInterface $inlineTranslation,
         TransportBuilder $transportBuilder,
         LoggerInterface $logger,
-        OrderSynchronizationConfig $orderSynchronizationConfig
+        OrderSynchronizationConfig $orderSynchronizationConfig,
+        MessageInterfaceFactory $messageFactory,
+        TransportInterfaceFactory $mailTransportFactory
     ) {
         $this->inlineTranslation = $inlineTranslation;
         $this->transportBuilder = $transportBuilder;
         $this->logger = $logger;
         $this->orderSynchronizationConfig = $orderSynchronizationConfig;
+        $this->messageFactory = $messageFactory;
+        $this->mailTransportFactory = $mailTransportFactory;
     }
 
     public function sendPaymentRefusedEmail(CartInterface $quote): bool
@@ -96,12 +112,14 @@ class EmailSender
     public function sendEmailWithoutTemplate(string $body, string $from, string $userName, string $addTo): void
     {
         try {
-            $email = new \Zend_Mail();
-            $email->setSubject(__("Request a new feature"))
-                ->setBodyText($body)
-                ->setFrom($from, $userName)
-                ->addTo($addTo)
-                ->send();
+            $message = $this->messageFactory->create();
+            $message->setFromAddress($from, $userName);
+            $message->addTo($addTo);
+            $message->setSubject(__('Request a new feature'));
+            $message->setBodyHtml($body);
+            $transport = $this->mailTransportFactory->create(['message' => $message]);
+            $transport->sendMessage();
+
         } catch (LocalizedException $e) {
             $this->logger->critical($e->getMessage());
         }

@@ -61,16 +61,17 @@ class FillPaymentTable implements DataPatchInterface
         $paymentDetails = [];
         /** @var TransactionInterface $item */
         foreach ($collection->getItems() as $item) {
+            $additionalData = $item->getData('additional_data');
             $paymentDetails[] = [
                 PaymentInterface::INCREMENT_ID => $item->getIncrementId(),
                 PaymentInterface::PAYMENT_ID => $item->getTransactionId(),
                 PaymentInterface::PAYMENT_PRODUCT_ID =>
-                    $item->getAdditionalData()[PaymentInterface::PAYMENT_PRODUCT_ID] ?? 0,
+                    $additionalData[PaymentInterface::PAYMENT_PRODUCT_ID] ?? 0,
                 PaymentInterface::AMOUNT =>
                     $this->amountFormatter->formatToInteger((float) $item->getAmount(), (string) $item->getCurrency()),
                 PaymentInterface::CURRENCY => $item->getCurrency(),
-                PaymentInterface::FRAUD_RESULT => $item->getAdditionalData()[PaymentInterface::FRAUD_RESULT] ?? '',
-                PaymentInterface::CARD_NUMBER => $item->getAdditionalData()[PaymentInterface::CARD_NUMBER] ?? '',
+                'fraud_result' => $additionalData['fraud_result'] ?? '',
+                'card_number' => $additionalData['card_number'] ?? '',
             ];
         }
 

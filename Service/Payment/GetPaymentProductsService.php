@@ -6,8 +6,9 @@ namespace Worldline\PaymentCore\Service\Payment;
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
 use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParams;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Service\GetPaymentProductsServiceInterface;
-use Worldline\PaymentCore\Model\ClientProvider;
+use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 /**
@@ -18,7 +19,7 @@ use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 class GetPaymentProductsService implements GetPaymentProductsServiceInterface
 {
     /**
-     * @var ClientProvider
+     * @var ClientProviderInterface
      */
     private $clientProvider;
 
@@ -27,12 +28,19 @@ class GetPaymentProductsService implements GetPaymentProductsServiceInterface
      */
     private $worldlineConfig;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
-        ClientProvider $clientProvider,
-        WorldlineConfig $worldlineConfig
+        ClientProviderInterface $clientProvider,
+        WorldlineConfig $worldlineConfig,
+        LoggerInterface $logger
     ) {
         $this->clientProvider = $clientProvider;
         $this->worldlineConfig = $worldlineConfig;
+        $this->logger = $logger;
     }
 
     /**
@@ -49,6 +57,7 @@ class GetPaymentProductsService implements GetPaymentProductsServiceInterface
                 ->products()
                 ->getPaymentProducts($queryParams);
         } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('GetPaymentProducts request has failed'));
         }
     }
