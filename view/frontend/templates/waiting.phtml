@@ -56,6 +56,14 @@ $quote = $pageDataProvider->getQuote();
                     <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getShippingAmount()) ?>
                 </td>
             </tr>
+            <?php if ($pageDataProvider->getSurchargeAmount() > 0): ?>
+                <tr class="totals-surcharging">
+                    <th class="mark" scope="row"><?= $block->escapeHtml(__('Surcharging')) ?></th>
+                    <td class="amount">
+                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($pageDataProvider->getSurchargeAmount()) ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
             <?php if ($quote->getShippingAddress()->getTaxAmount()): ?>
                 <tr class="totals-tax">
                     <th class="mark" scope="row"><?= $block->escapeHtml(__('Tax')) ?></th>

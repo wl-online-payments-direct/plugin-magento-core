@@ -57,12 +57,17 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
 
         $output = $this->getOutput($worldlineResponse);
 
+        $amount = (int)$output->getAmountOfMoney()->getAmount();
+        if ($worldlineResponse instanceof PaymentResponse && $output->getSurchargeSpecificOutput()) {
+            $amount += (int)$output->getSurchargeSpecificOutput()->getSurchargeAmount()->getAmount();
+        }
+
         $transaction = $this->transactionFactory->create();
         $transaction->setIncrementId((string)$output->getReferences()->getMerchantReference());
         $transaction->setStatus((string)$worldlineResponse->getStatus());
         $transaction->setStatusCode((int)$worldlineResponse->getStatusOutput()->getStatusCode());
         $transaction->setTransactionId((string)$worldlineResponse->getId());
-        $transaction->setAmount((int)$output->getAmountOfMoney()->getAmount());
+        $transaction->setAmount($amount);
         $transaction->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
         $this->transactionRepository->save($transaction);
     }

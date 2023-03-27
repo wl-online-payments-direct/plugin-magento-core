@@ -8,56 +8,38 @@ use Magento\Store\Model\ScopeInterface;
 
 class OrderSynchronizationConfig
 {
-    public const REFUSED_PAYMENT_SENDER_PATH = 'worldline_order_creator/general/refused_payment_sender';
-    public const REFUSED_PAYMENT_TEMPLATE_PATH = 'worldline_order_creator/general/refused_payment_template';
+    public const REFUSED_PAYMENT_SENDER = 'worldline_order_creator/general/refused_payment_sender';
+    public const REFUSED_PAYMENT_TEMPLATE = 'worldline_order_creator/general/refused_payment_template';
+    public const FALLBACK_TIMEOUT = 'worldline_order_creator/general/fallback_timeout';
+    public const FALLBACK_TIMEOUT_LIMIT = 'worldline_order_creator/general/fallback_timeout_limit';
 
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
 
-    /**
-     * @var string[]|null
-     */
-    private $data;
-
-    /**
-     * @param ScopeConfigInterface $scopeConfig
-     * @param string[]|null $data
-     */
-    public function __construct(ScopeConfigInterface $scopeConfig, array $data = [])
+    public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
-        $this->data = $data;
     }
 
     public function getFallbackTimeout(?int $storeId = null): int
     {
-        return (int) $this->getValue('fallback_timeout', $storeId);
+        return (int) $this->scopeConfig->getValue(self::FALLBACK_TIMEOUT, ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     public function getFallbackTimeoutLimit(?int $storeId = null): int
     {
-        return (int) $this->getValue('fallback_timeout_limit', $storeId);
+        return (int) $this->scopeConfig->getValue(self::FALLBACK_TIMEOUT_LIMIT, ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     public function getRefusedPaymentTemplate(?int $storeId = null): ?string
     {
-        return $this->scopeConfig->getValue(self::REFUSED_PAYMENT_TEMPLATE_PATH, ScopeInterface::SCOPE_STORE, $storeId);
+        return $this->scopeConfig->getValue(self::REFUSED_PAYMENT_TEMPLATE, ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     public function getRefusedPaymentSender(?int $storeId = null): ?string
     {
-        return $this->scopeConfig->getValue(self::REFUSED_PAYMENT_SENDER_PATH, ScopeInterface::SCOPE_STORE, $storeId);
-    }
-
-    private function getValue(string $configName, ?int $storeId = null): string
-    {
-        $xmlConfigPath = $this->data[$configName] ?? '';
-        if (!$xmlConfigPath) {
-            return '';
-        }
-
-        return (string) $this->scopeConfig->getValue($xmlConfigPath, ScopeInterface::SCOPE_STORE, $storeId);
+        return $this->scopeConfig->getValue(self::REFUSED_PAYMENT_SENDER, ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

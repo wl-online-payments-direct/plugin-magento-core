@@ -8,7 +8,7 @@ use OnlinePayments\Sdk\Webhooks\InMemorySecretKeyStoreFactory;
 use OnlinePayments\Sdk\Webhooks\SignatureValidationException;
 use OnlinePayments\Sdk\Webhooks\WebhooksHelperFactory;
 use Worldline\PaymentCore\Model\Config\WebhookConfig;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 
 class RequestProcessor
 {
@@ -28,7 +28,7 @@ class RequestProcessor
     private $webhooksHelperFactory;
 
     /**
-     * @var QuoteResource
+     * @var QuoteResourceInterface
      */
     private $quoteResource;
 
@@ -36,7 +36,7 @@ class RequestProcessor
         WebhookConfig $webhookConfig,
         InMemorySecretKeyStoreFactory $inMemorySecretKeyStoreFactory,
         WebhooksHelperFactory $webhooksHelperFactory,
-        QuoteResource $quoteResource
+        QuoteResourceInterface $quoteResource
     ) {
         $this->webhookConfig = $webhookConfig;
         $this->inMemorySecretKeyStoreFactory = $inMemorySecretKeyStoreFactory;

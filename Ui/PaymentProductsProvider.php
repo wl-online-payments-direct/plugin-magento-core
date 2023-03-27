@@ -10,9 +10,10 @@ use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Data\CacheIdentifierInterface;
 use Worldline\PaymentCore\Api\Data\CacheIdentifierInterfaceFactory;
 use Worldline\PaymentCore\Api\Service\GetPaymentProductsServiceInterface;
+use Worldline\PaymentCore\Api\Ui\PaymentProductsProviderInterface;
 use Worldline\PaymentCore\Service\Payment\GetPaymentProductsRequestBuilder;
 
-class PaymentProductsProvider
+class PaymentProductsProvider implements PaymentProductsProviderInterface
 {
     public const CACHE_ID = "worldline_payment_products";
     public const CACHE_LIFETIME = 86400; //24h

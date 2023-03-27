@@ -8,8 +8,9 @@ use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
 use Magento\Quote\Model\ResourceModel\Quote\Payment\CollectionFactory as QuotePaymentCollectionFactory;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 
-class Quote
+class Quote implements QuoteResourceInterface
 {
     /**
      * @var QuotePaymentCollectionFactory

@@ -6,8 +6,9 @@ namespace Worldline\PaymentCore\Model;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Api\PaymentTokenManagementInterface;
+use Worldline\PaymentCore\Api\VaultValidationInterface;
 
-class VaultValidation
+class VaultValidation implements VaultValidationInterface
 {
     /**
      * @var PaymentTokenManagementInterface

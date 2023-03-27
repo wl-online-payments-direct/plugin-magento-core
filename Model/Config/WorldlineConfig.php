@@ -6,16 +6,17 @@ namespace Worldline\PaymentCore\Model\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Store\Model\ScopeInterface;
+use Worldline\PaymentCore\Api\Config\WorldlineConfigInterface;
 
-class WorldlineConfig
+class WorldlineConfig implements WorldlineConfigInterface
 {
-    public const XML_PATH_MODE = 'worldline_connection/connection/environment_mode';
-    public const XML_PATH_MERCHANT_ID = 'worldline_connection/connection/merchant_id';
-    public const XML_PATH_API_KEY = 'worldline_connection/connection/api_key';
-    public const XML_PATH_API_SECRET = 'worldline_connection/connection/api_secret';
-    public const XML_PATH_API_TEST_ENDPOINT = 'worldline_connection/connection/testing_api_url';
-    public const XML_PATH_API_PRODUCTION_ENDPOINT = 'worldline_connection/connection/production_api_url';
-    public const XML_PATH_LOGGING_LIFETIME = 'worldline_debug/general/logging_lifetime';
+    public const MODE = 'worldline_connection/connection/environment_mode';
+    public const MERCHANT_ID = 'worldline_connection/connection/merchant_id';
+    public const API_KEY = 'worldline_connection/connection/api_key';
+    public const API_SECRET = 'worldline_connection/connection/api_secret';
+    public const API_TEST_ENDPOINT = 'worldline_connection/connection/testing_api_url';
+    public const API_PRODUCTION_ENDPOINT = 'worldline_connection/connection/production_api_url';
+    public const LOGGING_LIFETIME = 'worldline_debug/general/logging_lifetime';
 
     /**
      * @var string[]
@@ -75,7 +76,7 @@ class WorldlineConfig
     {
         if (null === $this->isProductionMode) {
             $this->isProductionMode = $this->scopeConfig->isSetFlag(
-                self::XML_PATH_MODE,
+                self::MODE,
                 ScopeInterface::SCOPE_STORE,
                 $scopeCode
             );
@@ -95,7 +96,7 @@ class WorldlineConfig
             return $this->merchantId;
         }
 
-        $path = $this->isProductionMode($scopeCode) ? self::XML_PATH_MERCHANT_ID . '_prod' : self::XML_PATH_MERCHANT_ID;
+        $path = $this->isProductionMode($scopeCode) ? self::MERCHANT_ID . '_prod' : self::MERCHANT_ID;
         $this->merchantId = (string)$this->scopeConfig->getValue($path, $scopeType, $scopeCode);
         return $this->merchantId;
     }
@@ -111,7 +112,7 @@ class WorldlineConfig
             return $this->apiKey;
         }
 
-        $path = $this->isProductionMode($scopeCode) ? self::XML_PATH_API_KEY . '_prod' : self::XML_PATH_API_KEY;
+        $path = $this->isProductionMode($scopeCode) ? self::API_KEY . '_prod' : self::API_KEY;
         $this->apiKey = $this->encryptor->decrypt(
             $this->scopeConfig->getValue($path, $scopeType, $scopeCode)
         );
@@ -123,13 +124,13 @@ class WorldlineConfig
         $this->apiKey = $apiKey;
     }
 
-    public function getApiSecret(?int $scopeCode = null, ?string $scopeType = ScopeInterface::SCOPE_STORE):string
+    public function getApiSecret(?int $scopeCode = null, ?string $scopeType = ScopeInterface::SCOPE_STORE): string
     {
         if ($this->apiSecret) {
             return $this->apiSecret;
         }
 
-        $path = $this->isProductionMode($scopeCode) ? self::XML_PATH_API_SECRET . '_prod' : self::XML_PATH_API_SECRET;
+        $path = $this->isProductionMode($scopeCode) ? self::API_SECRET . '_prod' : self::API_SECRET;
         $this->apiSecret = $this->encryptor->decrypt(
             $this->scopeConfig->getValue($path, $scopeType, $scopeCode)
         );
@@ -147,9 +148,9 @@ class WorldlineConfig
             return $this->apiEndpoint;
         }
 
-        $xmlPath = self::XML_PATH_API_TEST_ENDPOINT;
+        $xmlPath = self::API_TEST_ENDPOINT;
         if ($this->isProductionMode($scopeCode)) {
-            $xmlPath = self::XML_PATH_API_PRODUCTION_ENDPOINT;
+            $xmlPath = self::API_PRODUCTION_ENDPOINT;
         }
 
         $this->apiEndpoint = (string)$this->scopeConfig->getValue($xmlPath, $scopeType, $scopeCode);
@@ -169,10 +170,6 @@ class WorldlineConfig
 
     public function getLoggingLifetime(?int $scopeCode = null): ?string
     {
-        return $this->scopeConfig->getValue(
-            self::XML_PATH_LOGGING_LIFETIME,
-            ScopeInterface:: SCOPE_STORE,
-            $scopeCode
-        );
+        return $this->scopeConfig->getValue(self::LOGGING_LIFETIME, ScopeInterface:: SCOPE_STORE, $scopeCode);
     }
 }

@@ -6,6 +6,7 @@ namespace Worldline\PaymentCore\Gateway\Request;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Worldline\PaymentCore\Api\AmountFormatterInterface;
+use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
 use Worldline\PaymentCore\Gateway\SubjectReader;
 use Worldline\PaymentCore\Service\Payment\CapturePaymentRequestBuilder;
 
@@ -30,14 +31,21 @@ class CaptureDataBuilder implements BuilderInterface
      */
     private $amountFormatter;
 
+    /**
+     * @var PaymentIdFormatterInterface
+     */
+    private $paymentIdFormatter;
+
     public function __construct(
         SubjectReader $subjectReader,
         CapturePaymentRequestBuilder $capturePaymentBuilder,
-        AmountFormatterInterface $amountFormatter
+        AmountFormatterInterface $amountFormatter,
+        PaymentIdFormatterInterface $paymentIdFormatter
     ) {
         $this->subjectReader = $subjectReader;
         $this->capturePaymentBuilder = $capturePaymentBuilder;
         $this->amountFormatter = $amountFormatter;
+        $this->paymentIdFormatter = $paymentIdFormatter;
     }
 
     /**
@@ -49,11 +57,11 @@ class CaptureDataBuilder implements BuilderInterface
     {
         $paymentDO = $this->subjectReader->readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
-        $paymentId = $payment->getCcTransId();
-
-        if (!$paymentId) {
+        if (!$paymentId = $payment->getCcTransId()) {
             throw new LocalizedException(__('No authorization transaction to proceed capture.'));
         }
+
+        $paymentId = $this->paymentIdFormatter->validateAndFormat((string) $paymentId, true);
 
         $amount = $this->amountFormatter->formatToInteger(
             (float) $this->subjectReader->readAmount($buildSubject),

@@ -105,5 +105,36 @@
         "constraint": {
             "PRIMARY": true
         }
+    },
+    "worldline_surcharging_quote": {
+        "column": {
+            "entity_id": true,
+            "quote_id": true,
+            "invoice_id": true,
+            "payment_method": true,
+            "amount": true,
+            "base_amount": true,
+            "quote_grand_total": true,
+            "is_invoiced": true,
+            "is_refunded": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "WORLDLINE_SURCHARGING_QUOTE_QUOTE_ID_QUOTE_ENTITY_ID": true
+        }
+    },
+    "worldline_surcharging_creditmemo": {
+        "column": {
+            "entity_id": true,
+            "quote_id": true,
+            "creditmemo_id": true,
+            "amount": true,
+            "base_amount": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "WORLDLINE_SURCHARGING_CREDITMEMO_QUOTE_ID_QUOTE_ENTITY_ID": true,
+            "WORLDLINE_SURCHARGING_CREDITMEMO_CREDITMEMO_ID_SALES_CREDITMEMO_ENTITY_ID": true
+        }
     }
 }

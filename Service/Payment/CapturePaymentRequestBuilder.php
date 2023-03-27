@@ -5,8 +5,9 @@ namespace Worldline\PaymentCore\Service\Payment;
 
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequestFactory;
+use Worldline\PaymentCore\Api\Service\CapturePaymentRequestBuilderInterface;
 
-class CapturePaymentRequestBuilder
+class CapturePaymentRequestBuilder implements CapturePaymentRequestBuilderInterface
 {
     /**
      * @var CapturePaymentRequestFactory

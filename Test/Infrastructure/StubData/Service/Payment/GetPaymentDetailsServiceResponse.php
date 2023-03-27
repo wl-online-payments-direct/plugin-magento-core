@@ -11,7 +11,7 @@ class GetPaymentDetailsServiceResponse
             '3254564310_0' => static::getCreditCardResponse($incrementId),
         ];
 
-        return $responsePool[$paymentId] ?? '';
+        return $responsePool[$paymentId] ?? '{}';
     }
 
     public static function getCreditCardResponse(string $incrementId = 'test01'): string

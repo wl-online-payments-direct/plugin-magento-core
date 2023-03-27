@@ -9,8 +9,9 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Asset\File;
 use Magento\Framework\View\Asset\Repository;
 use Magento\Framework\View\Asset\Source as AssetSource;
+use Worldline\PaymentCore\Api\Ui\PaymentIconsProviderInterface;
 
-class PaymentIconsProvider
+class PaymentIconsProvider implements PaymentIconsProviderInterface
 {
     public const REGEXP_ATTR_VIEWBOX =
         '/viewBox=[\'"](?<startX>\d+) (?<startY>\d+) (?<width>[\d\.]+) (?<height>[\d\.]+)[\'"]/i';

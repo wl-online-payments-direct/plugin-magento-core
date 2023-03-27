@@ -9,6 +9,9 @@ use Magento\Store\Model\ScopeInterface;
 
 class WebhookConfig
 {
+    public const KEY = 'worldline_connection/webhook/key';
+    public const SECRET_KEY = 'worldline_connection/webhook/secret_key';
+
     /**
      * @var ScopeConfigInterface
      */
@@ -19,35 +22,23 @@ class WebhookConfig
      */
     private $encryptor;
 
-    /**
-     * @var string[]|null
-     */
-    private $data;
-
-    public function __construct(ScopeConfigInterface $scopeConfig, EncryptorInterface $encryptor, array $data = [])
+    public function __construct(ScopeConfigInterface $scopeConfig, EncryptorInterface $encryptor)
     {
         $this->scopeConfig = $scopeConfig;
         $this->encryptor = $encryptor;
-        $this->data = $data;
     }
 
     public function getKey(?int $storeId = null): string
     {
-        return $this->encryptor->decrypt($this->getValue('key', $storeId));
+        return $this->encryptor->decrypt(
+            (string) $this->scopeConfig->getValue(self::KEY, ScopeInterface::SCOPE_STORE, $storeId)
+        );
     }
 
     public function getSecretKey(?int $storeId = null): string
     {
-        return $this->encryptor->decrypt($this->getValue('secret_key', $storeId));
-    }
-
-    public function getValue(string $configName, ?int $storeId = null): string
-    {
-        $xmlConfigPath = $this->data[$configName] ?? '';
-        if (!$xmlConfigPath) {
-            return '';
-        }
-
-        return (string) $this->scopeConfig->getValue($xmlConfigPath, ScopeInterface::SCOPE_STORE, $storeId);
+        return $this->encryptor->decrypt(
+            (string) $this->scopeConfig->getValue(self::SECRET_KEY, ScopeInterface::SCOPE_STORE, $storeId)
+        );
     }
 }

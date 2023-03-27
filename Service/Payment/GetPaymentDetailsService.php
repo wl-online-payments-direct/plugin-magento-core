@@ -5,8 +5,9 @@ namespace Worldline\PaymentCore\Service\Payment;
 
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface;
-use Worldline\PaymentCore\Model\ClientProvider;
+use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 /**
@@ -17,7 +18,7 @@ use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 class GetPaymentDetailsService implements GetPaymentDetailsServiceInterface
 {
     /**
-     * @var ClientProvider
+     * @var ClientProviderInterface
      */
     private $clientProvider;
 
@@ -26,12 +27,19 @@ class GetPaymentDetailsService implements GetPaymentDetailsServiceInterface
      */
     private $worldlineConfig;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
-        ClientProvider $clientProvider,
-        WorldlineConfig $worldlineConfig
+        ClientProviderInterface $clientProvider,
+        WorldlineConfig $worldlineConfig,
+        LoggerInterface $logger
     ) {
         $this->clientProvider = $clientProvider;
         $this->worldlineConfig = $worldlineConfig;
+        $this->logger = $logger;
     }
 
     /**
@@ -50,6 +58,7 @@ class GetPaymentDetailsService implements GetPaymentDetailsServiceInterface
                 ->payments()
                 ->getPaymentDetails($paymentId);
         } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('GetPaymentDetailsApi request has failed'));
         }
     }

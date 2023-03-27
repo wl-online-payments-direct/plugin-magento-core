@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Webhook;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
@@ -14,6 +13,7 @@ use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Worldline\PaymentCore\Api\Data\RefundRequestInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
+use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 
 class RejectPaymentProcessor implements ProcessorInterface
 {
@@ -44,25 +44,18 @@ class RejectPaymentProcessor implements ProcessorInterface
      */
     private $orderConfig;
 
-    /**
-     * @var WebhookResponseManager
-     */
-    private $webhookResponseManager;
-
     public function __construct(
         RefundRequestRepositoryInterface $refundRequestRepository,
         CreditmemoRepositoryInterface $creditmemoRepository,
         TransactionWLResponseManagerInterface $transactionWLResponseManager,
         OrderRepositoryInterface $orderRepository,
-        OrderConfig $orderConfig,
-        WebhookResponseManager $webhookResponseManager
+        OrderConfig $orderConfig
     ) {
         $this->refundRequestRepository = $refundRequestRepository;
         $this->creditmemoRepository = $creditmemoRepository;
         $this->transactionWLResponseManager = $transactionWLResponseManager;
         $this->orderRepository = $orderRepository;
         $this->orderConfig = $orderConfig;
-        $this->webhookResponseManager = $webhookResponseManager;
     }
 
     /**
@@ -70,12 +63,11 @@ class RejectPaymentProcessor implements ProcessorInterface
      *
      * @param WebhooksEvent $webhookEvent
      * @return void
-     * @throws LocalizedException
      */
     public function process(WebhooksEvent $webhookEvent): void
     {
         /** @var RefundResponse $refundResponse */
-        $refundResponse = $this->webhookResponseManager->getResponse($webhookEvent);
+        $refundResponse = $webhookEvent->getRefund();
         $statusCode = (int)$refundResponse->getStatusOutput()->getStatusCode();
         if ($statusCode === self::REFUND_REFUSED_CODE) {
             $incrementId = $refundResponse->getRefundOutput()->getReferences()->getMerchantReference();

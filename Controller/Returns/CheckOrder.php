@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Controller\Returns;
 
-use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Sales\Model\OrderFactory;
+use Worldline\PaymentCore\Api\SessionDataManagerInterface;
 
 class CheckOrder extends Action implements HttpPostActionInterface
 {
@@ -19,17 +19,17 @@ class CheckOrder extends Action implements HttpPostActionInterface
     private $orderFactory;
 
     /**
-     * @var Session
+     * @var SessionDataManagerInterface
      */
-    private $checkoutSession;
+    private $sessionDataManager;
 
     public function __construct(
         Context $context,
-        Session $checkoutSession,
+        SessionDataManagerInterface $sessionDataManager,
         OrderFactory $orderFactory
     ) {
         parent::__construct($context);
-        $this->checkoutSession = $checkoutSession;
+        $this->sessionDataManager = $sessionDataManager;
         $this->orderFactory = $orderFactory;
     }
 
@@ -42,10 +42,7 @@ class CheckOrder extends Action implements HttpPostActionInterface
 
         $isOrderExist = (bool)$order->getId();
         if ($isOrderExist) {
-            $this->checkoutSession->setLastOrderId($order->getId());
-            $this->checkoutSession->setLastRealOrderId($incrementId);
-            $this->checkoutSession->setLastQuoteId($order->getQuoteId());
-            $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
+            $this->sessionDataManager->setOrderData($order);
         }
 
         $param['status'] = $isOrderExist;

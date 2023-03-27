@@ -1,193 +1,219 @@
-﻿"Payment method","Payment method"
-Status,Status
-"Status code","Status code"
-"Transaction number","Transaction number"
-Total,Total
-"Amount available for capture","Amount available for capture"
-"Refunded amount","Refunded amount"
-"Amount available for refund","Amount available for refund"
-label,label
-"Worldline Online Payments configuration is located under the dedicated configuration section.","Worldline Online Payments configuration is located under the dedicated configuration section."
-"Please, <a href=""%1"">click here</a> to proceed.","Please, <a href=""%1"">click here</a> to proceed."
-"To retrieve the webhooks credentials, login to the Worldline Back Office.","To retrieve the webhooks credentials, login to the Worldline Back Office."
-"Go to Configuration > Technical information > API settings > Webhooks Configuration","Go to Configuration > Technical information > API settings > Webhooks Configuration"
-"and perform the following steps:","and perform the following steps:"
-"Click on ""GENERATE WEBHOOKS API KEY""","Click on ""GENERATE WEBHOOKS API KEY"""
-"Copy & Paste the WebhooksKeySecret immediately","Copy & Paste the WebhooksKeySecret immediately"
-"In ""Endpoints URLs"", paste the Webhooks URL of your store - see below","In ""Endpoints URLs"", paste the Webhooks URL of your store - see below"
-"Click on ""SAVE"" to confirm your settings","Click on ""SAVE"" to confirm your settings"
-"Webhook URL","Webhook URL"
-"This URL must be specified in the worldline admin panel","This URL must be specified in the worldline admin panel"
-Copy,Copy
-Payment,Payment
+﻿"""code"" value should be specified","""code"" value should be specified"
 "%1 with Worldline","%1 with Worldline"
-title,title
-"The credit memo's total must be positive.","The credit memo's total must be positive."
-"You created the credit memo.","You created the credit memo."
-"The credit memo request has been sent.","The credit memo request has been sent."
-"We can't save the credit memo right now.","We can't save the credit memo right now."
-"Payment details have been updated.","Payment details have been updated."
 "A total of %1 record(s) have been updated.","A total of %1 record(s) have been updated."
-"Something went wrong while updating log.","Something went wrong while updating log."
-"Worldline Request Logs","Worldline Request Logs"
-"Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes.","Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes."
-"Your payment is being processed","Your payment is being processed"
-"The payment has rejected, please, try again","The payment has rejected, please, try again"
-"Waiting for payment confirmation","Waiting for payment confirmation"
-"Sorry, but something went wrong","Sorry, but something went wrong"
-"No authorization transaction to proceed capture.","No authorization transaction to proceed capture."
-"""code"" value should be specified","""code"" value should be specified"
-"Log error requests only","Log error requests only"
-"Log all requests","Log all requests"
-"Worldline payment methods require your attention.","Worldline payment methods require your attention."
-"Go to <a href=""%1"">log grid</a> to see the details","Go to <a href=""%1"">log grid</a> to see the details"
-"All Allowed Currencies","All Allowed Currencies"
-"Specific Currencies","Specific Currencies"
-"All Allowed Customer Groups","All Allowed Customer Groups"
-"Specific Customer Groups","Specific Customer Groups"
-"Final Authorization","Final Authorization"
-Pre-Authorization,Pre-Authorization
-Test,Test
-Production,Production
-Authorize,Authorize
-"Authorize & Capture","Authorize & Capture"
-"Unable to find Log with ID ""%1""","Unable to find Log with ID ""%1"""
-"Cannot delete Log with id ""%1""","Cannot delete Log with id ""%1"""
-"Could not save Log: %1","Could not save Log: %1"
-"Could not save request to refund: %1","Could not save request to refund: %1"
-"Payment details update has failed","Payment details update has failed"
-"Invalid output model","Invalid output model"
-"Invalid response model","Invalid response model"
-"CancelPaymentApi has failed. Please contact the provider.","CancelPaymentApi has failed. Please contact the provider."
-"CapturePayment request has failed","CapturePayment request has failed"
-"GetPaymentDetailsApi request has failed","GetPaymentDetailsApi request has failed"
-"GetPaymentProducts request has failed","GetPaymentProducts request has failed"
-"GetPaymentApi request has failed. Please contact the provider.","GetPaymentApi request has failed. Please contact the provider."
-"WorldLine refund has failed. Please contact the provider.","WorldLine refund has failed. Please contact the provider."
-"WorldLine delete token has failed. Please contact the provider.","WorldLine delete token has failed. Please contact the provider."
-"Thank you for your order %1.","Thank you for your order %1."
-"Your order is still being processed and you will receive a confirmation e-mail.","Your order is still being processed and you will receive a confirmation e-mail."
-"Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes.","Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes."
-"Order %1 - Check the payment","Order %1 - Check the payment"
-"Please wait, the payment is being processed...","Please wait, the payment is being processed..."
 "About Worldline","About Worldline"
-"Increase conversion rates by offering your customers their preferred methods of payment. Implement the best payment solutions quickly, while addressing key needs such as fraud prevention, data analytics, security, and compliance, whether local or cross-border.","Increase conversion rates by offering your customers their preferred methods of payment. Implement the best payment solutions quickly, while addressing key needs such as fraud prevention, data analytics, security, and compliance, whether local or cross-border."
-"Create a test account","Create a test account"
-"With a test account, you can develop your website and irrigate our payment system at your own pace. In our test environment, you perform test transactions with the confidence and peace of mind that no transaction is actually going to go through.","With a test account, you can develop your website and irrigate our payment system at your own pace. In our test environment, you perform test transactions with the confidence and peace of mind that no transaction is actually going to go through."
-"Check out documentation","Check out documentation"
-"Browse our API reference, our documentation and keep yourself up to date with the latest payment trends.","Browse our API reference, our documentation and keep yourself up to date with the latest payment trends."
-"Visit our support site","Visit our support site"
-"Get in touch","Get in touch"
-"With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution for your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities.","With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities."
-"Contact our sales team","Contact our sales team"
-"Worldline online payments version %1","Worldline online payments version %1"
-"The latest version of the plugin is %1. Check for any updates.","The latest version of the plugin is %1. Check for any updates."
-"Check for updates","Check for updates"
-"Successful! Test again?","Successful! Test again?"
-"Connection failed! Test again?","Connection failed! Test again?"
-ending,ending
-value,value
-"Continue Shopping","Continue Shopping"
-Loading...,Loading...
-"Order Summary","Order Summary"
-"Cart Subtotal","Cart Subtotal"
-Discount,Discount
-Shipping,Shipping
-Tax,Tax
-"Order Total","Order Total"
-"Item in Cart","Item in Cart"
-Qty,Qty
-"Update data from Worldline","Update data from Worldline"
-"Payment Refused","Payment Refused"
-"Your payment has been refused.","Your payment has been refused."
-expires,expires
-"Place Order","Place Order"
-Success!,Success!
-"Payment details have been updated. The page will be reloaded.","Payment details have been updated. The page will be reloaded."
-"There is nothing to update.","There is nothing to update."
-Error!,Error!
-"Something went wrong during getting data from the service.","Something went wrong during getting data from the service."
-"Please use one of the following extensions : html, htm, dhtml","Please use one of the following extensions : html, htm, dhtml"
-Save,Save
-"Something went wrong. Please check your credentials","Something went wrong. Please check your credentials"
-Worldline,Worldline
-"Request Logs","Request Logs"
-"Worldline Online Payments","Worldline Online Payments"
-Connection,Connection
-"Environment Mode","Environment Mode"
-"API Key","API Key"
-"API Secret","API Secret"
-"Merchant ID (PSPID)","Merchant ID (PSPID)"
-"Production API URL","Production API URL"
-"Testing API URL","Testing API URL"
-"Test Connection & Save Credentials","Test Connection & Save Credentials"
-Webhook,Webhook
-Key,Key
-"Secret Key","Secret Key"
-"To retrieve webhooks credentials, login to the Worldline Back Office","To retrieve webhooks credentials, login to the Worldline Back Office"
-"Payment Methods","Payment Methods"
-"Dynamic order status synchronization","Dynamic order status synchronization"
-General,General
-"Fallback Timeout","Fallback Timeout"
-"If the payment process is failed, change the order status after the specified time.","If the payment process is failed, change the order status after the specified time."
-"Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
-"Fallback Timeout Limit","Fallback Timeout Limit"
-"If the payment process is failed, change the order status after the specified time in ""Fallback Timeout"" till the value specified in this field.<br/>In other words, the request will be executed during the specified time limit.","If the payment process is failed, change the order status after the specified time in ""Fallback Timeout"" till the value specified in this field.<br/>In other words, the request will be executed during the specified time limit."
-"Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
-"Schedule (Cron Syntax)","Schedule (Cron Syntax)"
-"Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>","Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>"
-"Payment Refused Email Template","Payment Refused Email Template"
-"Email Sender","Email Sender"
-Debug,Debug
-"Logging Records Lifetime (Days)","Logging Records Lifetime (Days)"
-"Debug Logs","Debug Logs"
-"Download Debug Log","Download Debug Log"
-"Erase Debug Log","Erase Debug Log"
-"Request Log Grid","Request Log Grid"
-"Log mode","Log mode"
-"Mark as processed","Mark as processed"
-No,No
-Yes,Yes
-ID,ID
-"Request Path","Request Path"
-"Request Body","Request Body"
-"Response Body","Response Body"
-"Response Code","Response Code"
-Processed,Processed
-"Created At","Created At"
-"Waiting for payment confirmation","Waiting for payment confirmation"
-"Please wait, the payment is being processed...","Please wait, the payment is being processed..."
-"The cart isn\'t active.","The cart is not active."
-"Your payment is being processed","Your payment is being processed"
-"Order %1 - Check the payment","Order %1 - Check the payment"
-"Enabling this option will make sure the customer performs a “Strong Customer Authentication” and hence enforces a “challenge” 3DS flow.","Enabling this option will make sure the customer performs a “Strong Customer Authentication” and hence enforces a “challenge” 3DS flow."
-"Fraud Information","Fraud Information"
-Result,Result
-Liability,Liability
-Exemption,Exemption
-Authentication status,Authentication status
-"If the setting is enabled and the sum of the order is below 30 euros, the customer won’t be asked to go through 3DS auth.","If the setting is enabled and the sum of the order is below 30 euros, the customer won’t be asked to go through 3DS auth."
-"Enable Payment","Enable Payment"
-"Request a new feature","Request a new feature"
-"If you would like to propose a new feature, feel free to fill in the form.","If you would like to propose a new feature, feel free to fill in the form."
-"The identifier of your Worldline account","The identifier of your Worldline account"
-"Your company name","Your company name"
-"Please explain how our payment plugin can be further improved","Please explain how our payment plugin can be further improved"
-"Are you sure you want to do this? All webhook data will be removed.","Are you sure you want to do this? All webhook data will be removed."
-"Company Name","Company Name"
-"Submit","Submit"
-"If you want to leave any feature suggestions, feel free to fill in the form.","If you want to leave any feature suggestions, feel free to fill in the form."
-"Message","Message"
-"Message","Message"
-"Magento Version","Magento Version"
-"Plugin Version","Plugin Version"
-"Please note that 3-D Secure and PWA settings can now be <a href=""%1"">configured globally</a> for all Worldline payment methods. Feel free to review these if needed.","Please note that 3-D Secure and PWA settings can now be <a href=""%1"">configured globally</a> for all Worldline payment methods. Feel free to review these if needed."
-"Company Name","Company Name"
-"Submit","Submit"
-"Enable 3-D Secure Authentication","Enable 3-D Secure Authentication"
-"Enforce Strong Customer Authentication for Every Payment","Enforce Strong Customer Authentication for Every Payment"
-"Request Authentication Exemption for Low-value Baskets","Request Authentication Exemption for Low-value Baskets"
-"Click on the link to <a href=""%1"">ignore this notification</a>","Click on the link to <a href=""%1"">ignore this notification</a>"
+"Acquired amount is not reached","Acquired amount is not reached"
 "Activating this option allows the issuer of the customer card to request the 3-D Secure process to be triggered. This means that both the challenge flow (where strong customer authentication is needed) and the frictionless flow (where the issuing bank will take full liability) can be triggered.","Activating this option allows the issuer of the customer card to request the 3-D Secure process to be triggered. This means that both the challenge flow (where strong customer authentication is needed) and the frictionless flow (where the issuing bank will take full liability) can be triggered."
 "Activating this option will request the issuer to always go for a challenge flow during the 3-D Secure process.","Activating this option will request the issuer to always go for a challenge flow during the 3-D Secure process."
 "Activating this option will request to issuer not to request a strong customer authentication for the payment if the value of the basket is below 30 EUR. This exemption can only be requested for EU customers, as it is linked to the PSD2 European regulation. Note that activating this option will transfer the liability to you, as a merchant, in case of fraud.","Activating this option will request to issuer not to request a strong customer authentication for the payment if the value of the basket is below 30 EUR. This exemption can only be requested for EU customers, as it is linked to the PSD2 European regulation. Note that activating this option will transfer the liability to you, as a merchant, in case of fraud."
+"All Allowed Currencies","All Allowed Currencies"
+"All Allowed Customer Groups","All Allowed Customer Groups"
+"Amount available for capture","Amount available for capture"
+"Amount available for refund","Amount available for refund"
+"and perform the following steps:","and perform the following steps:"
+"API Key","API Key"
+"API Secret","API Secret"
+"Apply Surcharge","Apply Surcharge"
+"Are you sure you want to do this? All webhook data will be removed.","Are you sure you want to do this? All webhook data will be removed."
+"Authentication status","Authentication status"
+"Authorize & Capture","Authorize & Capture"
+"Browse our API reference, our documentation and keep yourself up to date with the latest payment trends.","Browse our API reference, our documentation and keep yourself up to date with the latest payment trends."
+"CancelPaymentApi has failed. Please contact the provider.","CancelPaymentApi has failed. Please contact the provider."
+"Cannot delete Log with id ""%1""","Cannot delete Log with id ""%1"""
+"CapturePayment request has failed","CapturePayment request has failed"
+"Cart Subtotal","Cart Subtotal"
+"Check for updates","Check for updates"
+"Check out documentation","Check out documentation"
+"Click on ""GENERATE WEBHOOKS API KEY""","Click on ""GENERATE WEBHOOKS API KEY"""
+"Click on ""SAVE"" to confirm your settings","Click on ""SAVE"" to confirm your settings"
+"Click on the link to <a href=""%1"">ignore this notification</a>","Click on the link to <a href=""%1"">ignore this notification</a>"
+"Code %1 is not valid for order creation","Code %1 is not valid for order creation"
+"Company Name","Company Name"
+"Connection failed! Test again?","Connection failed! Test again?"
+"Contact our sales team","Contact our sales team"
+"Continue Shopping","Continue Shopping"
+"Copy & Paste the WebhooksKeySecret immediately","Copy & Paste the WebhooksKeySecret immediately"
+"Could not save Log: %1","Could not save Log: %1"
+"Could not save request to refund: %1","Could not save request to refund: %1"
+"Create a test account","Create a test account"
+"Created At","Created At"
+"Customer email","Customer email"
+"Date and time (UTC)","Date and time (UTC)"
+"Debug Logs","Debug Logs"
+"Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>","Default value: every minute. <a href=""http://crontab.guru/"" target=""_blank"">Need help?</a>"
+"Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
+"Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
+"Download Debug Log","Download Debug Log"
+"Dynamic order status synchronization","Dynamic order status synchronization"
+"Email Sender","Email Sender"
+"Email Template","Email Template"
+"Enable 3-D Secure Authentication","Enable 3-D Secure Authentication"
+"Enable Payment","Enable Payment"
+"Enabling this option will make sure the customer performs a “Strong Customer Authentication” and hence enforces a “challenge” 3DS flow.","Enabling this option will make sure the customer performs a “Strong Customer Authentication” and hence enforces a “challenge” 3DS flow."
+"Enforce Strong Customer Authentication for Every Payment","Enforce Strong Customer Authentication for Every Payment"
+"Environment Mode","Environment Mode"
+"Erase Debug Log","Erase Debug Log"
+"Error message","Error message"
+"Fallback Timeout Limit","Fallback Timeout Limit"
+"Fallback Timeout","Fallback Timeout"
+"Final Authorization","Final Authorization"
+"Fraud Information","Fraud Information"
+"Fraud information","Fraud information"
+"Get in touch","Get in touch"
+"Get surcharge amount","Get surcharge amount"
+"GetPaymentApi request has failed. Please contact the provider.","GetPaymentApi request has failed. Please contact the provider."
+"GetPaymentDetailsApi request has failed","GetPaymentDetailsApi request has failed"
+"GetPaymentProducts request has failed","GetPaymentProducts request has failed"
+"Go to <a href=""%1"">log grid</a> to see the details","Go to <a href=""%1"">log grid</a> to see the details"
+"Go to Configuration > Technical information > API settings > Webhooks Configuration","Go to Configuration > Technical information > API settings > Webhooks Configuration"
+"If the payment process is failed, change the order status after the specified time in ""Fallback Timeout"" till the value specified in this field.<br/>In other words, the request will be executed during the specified time limit.","If the payment process is failed, change the order status after the specified time in ""Fallback Timeout"" till the value specified in this field.<br/>In other words, the request will be executed during the specified time limit."
+"If the payment process is failed, change the order status after the specified time.","If the payment process is failed, change the order status after the specified time."
+"If the setting is enabled and the sum of the order is below 30 euros, the customer won’t be asked to go through 3DS auth.","If the setting is enabled and the sum of the order is below 30 euros, the customer won’t be asked to go through 3DS auth."
+"If you would like to propose a new feature, feel free to fill in the form.","If you would like to propose a new feature, feel free to fill in the form."
+"In ""Endpoints URLs"", paste the Webhooks URL of your store - see below","In ""Endpoints URLs"", paste the Webhooks URL of your store - see below"
+"Increase conversion rates by offering your customers their preferred methods of payment. Implement the best payment solutions quickly, while addressing key needs such as fraud prevention, data analytics, security, and compliance, whether local or cross-border.","Increase conversion rates by offering your customers their preferred methods of payment. Implement the best payment solutions quickly, while addressing key needs such as fraud prevention, data analytics, security, and compliance, whether local or cross-border."
+"Increment ID has been used","Increment ID has been used"
+"Invalid output model","Invalid output model"
+"Invalid response model","Invalid response model"
+"Item in Cart","Item in Cart"
+"Log all requests","Log all requests"
+"Log error requests only","Log error requests only"
+"Log mode","Log mode"
+"Logging Records Lifetime (Days)","Logging Records Lifetime (Days)"
+"Magento Version","Magento Version"
+"Mark as processed","Mark as processed"
+"Merchant ID (PSPID)","Merchant ID (PSPID)"
+"Message","Message"
+"No authorization transaction to proceed capture.","No authorization transaction to proceed capture."
+"Order %1 - Check the payment","Order %1 - Check the payment"
+"Order %1 - Check the payment","Order %1 - Check the payment"
+"Order creation failed","Order creation failed"
+"Order Summary","Order Summary"
+"Order Total","Order Total"
+"Payment details have been updated. The page will be reloaded.","Payment details have been updated. The page will be reloaded."
+"Payment details have been updated.","Payment details have been updated."
+"Payment details update has failed","Payment details update has failed"
+"Payment method","Payment method"
+"Payment Methods","Payment Methods"
+"Payment Refused Email Template","Payment Refused Email Template"
+"Payment Refused","Payment Refused"
+"Place Order","Place Order"
+"Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes.","Please <a href=""%1"">Contact us</a> in case you don't receive the confirmation within %2 minutes."
+"Please explain how our payment plugin can be further improved","Please explain how our payment plugin can be further improved"
+"Please note that 3-D Secure and PWA settings can now be <a href=""%1"">configured globally</a> for all Worldline payment methods. Feel free to review these if needed.","Please note that 3-D Secure and PWA settings can now be <a href=""%1"">configured globally</a> for all Worldline payment methods. Feel free to review these if needed."
+"Please note that a surcharge may be added to the amount you have to pay depending on the payment method you have chosen.","Please note that a surcharge may be added to the amount you have to pay depending on the payment method you have chosen."
+"Please use one of the following extensions : html, htm, dhtml","Please use one of the following extensions : html, htm, dhtml"
+"Please wait, the payment is being processed...","Please wait, the payment is being processed..."
+"Please wait, the payment is being processed...","Please wait, the payment is being processed..."
+"Please, <a href=""%1"">click here</a> to proceed.","Please, <a href=""%1"">click here</a> to proceed."
+"Plugin Version","Plugin Version"
+"Production API URL","Production API URL"
+"Refunded amount","Refunded amount"
+"Request a new feature","Request a new feature"
+"Request Authentication Exemption for Low-value Baskets","Request Authentication Exemption for Low-value Baskets"
+"Request Body","Request Body"
+"Request Log Grid","Request Log Grid"
+"Request Logs","Request Logs"
+"Request Path","Request Path"
+"Reserved order id","Reserved order id"
+"Response Body","Response Body"
+"Response Code","Response Code"
+"Schedule (Cron Syntax)","Schedule (Cron Syntax)"
+"Secret Key","Secret Key"
+"Something went wrong during getting data from the service.","Something went wrong during getting data from the service."
+"Something went wrong while updating log.","Something went wrong while updating log."
+"Something went wrong. Please check your credentials","Something went wrong. Please check your credentials"
+"Sorry, but something went wrong","Sorry, but something went wrong"
+"Specific Currencies","Specific Currencies"
+"Specific Customer Groups","Specific Customer Groups"
+"Status code","Status code"
+"Store id","Store id"
+"Submit","Submit"
+"Successful! Test again?","Successful! Test again?"
+"Surcharging amount must not be less than zero.","Surcharging amount must not be less than zero."
+"Surcharging amount must not be more than remaining value.","Surcharging amount must not be more than remaining value."
+"Surcharging will allow you to ask an additional amount to your customer based on the card used. Note that this feature will only work in Australia.","Surcharging will allow you to ask an additional amount to your customer based on the card used. Note that this feature will only work in Australia."
+"Surcharging","Surcharging"
+"Test Connection & Save Credentials","Test Connection & Save Credentials"
+"Testing API URL","Testing API URL"
+"Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes.","Thank you for your order %1. Your order is still being processed and you will receive a confirmation e-mail. Please contact us in case you don't receive the confirmation within 10 minutes."
+"Thank you for your order %1.","Thank you for your order %1."
+"The cart isn\'t active.","The cart is not active."
+"The credit memo request has been sent.","The credit memo request has been sent."
+"The credit memo's total must be positive.","The credit memo's total must be positive."
+"The identifier of your Worldline account","The identifier of your Worldline account"
+"The latest version of the plugin is %1. Check for any updates.","The latest version of the plugin is %1. Check for any updates."
+"The payment has rejected, please, try again","The payment has rejected, please, try again"
+"There is nothing to update.","There is nothing to update."
+"This URL must be specified in the worldline admin panel","This URL must be specified in the worldline admin panel"
+"To retrieve the webhooks credentials, login to the Worldline Back Office.","To retrieve the webhooks credentials, login to the Worldline Back Office."
+"To retrieve webhooks credentials, login to the Worldline Back Office","To retrieve webhooks credentials, login to the Worldline Back Office"
+"Transaction number","Transaction number"
+"Unable to find Log with ID ""%1""","Unable to find Log with ID ""%1"""
+"Update data from Worldline","Update data from Worldline"
+"Visit our support site","Visit our support site"
+"Waiting for payment confirmation","Waiting for payment confirmation"
+"Waiting for payment confirmation","Waiting for payment confirmation"
+"We can't save the credit memo right now.","We can't save the credit memo right now."
+"Webhook URL","Webhook URL"
+"With a test account, you can develop your website and irrigate our payment system at your own pace. In our test environment, you perform test transactions with the confidence and peace of mind that no transaction is actually going to go through.","With a test account, you can develop your website and irrigate our payment system at your own pace. In our test environment, you perform test transactions with the confidence and peace of mind that no transaction is actually going to go through."
+"With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution for your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities.","With decades of experience and experts who are specialized in every field, Worldline offers the ideal solution for your company. As a leading innovator, we support the latest payment technology and we can answer all your questions related to your business activities."
+"WorldLine delete token has failed. Please contact the provider.","WorldLine delete token has failed. Please contact the provider."
+"Worldline Online Payments configuration is located under the dedicated configuration section.","Worldline Online Payments configuration is located under the dedicated configuration section."
+"Worldline online payments version %1","Worldline online payments version %1"
+"Worldline Online Payments","Worldline Online Payments"
+"Worldline payment id","Worldline payment id"
+"Worldline payment methods require your attention.","Worldline payment methods require your attention."
+"WorldLine refund has failed. Please contact the provider.","WorldLine refund has failed. Please contact the provider."
+"Worldline Request Logs","Worldline Request Logs"
+"You created the credit memo.","You created the credit memo."
+"Your company name","Your company name"
+"Your order is still being processed and you will receive a confirmation e-mail.","Your order is still being processed and you will receive a confirmation e-mail."
+"Your payment has been refused.","Your payment has been refused."
+"Your payment is being processed","Your payment is being processed"
+"Your payment is being processed","Your payment is being processed"
+:,:
+Authentication status,Authentication status
+Authorize,Authorize
+Connection,Connection
+Copy,Copy
+CSV,CSV
+Debug,Debug
+Discount,Discount
+Enabled,Enabled
+ending,ending
+Error!,Error!
+Exemption,Exemption
+Exemption,Exemption
+expires,expires
+General,General
+ID,ID
+Key,Key
+label,label
+Liability,Liability
+Liability,Liability
+Loading...,Loading...
+No,No
+Notification,Notification
+Payment,Payment
+Pre-Authorization,Pre-Authorization
+Processed,Processed
+Production,Production
+Qty,Qty
+Recipient,Recipient
+Result,Result
+Result,Result
+Save,Save
+Sender,Sender
+Shipping,Shipping
+space,space
+Status,Status
+Success!,Success!
+Tax,Tax
+Test,Test
+title,title
+Total,Total
+value,value
+Webhook,Webhook
+Worldline,Worldline
+Yes,Yes

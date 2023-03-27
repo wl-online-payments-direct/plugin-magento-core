@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Service\Payment;
 
-use Exception;
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Service\Payment\CancelPaymentServiceInterface;
-use Worldline\PaymentCore\Model\ClientProvider;
+use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 
 /**
@@ -16,7 +16,7 @@ use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 class CancelPaymentService implements CancelPaymentServiceInterface
 {
     /**
-     * @var ClientProvider
+     * @var ClientProviderInterface
      */
     private $clientProvider;
 
@@ -25,12 +25,19 @@ class CancelPaymentService implements CancelPaymentServiceInterface
      */
     private $worldlineConfig;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
-        ClientProvider $clientProvider,
-        WorldlineConfig $worldlineConfig
+        ClientProviderInterface $clientProvider,
+        WorldlineConfig $worldlineConfig,
+        LoggerInterface $logger
     ) {
         $this->clientProvider = $clientProvider;
         $this->worldlineConfig = $worldlineConfig;
+        $this->logger = $logger;
     }
 
     /**
@@ -48,7 +55,8 @@ class CancelPaymentService implements CancelPaymentServiceInterface
                 ->merchant($this->worldlineConfig->getMerchantId($storeId))
                 ->payments()
                 ->cancelPayment($paymentId);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('CancelPaymentApi has failed. Please contact the provider.'));
         }
     }

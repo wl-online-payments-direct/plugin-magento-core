@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <!-- save surcharging data when submit invoice (can be from frontend - authorize and capture)) -->
+    <event name="sales_order_invoice_save_after">
+        <observer name="Worldline_PaymentCore::invoice_save" instance="Worldline\PaymentCore\Observer\Sales\Model\Order\Invoice\IsInvoicedSurcharging" />
+    </event>
+</config>

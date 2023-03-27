@@ -8,5 +8,8 @@
                    before="-"
                    template="Worldline_PaymentCore::success/clean_cart.phtml"/>
         </referenceContainer>
+        <referenceBlock name="order_totals">
+            <block class="Worldline\PaymentCore\Block\Sales\Order\Surcharging" before="tax" name="worldline_payment_surcharging"/>
+        </referenceBlock>
     </body>
 </page>

@@ -8,13 +8,15 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
+use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 
-class GeneralSettingsConfig
+class GeneralSettingsConfig implements GeneralSettingsConfigInterface
 {
     public const ENABLE_3D = 'worldline_payment/general_settings/enable_3d';
     public const ENFORCE_AUTH = 'worldline_payment/general_settings/enforce_authentication';
     public const AUTH_EXEMPTION = 'worldline_payment/general_settings/authentication_exemption';
     public const PWA_ROUTE = 'worldline_payment/general_settings/pwa_route';
+    public const APPLY_SURCHARGE = 'worldline_payment/general_settings/apply_surcharge';
 
     /**
      * @var State
@@ -61,5 +63,15 @@ class GeneralSettingsConfig
         }
 
         return $this->urlBuilder->getUrl($returnUrl);
+    }
+
+    public function isApplySurcharge(?int $scopeCode = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::APPLY_SURCHARGE, ScopeInterface::SCOPE_STORE, $scopeCode);
+    }
+
+    public function getValue(string $path, ?int $scopeCode = null): string
+    {
+        return (string)$this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $scopeCode);
     }
 }

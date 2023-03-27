@@ -79,15 +79,4 @@ class Transaction extends AbstractModel implements TransactionInterface
         $this->setData(self::CURRENCY, $currency);
         return $this;
     }
-
-    public function getAdditionalData(): ?array
-    {
-        return $this->getData(self::ADDITIONAL_DATA);
-    }
-
-    public function setAdditionalData(array $additionalData): TransactionInterface
-    {
-        $this->setData(self::ADDITIONAL_DATA, $additionalData);
-        return $this;
-    }
 }

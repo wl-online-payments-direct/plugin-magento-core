@@ -45,11 +45,23 @@
                         type="submit"
                         data-bind="
                             click: placeOrder,
+                            visible: !isSurchargeEnabled(),
                             attr: {title: $t('Place Order')},
                             enable: isButtonActive()
                         "
                     disabled>
                     <span translate="'Place Order'"></span>
+                </button>
+                <button class="action primary surcharge"
+                        type="submit"
+                        data-bind="
+                            click: getSurcharge,
+                            visible: isSurchargeEnabled(),
+                            attr: {title: $t('Get surcharge amount')},
+                            enable: isButtonActive()
+                        "
+                        disabled>
+                    <span data-bind="i18n: 'Get surcharge amount'"></span>
                 </button>
             </div>
         </div>

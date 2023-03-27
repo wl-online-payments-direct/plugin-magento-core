@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model;
 
 use OnlinePayments\Sdk\Domain\PaymentResponse;
+use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\FraudManagerInterface;
+use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
 use Worldline\PaymentCore\Api\PaymentManagerInterface;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
-use Worldline\PaymentCore\Model\ResourceModel\Quote as QuoteResource;
-use Worldline\PaymentCore\Api\Data\PaymentInterface;
 
 /**
  * Manager for worldline payment entity
@@ -32,20 +33,27 @@ class PaymentDataManager implements PaymentDataManagerInterface
     private $fraudManager;
 
     /**
-     * @var QuoteResource
+     * @var QuoteResourceInterface
      */
     private $quoteResource;
+
+    /**
+     * @var PaymentIdFormatterInterface
+     */
+    private $paymentIdFormatter;
 
     public function __construct(
         PaymentManagerInterface $paymentManager,
         TransactionWLResponseManagerInterface $transactionWLResponseManager,
         FraudManagerInterface $fraudManager,
-        QuoteResource $quoteResource
+        QuoteResourceInterface $quoteResource,
+        PaymentIdFormatterInterface $paymentIdFormatter
     ) {
         $this->transactionWLResponseManager = $transactionWLResponseManager;
         $this->paymentManager = $paymentManager;
         $this->fraudManager = $fraudManager;
         $this->quoteResource = $quoteResource;
+        $this->paymentIdFormatter = $paymentIdFormatter;
     }
 
     /**
@@ -67,15 +75,15 @@ class PaymentDataManager implements PaymentDataManagerInterface
 
     private function isValid(PaymentResponse $paymentResponse): bool
     {
-        $paymentId = (string)(int)$paymentResponse->getId();
-        $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($paymentId);
+        $wlPaymentId = $this->paymentIdFormatter->validateAndFormat($paymentResponse->getId());
+        $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($wlPaymentId);
         if (!$quote->getId()) {
             return false;
         }
 
-        $responseId = (int)$paymentResponse->getId();
-        $paymentId = (int)$quote->getPayment()->getAdditionalInformation(PaymentInterface::PAYMENT_ID);
+        $paymentId = (string) $quote->getPayment()->getAdditionalInformation(PaymentInterface::PAYMENT_ID);
+        $paymentId = $this->paymentIdFormatter->validateAndFormat($paymentId);
 
-        return $responseId === $paymentId;
+        return $wlPaymentId === $paymentId;
     }
 }

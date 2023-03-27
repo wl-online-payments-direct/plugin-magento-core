@@ -139,7 +139,7 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
         $address = $this->addressFactory->create();
         $address->setCity($this->billingAddress->getCity());
         $address->setZip($this->billingAddress->getPostcode());
-        $address->setState($this->billingAddress->getRegionCode());
+        $address->setState($this->billingAddress->getRegion());
         $address->setCountryCode($this->billingAddress->getCountryId());
         $address->setStreet($this->billingAddress->getStreetFull());
         $this->customer->setBillingAddress($address);
@@ -149,7 +149,7 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
     {
         $contactDetails = $this->contactDetailsFactory->create();
         $contactDetails->setEmailAddress($this->billingAddress->getEmail());
-        $telephone = preg_replace('/[^0-9\+]+/', '', (string) $this->billingAddress->getTelephone());
+        $telephone = '+' . preg_replace('/[^0-9]+/', '', (string) $this->billingAddress->getTelephone());
         $contactDetails->setPhoneNumber($telephone);
         $this->customer->setContactDetails($contactDetails);
     }

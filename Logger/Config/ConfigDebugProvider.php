@@ -8,29 +8,20 @@ use Magento\Store\Model\ScopeInterface;
 
 class ConfigDebugProvider
 {
+    public const LOG_MODE = 'worldline_debug/worldline_request/log_mode';
+
     /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
 
-    /**
-     * @var string[]|null
-     */
-    private $data;
-
-    public function __construct(ScopeConfigInterface $scopeConfig, array $data = [])
+    public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
-        $this->data = $data;
     }
 
     public function getLogMode(?int $storeId = null): int
     {
-        $xmlConfigPath = $this->data['log_mode'] ?? '';
-        if (!$xmlConfigPath) {
-            return 0;
-        }
-
-        return (int)$this->scopeConfig->getValue($xmlConfigPath, ScopeInterface::SCOPE_STORE, $storeId);
+        return (int)$this->scopeConfig->getValue(self::LOG_MODE, ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

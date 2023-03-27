@@ -9,8 +9,9 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
+use Worldline\PaymentCore\Api\SubjectReaderInterface;
 
-class SubjectReader
+class SubjectReader implements SubjectReaderInterface
 {
     /**
      * Reads response object from subject

@@ -8,6 +8,7 @@ use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\AmountOfMoneyFactory;
 use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Service\CreateRequest\Order\AmountDataBuilderInterface;
+use Worldline\PaymentCore\Api\SurchargingQuoteRepositoryInterface;
 
 class AmountDataBuilder implements AmountDataBuilderInterface
 {
@@ -21,22 +22,36 @@ class AmountDataBuilder implements AmountDataBuilderInterface
      */
     private $amountFormatter;
 
+    /**
+     * @var SurchargingQuoteRepositoryInterface
+     */
+    private $surchargingQuoteRepository;
+
     public function __construct(
         AmountOfMoneyFactory $amountOfMoneyFactory,
-        AmountFormatterInterface $amountFormatter
+        AmountFormatterInterface $amountFormatter,
+        SurchargingQuoteRepositoryInterface $surchargingQuoteRepository
     ) {
         $this->amountOfMoneyFactory = $amountOfMoneyFactory;
         $this->amountFormatter = $amountFormatter;
+        $this->surchargingQuoteRepository = $surchargingQuoteRepository;
     }
 
     public function build(CartInterface $quote): AmountOfMoney
     {
+        $grandTotal = (float)$quote->getGrandTotal();
         $amountOfMoney = $this->amountOfMoneyFactory->create();
 
         $currency = (string) $quote->getCurrency()->getQuoteCurrencyCode();
         $amountOfMoney->setCurrencyCode($currency);
 
-        $amount = $this->amountFormatter->formatToInteger((float) $quote->getGrandTotal(), $currency);
+        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId((int)$quote->getId());
+        $paymentMethod = str_replace('_vault', '', (string)$quote->getPayment()->getMethod());
+        if ($surchargingQuote->getId() && $paymentMethod === $surchargingQuote->getPaymentMethod()) {
+            $grandTotal -= (float)$surchargingQuote->getAmount();
+        }
+
+        $amount = $this->amountFormatter->formatToInteger($grandTotal, $currency);
         $amountOfMoney->setAmount($amount);
 
         return $amountOfMoney;

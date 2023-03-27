@@ -9,8 +9,9 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParams;
 use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParamsFactory;
+use Worldline\PaymentCore\Api\Service\GetPaymentProductsRequestBuilderInterface;
 
-class GetPaymentProductsRequestBuilder
+class GetPaymentProductsRequestBuilder implements GetPaymentProductsRequestBuilderInterface
 {
     public const GET_PAYMENT_PRODUCTS_PARAMS = 'get_payment_product_params';
 

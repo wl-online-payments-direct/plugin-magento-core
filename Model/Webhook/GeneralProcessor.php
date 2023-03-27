@@ -5,6 +5,8 @@ namespace Worldline\PaymentCore\Model\Webhook;
 
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
+use Worldline\PaymentCore\Api\Webhook\CustomProcessorStrategyInterface;
+use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\Order\CommentManager as OrderCommentManager;
 
 class GeneralProcessor implements ProcessorInterface
@@ -24,14 +26,21 @@ class GeneralProcessor implements ProcessorInterface
      */
     private $processors;
 
+    /**
+     * @var CustomProcessorStrategyInterface[]
+     */
+    private $customProcessorStrategies;
+
     public function __construct(
         WebhookLogger $webhookLogger,
         OrderCommentManager $orderCommentManager,
-        array $processors = []
+        array $processors = [],
+        array $customProcessorStrategies = []
     ) {
-        $this->processors = $processors;
         $this->webhookLogger = $webhookLogger;
         $this->orderCommentManager = $orderCommentManager;
+        $this->processors = $processors;
+        $this->customProcessorStrategies = $customProcessorStrategies;
     }
 
     /**
@@ -45,13 +54,23 @@ class GeneralProcessor implements ProcessorInterface
     {
         $this->webhookLogger->logFromEvent($webhookEvent);
 
-        $processor = $this->processors[$webhookEvent->getType()] ?? false;
-        if (!$processor) {
+        if (!$processor = $this->getProcessor($webhookEvent)) {
             $this->orderCommentManager->addComment($webhookEvent);
             return;
         }
 
         $processor->process($webhookEvent);
         $this->orderCommentManager->addComment($webhookEvent);
+    }
+
+    private function getProcessor(WebhooksEvent $webhookEvent)
+    {
+        foreach ($this->customProcessorStrategies as $strategy) {
+            if ($processor = $strategy->getProcessor($webhookEvent)) {
+                return $processor;
+            }
+        }
+
+        return $this->processors[$webhookEvent->getType()] ?? null;
     }
 }

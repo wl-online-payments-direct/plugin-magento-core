@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\ThreeDSecure;
 
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
-use Worldline\PaymentCore\Model\Config\GeneralSettingsConfig;
+use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 
 class ParamsHandler
 {
     public const THRESHOLD_VALUE = 30;
 
     /**
-     * @var GeneralSettingsConfig
+     * @var GeneralSettingsConfigInterface
      */
     private $generalSettings;
 
-    public function __construct(GeneralSettingsConfig $generalSettings)
+    public function __construct(GeneralSettingsConfigInterface $generalSettings)
     {
         $this->generalSettings = $generalSettings;
     }

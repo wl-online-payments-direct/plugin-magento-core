@@ -8,8 +8,9 @@ use Magento\Customer\Model\Data\Customer;
 use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Payment\Gateway\Config\Config as PaymentGatewayConfig;
 use Magento\Quote\Api\Data\CartInterface;
+use Worldline\PaymentCore\Api\AvailableMethodCheckerInterface;
 
-class AvailableMethodChecker
+class AvailableMethodChecker implements AvailableMethodCheckerInterface
 {
     /**
      * @var HttpContext

@@ -9,6 +9,7 @@ use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Phrase;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
 
@@ -53,11 +54,16 @@ class PendingOrder extends Action implements HttpPostActionInterface
         }
     }
 
-    private function processException($incrementId, $errorMessage)
+    /**
+     * @param string $incrementId
+     * @param string|Phrase $errorMessage
+     * @return string|Phrase
+     */
+    private function processException(string $incrementId, $errorMessage)
     {
         $this->failedOrderCreationNotification->notify(
             $incrementId,
-            $errorMessage,
+            (string)$errorMessage,
             FailedOrderCreationNotification::WAITING_PAGE_SPACE
         );
         $this->messageManager->addErrorMessage($errorMessage);

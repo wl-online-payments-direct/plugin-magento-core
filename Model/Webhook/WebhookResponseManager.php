@@ -22,9 +22,7 @@ class WebhookResponseManager
         $response = null;
         if ($webhookEvent->getPayment()) {
             $response = $webhookEvent->getPayment();
-        }
-
-        if ($webhookEvent->getRefund()) {
+        } elseif ($webhookEvent->getRefund()) {
             $response = $webhookEvent->getRefund();
         }
 
