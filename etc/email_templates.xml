@@ -12,4 +12,10 @@
               type="html"
               module="Worldline_PaymentCore"
               area="adminhtml"/>
+    <template id="worldline_order_creator_auto_refund_email_template"
+              label="Auto Refund Attempt"
+              file="auto_refund_attempt.html"
+              type="html"
+              module="Worldline_PaymentCore"
+              area="adminhtml"/>
 </config>

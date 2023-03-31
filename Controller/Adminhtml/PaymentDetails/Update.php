@@ -7,21 +7,21 @@ use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Worldline\PaymentCore\Model\Transaction\TransactionUpdater;
+use Worldline\PaymentCore\Model\Order\PaymentInfoUpdater;
 
 class Update extends Action implements HttpPostActionInterface
 {
     /**
-     * @var TransactionUpdater
+     * @var PaymentInfoUpdater
      */
-    private $transactionUpdater;
+    private $paymentInfoUpdater;
 
     public function __construct(
         Action\Context $context,
-        TransactionUpdater $transactionUpdater
+        PaymentInfoUpdater $paymentInfoUpdater
     ) {
         parent::__construct($context);
-        $this->transactionUpdater = $transactionUpdater;
+        $this->paymentInfoUpdater = $paymentInfoUpdater;
     }
 
     public function execute(): ResultInterface
@@ -29,7 +29,7 @@ class Update extends Action implements HttpPostActionInterface
         $incrementId = (string) $this->getRequest()->getParam('increment_id');
         $storeId = (int) $this->getRequest()->getParam('store_id');
 
-        $updateResult = $this->transactionUpdater->updateForIncrementId($incrementId, $storeId);
+        $updateResult = $this->paymentInfoUpdater->updateForIncrementId($incrementId, $storeId);
         if ($updateResult) {
             $this->messageManager->addSuccessMessage(__('Payment details have been updated.'));
         }

@@ -5,10 +5,10 @@ namespace Worldline\PaymentCore\Model\RefundRequest;
 
 use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\Data\TransactionInterface;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
-use Worldline\PaymentCore\Api\QuoteResourceInterface;
-use Worldline\PaymentCore\Model\Transaction\TransactionUpdater;
+use Worldline\PaymentCore\Model\Order\PaymentInfoUpdater;
 
 /**
  * Update credit memo when webhooks are missing
@@ -16,9 +16,9 @@ use Worldline\PaymentCore\Model\Transaction\TransactionUpdater;
 class CreditmemoUpdater
 {
     /**
-     * @var TransactionUpdater
+     * @var PaymentInfoUpdater
      */
-    private $transactionUpdater;
+    private $paymentInfoUpdater;
 
     /**
      * @var RefundProcessor
@@ -46,14 +46,14 @@ class CreditmemoUpdater
     private $amountFormatter;
 
     public function __construct(
-        TransactionUpdater $transactionUpdater,
+        PaymentInfoUpdater $paymentInfoUpdater,
         RefundProcessor $refundProcessor,
         RefundRequestRepositoryInterface $refundRequestRepository,
         TransactionRepositoryInterface $transactionRepository,
         QuoteResourceInterface $quoteResource,
         AmountFormatterInterface $amountFormatter
     ) {
-        $this->transactionUpdater = $transactionUpdater;
+        $this->paymentInfoUpdater = $paymentInfoUpdater;
         $this->refundProcessor = $refundProcessor;
         $this->refundRequestRepository = $refundRequestRepository;
         $this->transactionRepository = $transactionRepository;
@@ -63,7 +63,7 @@ class CreditmemoUpdater
 
     public function update(string $incrementId, string $grandTotal, int $storeId): void
     {
-        $updateResult = $this->transactionUpdater->updateForIncrementId($incrementId, $storeId);
+        $updateResult = $this->paymentInfoUpdater->updateForIncrementId($incrementId, $storeId);
         if (!$updateResult) {
             return;
         }

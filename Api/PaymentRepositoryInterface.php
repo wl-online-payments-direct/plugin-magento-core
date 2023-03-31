@@ -28,4 +28,10 @@ interface PaymentRepositoryInterface
      * @return PaymentInterface
      */
     public function get(string $incrementId): PaymentInterface;
+
+    /**
+     * @param string $incrementId
+     * @return void
+     */
+    public function deleteByIncrementId(string $incrementId): void;
 }

@@ -170,3 +170,12 @@ Authentication status,Authentifizierungsstatus
 Exemption,Befreiung
 Liability,Haftung
 Result,Ergebnis
+"There are some cases when an order can not be created after a successful payment. E.g. if there is 1 product and several customers are trying to buy it. For the first buyer, the order will be created, and the rest will receive a refund (if the setting is set to yes) as the item is out of stock already.","Es gibt einige Fälle, in denen eine Bestellung nach erfolgreicher Zahlung nicht erstellt werden kann. Z.B. wenn es 1 Produkt gibt und mehrere Kunden versuchen, es zu kaufen. Für den ersten Käufer wird die Bestellung erstellt und der Rest erhält eine Rückerstattung (wenn die Einstellung auf Ja gesetzt ist), da der Artikel bereits nicht vorrätig ist."
+"Enable Auto Refund If Order Creation Is Failed","Aktivieren Sie die automatische Rückerstattung, wenn die Auftragserstellung fehlschlägt"
+"Sender","Absender"
+"Enable","Ermöglichen"
+"Recipient","Empfänger"
+"Payment Refused Email Template","E-Mail-Vorlage für Zahlungsverweigerung"
+"Failed Orders Notification","Benachrichtigung über fehlgeschlagene Bestellungen"
+"Auto Refund For Out Of Stock Orders","Automatische Rückerstattung für nicht vorrätige Bestellungen"
+"Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Aktivieren Sie diese Option, um informiert zu werden, wenn eine Bestellung nicht erstellt werden konnte. Dies kann beispielsweise passieren, wenn ein Artikel nicht vorrätig ist."

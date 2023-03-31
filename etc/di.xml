@@ -55,6 +55,7 @@
     <preference type="Worldline\PaymentCore\Service\Payment\CapturePaymentRequestBuilder" for="Worldline\PaymentCore\Api\Service\CapturePaymentRequestBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\Payment\CreatePaymentService" for="Worldline\PaymentCore\Api\Service\Payment\CreatePaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Refund\CreateRefundService" for="Worldline\PaymentCore\Api\Service\Refund\CreateRefundServiceInterface" />
+    <preference type="Worldline\PaymentCore\Service\Refund\RefundRequestDataBuilder" for="Worldline\PaymentCore\Api\Service\Refund\RefundRequestDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentService" for="Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Services\TestConnectionService" for="Worldline\PaymentCore\Api\Service\Services\TestConnectionServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Services\SurchargeCalculationService" for="Worldline\PaymentCore\Api\Service\Services\SurchargeCalculationServiceInterface" />

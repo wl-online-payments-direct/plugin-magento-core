@@ -39,6 +39,15 @@ class PaymentManager implements PaymentManagerInterface
         return $this->paymentRepository->save($wlPayment);
     }
 
+    public function updatePayment(DataObject $worldlineResponse): PaymentInterface
+    {
+        $this->paymentRepository->deleteByIncrementId(
+            (string) $worldlineResponse->getPaymentOutput()->getReferences()->getMerchantReference()
+        );
+
+        return $this->savePayment($worldlineResponse);
+    }
+
     private function addCardPaymentMethodData(DataObject $worldlineResponse, PaymentInterface $wlPayment): void
     {
         $output = $worldlineResponse->getPaymentOutput();
@@ -47,10 +56,10 @@ class PaymentManager implements PaymentManagerInterface
             return;
         }
 
+        $wlPayment->setCardNumber(trim($cardPaymentMethod->getCard()->getCardNumber(), '*'));
         $wlPayment->setIncrementId($output->getReferences()->getMerchantReference());
         $wlPayment->setPaymentId($worldlineResponse->getId());
         $wlPayment->setPaymentProductId($cardPaymentMethod->getPaymentProductId());
-        $wlPayment->setCardNumber(trim($cardPaymentMethod->getCard()->getCardNumber(), '*'));
         $wlPayment->setAmount($this->getAmount($output));
         $wlPayment->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
     }

@@ -69,4 +69,13 @@ class PaymentRepository implements PaymentRepositoryInterface
 
         return $payment;
     }
+
+    public function deleteByIncrementId(string $incrementId): void
+    {
+        $payment = $this->paymentInterfaceFactory->create();
+        $this->paymentResource->load($payment, $incrementId, PaymentInterface::INCREMENT_ID);
+        if ($payment->getId()) {
+            $this->paymentResource->delete($payment);
+        }
+    }
 }

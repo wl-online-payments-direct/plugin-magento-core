@@ -5,10 +5,7 @@ namespace Worldline\PaymentCore\Gateway\Request;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Model\Order\Payment;
-use OnlinePayments\Sdk\Domain\AmountOfMoneyFactory;
-use OnlinePayments\Sdk\Domain\RefundRequest;
-use OnlinePayments\Sdk\Domain\RefundRequestFactory;
-use Worldline\PaymentCore\Api\AmountFormatterInterface;
+use Worldline\PaymentCore\Api\Service\Refund\RefundRequestDataBuilderInterface;
 use Worldline\PaymentCore\Gateway\SubjectReader;
 
 class RefundDataBuilder implements BuilderInterface
@@ -23,30 +20,16 @@ class RefundDataBuilder implements BuilderInterface
     private $subjectReader;
 
     /**
-     * @var RefundRequestFactory
+     * @var RefundRequestDataBuilderInterface
      */
-    private $refundRequestFactory;
-
-    /**
-     * @var AmountOfMoneyFactory
-     */
-    private $amountOfMoneyFactory;
-
-    /**
-     * @var AmountFormatterInterface
-     */
-    private $amountFormatter;
+    private $refundRequestBuilder;
 
     public function __construct(
         SubjectReader $subjectReader,
-        RefundRequestFactory $refundRequestFactory,
-        AmountOfMoneyFactory $amountOfMoneyFactory,
-        AmountFormatterInterface $amountFormatter
+        RefundRequestDataBuilderInterface $refundRequestBuilder
     ) {
         $this->subjectReader = $subjectReader;
-        $this->refundRequestFactory = $refundRequestFactory;
-        $this->amountOfMoneyFactory = $amountOfMoneyFactory;
-        $this->amountFormatter = $amountFormatter;
+        $this->refundRequestBuilder = $refundRequestBuilder;
     }
 
     public function build(array $buildSubject): array
@@ -62,27 +45,13 @@ class RefundDataBuilder implements BuilderInterface
             $payment->getParentTransactionId() ?: $payment->getLastTransId()
         );
 
+        $currencyCode = $payment->getOrder()->getOrderCurrencyCode();
+        $amount = (float)$this->subjectReader->readAmount($buildSubject);
+
         return [
             self::TRANSACTION_ID => $txnId,
             self::STORE_ID => (int)$payment->getOrder()->getStoreId(),
-            self::REFUND_REQUEST => $this->getRefundRequest($buildSubject, $payment)
+            self::REFUND_REQUEST => $this->refundRequestBuilder->build($amount, $currencyCode)
         ];
-    }
-
-    private function getRefundRequest(array $buildSubject, Payment $payment): RefundRequest
-    {
-        $currencyCode = $payment->getOrder()->getOrderCurrencyCode();
-        $amount = $this->amountFormatter->formatToInteger(
-            (float) $this->subjectReader->readAmount($buildSubject),
-            (string) $currencyCode
-        );
-
-        $amountOfMoney = $this->amountOfMoneyFactory->create();
-        $amountOfMoney->setAmount($amount);
-        $amountOfMoney->setCurrencyCode($currencyCode);
-
-        $refundRequest = $this->refundRequestFactory->create();
-        $refundRequest->setAmountOfMoney($amountOfMoney);
-        return $refundRequest;
     }
 }

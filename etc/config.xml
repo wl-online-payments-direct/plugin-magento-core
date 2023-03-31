@@ -28,6 +28,12 @@
                 <sender>general</sender>
                 <email_template>worldline_order_creator_notification_email_template</email_template>
             </notification>
+            <auto_refund>
+                <active>1</active>
+                <recipient>general</recipient>
+                <sender>general</sender>
+                <email_template>worldline_order_creator_auto_refund_email_template</email_template>
+            </auto_refund>
         </worldline_order_creator>
         <worldline_debug>
             <general>

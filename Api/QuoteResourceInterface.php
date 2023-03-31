@@ -12,4 +12,6 @@ interface QuoteResourceInterface
     public function getQuoteByWorldlinePaymentId(string $paymentId): CartInterface;
 
     public function setPaymentIdAndSave(CartInterface $quote, int $paymentProductId): void;
+
+    public function save(CartInterface $quote): void;
 }
