@@ -44,8 +44,8 @@
 "Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines after how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
 "Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status.","Defines for how long our systems will fetch automatically information from Worldline to retrieve the latest payment status."
 "Download Debug Log","Download Debug Log"
-"Dynamic order status synchronization","Dynamic order status synchronization"
-"Email Sender","Email Sender"
+"Dynamic Order Status Synchronization","Dynamic Order Status Synchronization"
+"Sender","Sender"
 "Email Template","Email Template"
 "Enable 3-D Secure Authentication","Enable 3-D Secure Authentication"
 "Enable Payment","Enable Payment"
@@ -180,7 +180,7 @@ Copy,Copy
 CSV,CSV
 Debug,Debug
 Discount,Discount
-Enabled,Enabled
+Enable,Enable
 ending,ending
 Error!,Error!
 Exemption,Exemption
@@ -217,3 +217,9 @@ value,value
 Webhook,Webhook
 Worldline,Worldline
 Yes,Yes
+"Get surcharge amount","Get surcharge amount"
+"There are some cases when an order can not be created after a successful payment. E.g. if there is 1 product and several customers are trying to buy it. For the first buyer, the order will be created, and the rest will receive a refund (if the setting is set to yes) as the item is out of stock already.","There are some cases when an order can not be created after a successful payment. E.g. if there is 1 product and several customers are trying to buy it. For the first buyer, the order will be created, and the rest will receive a refund (if the setting is set to yes) as the item is out of stock already."
+"Enable Auto Refund If Order Creation Is Failed","Enable Auto Refund If Order Creation Is Failed"
+"Failed Orders Notification","Failed Orders Notification"
+"Auto Refund For Out Of Stock Orders","Auto Refund For Out Of Stock Orders"
+"Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock."

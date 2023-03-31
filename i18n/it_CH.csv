@@ -173,3 +173,12 @@ Authentication status,Stato di autenticazione
 Exemption,Esenzione
 Liability,Responsabilità
 Result,Risultato
+"There are some cases when an order can not be created after a successful payment. E.g. if there is 1 product and several customers are trying to buy it. For the first buyer, the order will be created, and the rest will receive a refund (if the setting is set to yes) as the item is out of stock already.","Ci sono alcuni casi in cui non è possibile creare un ordine dopo un pagamento andato a buon fine. Per esempio. se c'è 1 prodotto e diversi clienti stanno cercando di acquistarlo. Per il primo acquirente, l'ordine verrà creato e il resto riceverà un rimborso (se l'impostazione è impostata su sì) poiché l'articolo è già esaurito."
+"Enable Auto Refund If Order Creation Is Failed","Abilita il rimborso automatico se la creazione dell'ordine non riesce"
+"Sender","Mittente"
+"Enable","Abilitare"
+"Recipient","Destinatario"
+"Payment Refused Email Template","Modello di e-mail di pagamento rifiutato"
+"Failed Orders Notification","Notifica ordini non riusciti"
+"Auto Refund For Out Of Stock Orders","Rimborso automatico per ordini esauriti"
+"Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Abilita questa opzione per essere informato quando non è stato possibile creare un ordine. Questo può accadere ad esempio quando un articolo è esaurito."

@@ -72,6 +72,11 @@ class Quote implements QuoteResourceInterface
     {
         $quote->getPayment()
             ->setAdditionalInformation(PaymentInterface::PAYMENT_PRODUCT_ID, $paymentProductId);
+        $this->save($quote);
+    }
+
+    public function save(CartInterface $quote): void
+    {
         $this->cartRepository->save($quote);
     }
 }

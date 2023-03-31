@@ -16,6 +16,7 @@ class FailedOrderCreationNotification
 {
     public const WEBHOOK_SPACE = 'webhook';
     public const WAITING_PAGE_SPACE = 'waiting page';
+    public const WAITING_CRON_SPACE = 'cron';
 
     /**
      * @var EmailSender

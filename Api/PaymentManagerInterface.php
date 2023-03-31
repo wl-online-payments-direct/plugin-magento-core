@@ -12,4 +12,6 @@ use Worldline\PaymentCore\Api\Data\PaymentInterface;
 interface PaymentManagerInterface
 {
     public function savePayment(DataObject $worldlineResponse): PaymentInterface;
+
+    public function updatePayment(DataObject $worldlineResponse): PaymentInterface;
 }

@@ -119,7 +119,6 @@ class EmailSender
             $message->setBodyHtml($body);
             $transport = $this->mailTransportFactory->create(['message' => $message]);
             $transport->sendMessage();
-
         } catch (LocalizedException $e) {
             $this->logger->critical($e->getMessage());
         }

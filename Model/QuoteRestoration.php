@@ -81,6 +81,13 @@ class QuoteRestoration implements QuoteRestorationInterface
         try {
             $quote = $this->cartRepository->get($quoteId);
             $quote->setIsActive(true)->setReservedOrderId(null);
+            $items = $quote->getAllVisibleItems();
+            $quote->setId(null);
+
+            foreach ($items as $item) {
+                $item->setQuoteId(null);
+            }
+
             $this->cartRepository->save($quote);
             $this->checkoutSession->replaceQuote($quote)->unsLastRealOrderId();
         } catch (NoSuchEntityException $e) {

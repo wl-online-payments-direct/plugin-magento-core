@@ -173,3 +173,12 @@ Authentication status,Authenticatiestatus
 Exemption,Vrijstelling
 Liability,Aansprakelijkheid
 Result,Resultaat
+"There are some cases when an order can not be created after a successful payment. E.g. if there is 1 product and several customers are trying to buy it. For the first buyer, the order will be created, and the rest will receive a refund (if the setting is set to yes) as the item is out of stock already.","Er zijn enkele gevallen waarin een bestelling niet kan worden aangemaakt na een succesvolle betaling. Bijv. als er 1 product is en meerdere klanten proberen het te kopen. Voor de eerste koper wordt de bestelling aangemaakt en krijgt de rest een terugbetaling (als de instelling op ja staat) omdat het artikel al niet op voorraad is."
+"Enable Auto Refund If Order Creation Is Failed","Schakel automatische terugbetaling in als het maken van een bestelling is mislukt"
+"Sender","Afzender"
+"Enable","Inschakelen"
+"Recipient","Ontvanger"
+"Payment Refused Email Template","Betaling geweigerd e-mailsjabloon"
+"Failed Orders Notification","Melding mislukte bestellingen"
+"Auto Refund For Out Of Stock Orders","Melding mislukte bestellingen"
+"Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Schakel deze optie in om op de hoogte te worden gehouden wanneer een bestelling niet kan worden aangemaakt. Dit kan bijvoorbeeld gebeuren wanneer een artikel niet op voorraad is."

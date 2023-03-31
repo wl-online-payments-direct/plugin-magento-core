@@ -39,7 +39,7 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
     /**
      * @var DataAssignerInterface[]
      */
-    private $dataAssignerPool;
+    private $dataAssignerPool = [];
 
     public function __construct(
         QuoteManagerInterface $quoteManager,
@@ -102,6 +102,9 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         PaymentInterface $paymentMethod,
         AddressInterface $billingAddress = null
     ): string {
+        $this->validateAddress($quote->getShippingAddress());
+        $this->validateAddress($quote->getBillingAddress());
+
         $this->paymentInformationManagement->savePaymentInformation($quote->getId(), $paymentMethod, $billingAddress);
 
         // For PWA additional information is used, for luma - additional_data
@@ -121,5 +124,32 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         $this->cartRepository->save($quote);
 
         return (string) $quote->getPayment()->getWlRedirectUrl();
+    }
+
+    /**
+     * Magento does not validate addresses in the backend if they are added on the checkout page.
+     * The validation happens afterward when Magento creates the order and saves the addresses.
+     * It breaks the order creation process.
+     * To prevent this we need to validate the addresses before the payment.
+     *
+     * @param AddressInterface|null $address
+     * @return void
+     * @throws LocalizedException
+     */
+    private function validateAddress(?AddressInterface $address = null): void
+    {
+        if (!$address) {
+            return;
+        }
+
+        $validationResult = $address->validate();
+
+        if (!is_array($validationResult)) {
+            return;
+        }
+
+        foreach ($validationResult as $error) {
+            throw new LocalizedException($error);
+        }
     }
 }
