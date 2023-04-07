@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Worldline\PaymentCore\Test\Infrastructure\Plugin\Service\Payment;
+namespace Worldline\PaymentCore\Infrastructure\Plugin\Service\Payment;
 
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponseFactory;
 use Worldline\PaymentCore\Api\Test\Infrastructure\ServiceStubSwitcherInterface;
 use Worldline\PaymentCore\Service\Payment\GetPaymentDetailsService;
-use Worldline\PaymentCore\Test\Infrastructure\StubData\Service\Payment\GetPaymentDetailsServiceResponse;
+use Worldline\PaymentCore\Infrastructure\StubData\Service\Payment\GetPaymentDetailsServiceResponse;
 
 class GetPaymentDetailsServiceMock
 {

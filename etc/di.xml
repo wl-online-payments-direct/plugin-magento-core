@@ -131,15 +131,15 @@
     </type>
     <type name="Worldline\PaymentCore\Service\Payment\GetPaymentDetailsService">
         <plugin name="Worldline_PaymentCore::test_infrastructure_get_payment_details_service"
-                type="Worldline\PaymentCore\Test\Infrastructure\Plugin\Service\Payment\GetPaymentDetailsServiceMock"/>
+                type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Payment\GetPaymentDetailsServiceMock"/>
     </type>
     <type name="Worldline\PaymentCore\Service\Payment\GetPaymentService">
         <plugin name="Worldline_PaymentCore::test_infrastructure_get_payment_service"
-                type="Worldline\PaymentCore\Test\Infrastructure\Plugin\Service\Payment\GetPaymentServiceMock"/>
+                type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Payment\GetPaymentServiceMock"/>
     </type>
     <type name="Worldline\PaymentCore\Model\Config\WebhookConfig">
         <plugin name="Worldline_PaymentCore::decrypt_keys_for_tests"
-                type="Worldline\PaymentCore\Test\Infrastructure\Plugin\WebhookConfig\DecryptedKey"/>
+                type="Worldline\PaymentCore\Infrastructure\Plugin\WebhookConfig\DecryptedKey"/>
     </type>
     <!-- End Plugin -->
 
