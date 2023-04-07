@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Worldline\PaymentCore\Test\Infrastructure\Plugin\WebhookConfig;
+namespace Worldline\PaymentCore\Infrastructure\Plugin\WebhookConfig;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;

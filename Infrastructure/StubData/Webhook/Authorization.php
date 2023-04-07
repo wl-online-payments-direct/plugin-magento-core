@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Worldline\PaymentCore\Test\Infrastructure\StubData\Webhook;
+namespace Worldline\PaymentCore\Infrastructure\StubData\Webhook;
 
+/**
+ * phpcs:disable Magento2.Functions.StaticFunction
+ */
 class Authorization
 {
     public static function getData(string $incrementId = 'test01'): string

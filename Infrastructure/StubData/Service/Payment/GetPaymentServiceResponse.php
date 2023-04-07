@@ -1,9 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Worldline\PaymentCore\Test\Infrastructure\StubData\Service\Payment;
+namespace Worldline\PaymentCore\Infrastructure\StubData\Service\Payment;
 
-class GetPaymentDetailsServiceResponse
+/**
+ * phpcs:disable Magento2.Functions.StaticFunction
+ */
+class GetPaymentServiceResponse
 {
     public static function getData(string $paymentId, string $incrementId = 'test01'): string
     {
@@ -11,10 +14,10 @@ class GetPaymentDetailsServiceResponse
             '3254564310_0' => static::getCreditCardResponse($incrementId),
         ];
 
-        return $responsePool[$paymentId] ?? '{}';
+        return $responsePool[$paymentId] ?? '';
     }
 
-    public static function getCreditCardResponse(string $incrementId = 'test01'): string
+    public static function getCreditCardResponse(string $incrementId): string
     {
         return <<<DATA
 {
@@ -37,10 +40,10 @@ class GetPaymentDetailsServiceResponse
       },
       "cardPaymentMethodSpecificOutput":{
          "paymentProductId":1,
-         "authorisationCode":"52188481",
+         "authorisationCode":"537636403",
          "card":{
             "cardNumber":"************4675",
-            "expiryDate":"0123",
+            "expiryDate":"0125",
             "bin":"433026",
             "countryCode":"BE"
          },
@@ -58,43 +61,22 @@ class GetPaymentDetailsServiceResponse
             "authenticationStatus":"Y",
             "acsTransactionId":"4C644F6D-F665-4DA3-B8C2-ECC7FFAACFA8",
             "dsTransactionId":"f25084f0-5b16-4c0a-ae5d-b24808a95e4b",
-            "xid":"MzI1NDc5OTg1MA==",
+            "xid":"MzI1NDg4MjU1MQ==",
             "challengeIndicator":"no-challenge-requested",
             "liability":"issuer",
             "exemptionEngineFlow":"low-value-not-applicable-sca-requested-challenge-indicator-no-challenge-requested"
          },
-         "token":"a856de2a-3ce8-4113-a873-7ae5218e18bc"
+         "token":"529f3c67-1613-4b1f-bf3e-b79cea0df81a"
       },
       "paymentMethod":"card"
    },
-   "Operations":[
-      {
-         "id":"3254564310_0",
-         "amountOfMoney":{
-            "amount":8100,
-            "currencyCode":"EUR"
-         },
-         "status":"CAPTURED",
-         "statusOutput":{
-            "isCancellable":false,
-            "statusCategory":"COMPLETED",
-            "statusCode":9,
-            "isAuthorized":false,
-            "isRefundable":true
-         },
-         "paymentMethod":"card",
-         "references":{
-            "merchantReference":"000000007"
-         }
-      }
-   ],
-   "status":"CAPTURED",
+   "status":"PENDING_CAPTURE",
    "statusOutput":{
-      "isCancellable":false,
-      "statusCategory":"COMPLETED",
-      "statusCode":9,
-      "isAuthorized":false,
-      "isRefundable":true
+      "isCancellable":true,
+      "statusCategory":"PENDING_MERCHANT",
+      "statusCode":5,
+      "isAuthorized":true,
+      "isRefundable":false
    },
    "id":"3254564310_0"
 }
