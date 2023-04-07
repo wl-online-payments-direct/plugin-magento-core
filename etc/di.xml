@@ -69,8 +69,8 @@
     <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\SurchargeDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\SurchargeDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\ThreeDSecureDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureDataBuilderInterface" />
 
-    <preference type="Worldline\PaymentCore\Test\Infrastructure\ServiceStubSwitcher" for="Worldline\PaymentCore\Api\Test\Infrastructure\ServiceStubSwitcherInterface" />
-    <preference type="Worldline\PaymentCore\Test\Infrastructure\WebhookStubSender" for="Worldline\PaymentCore\Api\Test\Infrastructure\WebhookStubSenderInterface" />
+    <preference type="Worldline\PaymentCore\Infrastructure\ServiceStubSwitcher" for="Worldline\PaymentCore\Api\Test\Infrastructure\ServiceStubSwitcherInterface" />
+    <preference type="Worldline\PaymentCore\Infrastructure\WebhookStubSender" for="Worldline\PaymentCore\Api\Test\Infrastructure\WebhookStubSenderInterface" />
 
     <preference type="Worldline\PaymentCore\Model\RefundRequest\CreditmemoOnlineService" for="Worldline\PaymentCore\Api\CreditmemoOnlineServiceInterface" />
     <preference type="Worldline\PaymentCore\Model\MethodNameExtractor" for="Worldline\PaymentCore\Api\MethodNameExtractorInterface" />
