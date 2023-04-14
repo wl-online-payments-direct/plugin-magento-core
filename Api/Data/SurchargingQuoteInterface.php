@@ -19,8 +19,8 @@ namespace Worldline\PaymentCore\Api\Data;
  * @method getBaseAmount(): float
  * @method setBaseAmount(float $baseAmount): SurchargingQuoteInterface
  *
- * @method getQuoteGrandTotal(): float
- * @method setQuoteGrandTotal(float $total): SurchargingQuoteInterface
+ * @method getQuoteTotalAmount(): float
+ * @method setQuoteTotalAmount(float $total): SurchargingQuoteInterface
  *
  * @method getIsInvoiced(): bool
  * @method setIsInvoiced(bool $isInvoiced): bool

@@ -6,7 +6,7 @@ namespace Worldline\PaymentCore\Infrastructure\StubData\Webhook;
 /**
  * phpcs:disable Magento2.Functions.StaticFunction
  */
-class Authorization
+class AuthorizationWithConfigurable
 {
     public static function getData(string $incrementId = 'test01'): string
     {
@@ -19,7 +19,7 @@ class Authorization
    "payment":{
       "paymentOutput":{
          "amountOfMoney":{
-            "amount":1500,
+            "amount":5000,
             "currencyCode":"EUR"
          },
          "references":{
@@ -66,7 +66,7 @@ class Authorization
          "isAuthorized":true,
          "isRefundable":false
       },
-      "id":"3254564310_0"
+      "id":"3254564313_0"
    },
    "type":"payment.pending_capture"
 }

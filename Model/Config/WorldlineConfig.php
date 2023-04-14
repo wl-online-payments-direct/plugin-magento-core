@@ -44,22 +44,22 @@ class WorldlineConfig implements WorldlineConfigInterface
     /**
      * @var string | null
      */
-    private $apiKey = null;
+    private $apiKey;
 
     /**
      * @var string | null
      */
-    private $apiSecret = null;
+    private $apiSecret;
 
     /**
      * @var string | null
      */
-    private $merchantId = null;
+    private $merchantId;
 
     /**
      * @var string | null
      */
-    private $apiEndpoint = null;
+    private $apiEndpoint;
 
     /**
      * @var bool
@@ -113,9 +113,7 @@ class WorldlineConfig implements WorldlineConfigInterface
         }
 
         $path = $this->isProductionMode($scopeCode) ? self::API_KEY . '_prod' : self::API_KEY;
-        $this->apiKey = $this->encryptor->decrypt(
-            $this->scopeConfig->getValue($path, $scopeType, $scopeCode)
-        );
+        $this->apiKey = (string) $this->scopeConfig->getValue($path, $scopeType, $scopeCode);
         return $this->apiKey;
     }
 

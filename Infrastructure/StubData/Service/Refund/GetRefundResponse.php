@@ -1,24 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace Worldline\PaymentCore\Infrastructure\StubData\Service\Payment;
+namespace Worldline\PaymentCore\Infrastructure\StubData\Service\Refund;
 
 /**
  * phpcs:disable Magento2.Functions.StaticFunction
  */
-class GetPaymentServiceResponse
+class GetRefundResponse
 {
     public static function getData(string $paymentId, string $incrementId = 'test01'): string
     {
         $responsePool = [
-            '3254564310' => static::getCreditCardResponse($incrementId),
-            '3254564310_0' => static::getCreditCardResponse($incrementId)
+            '3254564310' => static::getRefundResponse($incrementId),
         ];
 
         return $responsePool[$paymentId] ?? '';
     }
 
-    public static function getCreditCardResponse(string $incrementId): string
+    public static function getRefundResponse(string $incrementId): string
     {
         return <<<DATA
 {

@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace Worldline\PaymentCore\Model;
+namespace Worldline\PaymentCore\Model\OrderState;
 
-use Magento\Framework\Phrase;
 use Worldline\PaymentCore\Api\Data\OrderStateInterface;
 
 class OrderState implements OrderStateInterface
@@ -27,11 +26,6 @@ class OrderState implements OrderStateInterface
      * @var int|null
      */
     private $paymentProductId;
-
-    /**
-     * @var Phrase|string
-     */
-    private $message = '';
 
     public function getState(): string
     {
@@ -71,22 +65,5 @@ class OrderState implements OrderStateInterface
     public function setPaymentProductId(int $paymentProductId = null): void
     {
         $this->paymentProductId = $paymentProductId;
-    }
-
-    /**
-     * @return Phrase|string
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * @param Phrase|string $message
-     * @return void
-     */
-    public function setMessage($message): void
-    {
-        $this->message = $message;
     }
 }

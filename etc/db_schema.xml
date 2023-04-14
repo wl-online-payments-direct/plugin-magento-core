@@ -108,7 +108,7 @@
         <column xsi:type="varchar" name="payment_method" nullable="true" length="255" comment="Method Code"/>
         <column xsi:type="decimal" name="amount" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="Amount"/>
         <column xsi:type="decimal" name="base_amount" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="Base Amount"/>
-        <column xsi:type="decimal" name="quote_grand_total" scale="4" precision="20" unsigned="false" nullable="true" default="0" comment="Quote Grand Total"/>
+        <column xsi:type="decimal" name="quote_total_amount" scale="4" precision="20" unsigned="false" nullable="true" default="0" onCreate="migrateDataFrom(quote_grand_total)" comment="Quote Total Amount"/>
         <column xsi:type="smallint" name="is_invoiced" unsigned="true" nullable="false" default="0" comment="Is Invoiced Flag"/>
         <column xsi:type="smallint" name="is_refunded" unsigned="true" nullable="false" default="0" comment="Is Refunded Flag"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Api\Data;
 
-use Magento\Framework\Phrase;
-
 interface OrderStateInterface
 {
     public function getState(): string;
@@ -22,15 +20,4 @@ interface OrderStateInterface
     public function getPaymentProductId(): ?int;
 
     public function setPaymentProductId(?int $paymentProductId = null): void;
-
-    /**
-     * @return Phrase|string
-     */
-    public function getMessage();
-
-    /**
-     * @param Phrase|string $message
-     * @return void
-     */
-    public function setMessage($message): void;
 }
