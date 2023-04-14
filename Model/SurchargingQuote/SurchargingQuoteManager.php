@@ -7,11 +7,17 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use OnlinePayments\Sdk\Domain\SurchargeSpecificOutput;
 use Worldline\PaymentCore\Api\AmountFormatterInterface;
+use Worldline\PaymentCore\Api\QuoteTotalInterface;
 use Worldline\PaymentCore\Api\SurchargingQuoteManagerInterface;
 use Worldline\PaymentCore\Api\SurchargingQuoteRepositoryInterface;
 
 class SurchargingQuoteManager implements SurchargingQuoteManagerInterface
 {
+    /**
+     * @var QuoteTotalInterface
+     */
+    private $quoteTotal;
+
     /**
      * @var PriceCurrencyInterface
      */
@@ -28,10 +34,12 @@ class SurchargingQuoteManager implements SurchargingQuoteManagerInterface
     private $surchargingQuoteRepository;
 
     public function __construct(
+        QuoteTotalInterface $quoteTotal,
         PriceCurrencyInterface $priceCurrency,
         AmountFormatterInterface $amountFormatter,
         SurchargingQuoteRepositoryInterface $surchargingQuoteRepository
     ) {
+        $this->quoteTotal = $quoteTotal;
         $this->priceCurrency = $priceCurrency;
         $this->amountFormatter = $amountFormatter;
         $this->surchargingQuoteRepository = $surchargingQuoteRepository;
@@ -46,7 +54,7 @@ class SurchargingQuoteManager implements SurchargingQuoteManagerInterface
         $surchargingQuote->setPaymentMethod($paymentMethod);
         $surchargingQuote->setAmount($surcharging);
         $surchargingQuote->setBaseAmount($this->priceCurrency->convertAndRound($surcharging));
-        $surchargingQuote->setQuoteGrandTotal((float)$quote->getGrandTotal());
+        $surchargingQuote->setQuoteTotalAmount($this->quoteTotal->getTotalAmount($quote));
 
         $this->surchargingQuoteRepository->save($surchargingQuote);
     }

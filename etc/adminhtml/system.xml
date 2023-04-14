@@ -31,34 +31,34 @@
                     <label>Environment Mode</label>
                     <source_model>Worldline\PaymentCore\Model\Config\Source\EnvironmentModeOptions</source_model>
                 </field>
-                <field id="api_key" translate="label" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="api_key" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Key</label>
                     <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     <depends>
                         <field id="environment_mode">0</field>
                     </depends>
                 </field>
-                <field id="api_key_prod" translate="label" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="api_key_prod" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Key</label>
                     <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     <depends>
                         <field id="environment_mode">1</field>
                     </depends>
                 </field>
-                <field id="api_secret" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="api_secret" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Secret</label>
                     <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <backend_model>Worldline\PaymentCore\Model\Config\Backend\EncryptedSecretKey</backend_model>
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\SecretKey</frontend_model>
                     <depends>
                         <field id="environment_mode">0</field>
                     </depends>
                 </field>
-                <field id="api_secret_prod" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="api_secret_prod" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Secret</label>
                     <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <backend_model>Worldline\PaymentCore\Model\Config\Backend\EncryptedSecretKey</backend_model>
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\SecretKey</frontend_model>
                     <depends>
                         <field id="environment_mode">1</field>
                     </depends>
@@ -101,14 +101,14 @@
                 <field id="webhook_url" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
                     <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\WebhookUrl</frontend_model>
                 </field>
-                <field id="key" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1">
+                <field id="key" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1">
                     <label>Key</label>
                     <validate>required-entry</validate>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field>
-                <field id="secret_key" translate="label comment" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1">
+                <field id="secret_key" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1">
                     <label>Secret Key</label>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <backend_model>Worldline\PaymentCore\Model\Config\Backend\EncryptedSecretKey</backend_model>
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\SecretKey</frontend_model>
                     <validate>required-entry</validate>
                     <comment>To retrieve webhooks credentials, login to the Worldline Back Office</comment>
                 </field>
@@ -186,6 +186,11 @@
                 <field id="refused_payment_sender" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1">
                     <label>Sender</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                </field>
+                <field id="auto_refund" translate="label tooltip" type="select" sortOrder="60" showInDefault="1" showInWebsite="1">
+                    <label>Enable Auto Refund If Order Creation Is Failed</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>There are some cases when an order can not be created after a successful payment. E.g. if there is 1 product and several customers are trying to buy it. For the first buyer, the order will be created, and the rest will receive a refund (if the setting is set to yes) as the item is out of stock already.</tooltip>
                 </field>
             </group>
             <group id="notification" translate="label" type="text" sortOrder="20" showInDefault="1">

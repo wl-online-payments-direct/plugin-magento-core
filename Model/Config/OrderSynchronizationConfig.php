@@ -12,6 +12,7 @@ class OrderSynchronizationConfig
     public const REFUSED_PAYMENT_TEMPLATE = 'worldline_order_creator/general/refused_payment_template';
     public const FALLBACK_TIMEOUT = 'worldline_order_creator/general/fallback_timeout';
     public const FALLBACK_TIMEOUT_LIMIT = 'worldline_order_creator/general/fallback_timeout_limit';
+    public const AUTO_REFUND = 'worldline_order_creator/general/auto_refund';
 
     /**
      * @var ScopeConfigInterface
@@ -41,5 +42,10 @@ class OrderSynchronizationConfig
     public function getRefusedPaymentSender(?int $storeId = null): ?string
     {
         return $this->scopeConfig->getValue(self::REFUSED_PAYMENT_SENDER, ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    public function isAutoRefundEnabled(?int $storeId = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::AUTO_REFUND, ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

@@ -114,7 +114,7 @@
             "payment_method": true,
             "amount": true,
             "base_amount": true,
-            "quote_grand_total": true,
+            "quote_total_amount": true,
             "is_invoiced": true,
             "is_refunded": true
         },

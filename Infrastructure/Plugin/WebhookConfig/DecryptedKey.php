@@ -33,22 +33,6 @@ class DecryptedKey
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function aroundGetKey(WebhookConfig $subject, callable $proceed, ?int $storeId = null): string
-    {
-        if ($this->serviceStubSwitcher->isEnabled()) {
-            return (string) $this->scopeConfig->getValue(WebhookConfig::KEY, ScopeInterface::SCOPE_STORE, $storeId);
-        }
-
-        return $proceed($storeId);
-    }
-
-    /**
-     * @param WebhookConfig $subject
-     * @param callable $proceed
-     * @param int|null $storeId
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     public function aroundGetSecretKey(WebhookConfig $subject, callable $proceed, ?int $storeId = null): string
     {
         if ($this->serviceStubSwitcher->isEnabled()) {

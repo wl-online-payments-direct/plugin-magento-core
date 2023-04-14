@@ -9,10 +9,16 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address\Total;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
 use Worldline\PaymentCore\Api\SurchargingQuoteRepositoryInterface;
+use Worldline\PaymentCore\Api\QuoteTotalInterface;
 
 class Surcharging extends AbstractTotal
 {
     public const CODE = 'worldline_payment_surcharging';
+
+    /**
+     * @var QuoteTotalInterface
+     */
+    private $quoteTotal;
 
     /**
      * @var SurchargingQuoteRepositoryInterface
@@ -20,8 +26,10 @@ class Surcharging extends AbstractTotal
     private $surchargingQuoteRepository;
 
     public function __construct(
+        QuoteTotalInterface $quoteTotal,
         SurchargingQuoteRepositoryInterface $surchargingQuoteRepository
     ) {
+        $this->quoteTotal = $quoteTotal;
         $this->surchargingQuoteRepository = $surchargingQuoteRepository;
         $this->setCode(self::CODE);
     }
@@ -41,7 +49,6 @@ class Surcharging extends AbstractTotal
             return $this;
         }
 
-        $quote->setHasSurchargingFlag(true);
         $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId((int)$quote->getId());
 
         $amount = (float)$surchargingQuote->getAmount();
@@ -84,9 +91,7 @@ class Surcharging extends AbstractTotal
             return false;
         }
 
-        if ((float)$quote->getGrandTotal() !== (float)$surchargingQuote->getQuoteGrandTotal()
-            && !$quote->getHasSurchargingFlag()
-        ) {
+        if ($this->quoteTotal->getTotalAmount($quote) !== (float)$surchargingQuote->getQuoteTotalAmount()) {
             return false;
         }
 

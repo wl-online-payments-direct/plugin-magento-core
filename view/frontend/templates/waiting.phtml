@@ -36,7 +36,7 @@ $quote = $pageDataProvider->getQuote();
                     <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getSubtotal()) ?>
                 </td>
             </tr>
-            <?php if ($quote->getShippingAddress()->getDiscountAmount()): ?>
+            <?php if ((int)$quote->getShippingAddress()->getDiscountAmount() !== 0): ?>
                 <tr class="totals discount">
                     <th class="mark" scope="row">
                         <span class="title"><?= $block->escapeHtml(__('Discount')) ?></span>
@@ -56,7 +56,7 @@ $quote = $pageDataProvider->getQuote();
                     <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getShippingAmount()) ?>
                 </td>
             </tr>
-            <?php if ($pageDataProvider->getSurchargeAmount() > 0): ?>
+            <?php if ($pageDataProvider->getSurchargeAmount() > 0.00001): ?>
                 <tr class="totals-surcharging">
                     <th class="mark" scope="row"><?= $block->escapeHtml(__('Surcharging')) ?></th>
                     <td class="amount">
@@ -64,7 +64,7 @@ $quote = $pageDataProvider->getQuote();
                     </td>
                 </tr>
             <?php endif; ?>
-            <?php if ($quote->getShippingAddress()->getTaxAmount()): ?>
+            <?php if ((float)$quote->getShippingAddress()->getTaxAmount() > 0.00001): ?>
                 <tr class="totals-tax">
                     <th class="mark" scope="row"><?= $block->escapeHtml(__('Tax')) ?></th>
                     <td class="amount">

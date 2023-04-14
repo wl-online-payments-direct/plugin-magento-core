@@ -47,8 +47,12 @@ class CanVoidHandler implements ValueHandlerInterface
             return false;
         }
 
+        $transactionId = (string) ($payment->getParentTransactionId() ?: $payment->getLastTransId());
+        if (strpos($transactionId, 'void') !== false) {
+            return false;
+        }
+
         try {
-            $transactionId = (string) ($payment->getParentTransactionId() ?: $payment->getLastTransId());
             $wlPayment = $this->getPaymentService->execute($transactionId, (int) $storeId);
             return $wlPayment->getStatusOutput()->getIsCancellable() && !$payment->getAmountPaid();
         } catch (LocalizedException $e) {

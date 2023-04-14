@@ -14,8 +14,10 @@
     <preference type="Worldline\PaymentCore\Model\Transaction\TransactionWLResponseManager" for="Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface" />
     <preference type="Worldline\PaymentCore\Model\Transaction\PaymentInfo" for="Worldline\PaymentCore\Api\Data\PaymentInfoInterface" />
     <preference type="Worldline\PaymentCore\Model\PendingOrderManager" for="Worldline\PaymentCore\Api\PendingOrderManagerInterface" />
-    <preference type="Worldline\PaymentCore\Model\OrderState" for="Worldline\PaymentCore\Api\Data\OrderStateInterface" />
     <preference type="Worldline\PaymentCore\Model\CacheIdentifier" for="Worldline\PaymentCore\Api\Data\CacheIdentifierInterface" />
+
+    <preference type="Worldline\PaymentCore\Model\OrderState\OrderState" for="Worldline\PaymentCore\Api\Data\OrderStateInterface" />
+    <preference type="Worldline\PaymentCore\Model\OrderState\OrderStateManager" for="Worldline\PaymentCore\Api\OrderStateManagerInterface" />
 
     <preference type="Worldline\PaymentCore\WebApi\Checkout\QuoteManager" for="Worldline\PaymentCore\Api\WebApi\Checkout\QuoteManagerInterface" />
     <preference type="Worldline\PaymentCore\WebApi\Checkout\BaseCreatePaymentManagement" for="Worldline\PaymentCore\Api\WebApi\Checkout\BaseCreatePaymentManagementInterface" />
@@ -31,6 +33,8 @@
 
     <preference type="Worldline\PaymentCore\Model\PaymentDataManager" for="Worldline\PaymentCore\Api\PaymentDataManagerInterface" />
 
+    <preference type="Worldline\PaymentCore\Model\PaymentInfoCleaner" for="Worldline\PaymentCore\Api\PaymentInfoCleanerInterface" />
+
     <preference type="Worldline\PaymentCore\Model\Order\CanPlaceContext" for="Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterface" />
     <preference type="Worldline\PaymentCore\Model\Order\CanPlaceOrderContextManager" for="Worldline\PaymentCore\Api\CanPlaceOrderContextManagerInterface" />
     <preference type="Worldline\PaymentCore\Model\Webhook\Webhook" for="Worldline\PaymentCore\Api\Data\WebhookInterface" />
@@ -38,6 +42,8 @@
     <preference type="Worldline\PaymentCore\Model\QuoteRestoration" for="Worldline\PaymentCore\Api\QuoteRestorationInterface" />
 
     <preference type="Worldline\PaymentCore\Model\AmountFormatter" for="Worldline\PaymentCore\Api\AmountFormatterInterface" />
+
+    <preference type="Worldline\PaymentCore\Model\SurchargingQuote\QuoteTotal" for="Worldline\PaymentCore\Api\QuoteTotalInterface" />
 
     <preference type="Worldline\PaymentCore\Model\SurchargingQuote\SurchargingQuote" for="Worldline\PaymentCore\Api\Data\SurchargingQuoteInterface" />
     <preference type="Worldline\PaymentCore\Model\SurchargingQuote\SurchargingQuoteRepository" for="Worldline\PaymentCore\Api\SurchargingQuoteRepositoryInterface" />
@@ -136,6 +142,18 @@
     <type name="Worldline\PaymentCore\Service\Payment\GetPaymentService">
         <plugin name="Worldline_PaymentCore::test_infrastructure_get_payment_service"
                 type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Payment\GetPaymentServiceMock"/>
+    </type>
+    <type name="Worldline\PaymentCore\Service\Refund\CreateRefundService">
+        <plugin name="Worldline_PaymentCore::test_infrastructure_create_refund_service"
+                type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Refund\CreateRefundServiceMock"/>
+    </type>
+    <type name="Worldline\PaymentCore\Service\Payment\GetPaymentProductsService">
+        <plugin name="Worldline_PaymentCore::test_infrastructure_get_payment_products_service"
+                type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Payment\GetPaymentProductsServiceMock"/>
+    </type>
+    <type name="Worldline\PaymentCore\Service\Payment\CancelPaymentService">
+        <plugin name="Worldline_PaymentCore::test_infrastructure_cancel_payment_service"
+                type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Payment\CancelPaymentServiceMock"/>
     </type>
     <type name="Worldline\PaymentCore\Model\Config\WebhookConfig">
         <plugin name="Worldline_PaymentCore::decrypt_keys_for_tests"

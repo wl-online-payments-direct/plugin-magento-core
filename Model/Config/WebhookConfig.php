@@ -30,9 +30,7 @@ class WebhookConfig
 
     public function getKey(?int $storeId = null): string
     {
-        return $this->encryptor->decrypt(
-            (string) $this->scopeConfig->getValue(self::KEY, ScopeInterface::SCOPE_STORE, $storeId)
-        );
+        return (string) $this->scopeConfig->getValue(self::KEY, ScopeInterface::SCOPE_STORE, $storeId);
     }
 
     public function getSecretKey(?int $storeId = null): string

@@ -90,7 +90,7 @@ class FromAjaxRequest
     private function getApiKey(): string
     {
         $apiKey = trim((string) $this->request->getParam(self::API_KEY[$this->getEnvMode()]));
-        if ($apiKey && !$this->isObscured($apiKey)) {
+        if ($apiKey) {
             return $apiKey;
         }
 
@@ -109,7 +109,7 @@ class FromAjaxRequest
 
     private function isObscured(string $value): bool
     {
-        return (bool) preg_match('/^[\*]+$/', $value);
+        return (bool) preg_match('/\*\*\*\*\*\*/', $value);
     }
 
     private function getScope(): array

@@ -62,7 +62,7 @@ class Communicator extends IngenicoCommunicator
     /**
      * @param string $httpMethod
      * @param string $relativeUriPathWithRequestParameters
-     * @param string $contentType
+     * @param string|null $contentType
      * @param string $clientMetaInfo
      * @param CallContext|null $callContext
      *
@@ -71,9 +71,9 @@ class Communicator extends IngenicoCommunicator
     protected function getRequestHeaders(
         $httpMethod,
         $relativeUriPathWithRequestParameters,
-        $contentType,
+        $contentType = null,
         $clientMetaInfo = '',
-        $callContext = null
+        ?CallContext $callContext = null
     ): array {
         $requestHeaderGenerator = $this->requestHeaderGeneratorFactory->create([
             'communicatorConfiguration' => $this->communicatorConfiguration,
