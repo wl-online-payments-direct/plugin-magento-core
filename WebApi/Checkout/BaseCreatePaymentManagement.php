@@ -39,7 +39,7 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
     /**
      * @var DataAssignerInterface[]
      */
-    private $dataAssignerPool = [];
+    private $dataAssignerPool;
 
     public function __construct(
         QuoteManagerInterface $quoteManager,
@@ -143,13 +143,8 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         }
 
         $validationResult = $address->validate();
-
-        if (!is_array($validationResult)) {
-            return;
-        }
-
-        foreach ($validationResult as $error) {
-            throw new LocalizedException($error);
+        if ($validationResult && is_array($validationResult)) {
+            throw new LocalizedException(current($validationResult));
         }
     }
 }

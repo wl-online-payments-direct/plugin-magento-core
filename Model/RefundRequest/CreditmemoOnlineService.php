@@ -64,6 +64,10 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
     {
         $order = $creditmemo->getOrder();
         $invoice = $creditmemo->getInvoice();
+        if (!$invoice) {
+            return $creditmemo;
+        }
+
         $invoiceId = (int)$invoice->getId();
         $payment = $order->getPayment();
         $baseAmountToRefund = $payment->formatAmount($creditmemo->getBaseGrandTotal());

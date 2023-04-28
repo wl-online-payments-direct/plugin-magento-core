@@ -19,7 +19,7 @@ class FailedPaymentLog
         $this->resourceConnection = $resourceConnection;
     }
 
-    public function saveQuotePaymentId(int $quotePaymentId)
+    public function saveQuotePaymentId(int $quotePaymentId): void
     {
         $connection = $this->resourceConnection->getConnection();
         $connection->insertOnDuplicate(

@@ -40,7 +40,7 @@ class Info extends Field
         ?string $route = self::SEND_FEATURE_REQUEST,
         ?array $params = []
     ): string {
-        return parent::getUrl($route, $params);
+        return $this->getUrl($route, $params);
     }
 
     protected function _prepareLayout(): Field

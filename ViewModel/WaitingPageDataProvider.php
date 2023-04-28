@@ -9,8 +9,8 @@ use Magento\Catalog\Model\Product as ModelProduct;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Worldline\PaymentCore\Api\QuoteResourceInterface;
@@ -123,9 +123,7 @@ class WaitingPageDataProvider implements ArgumentInterface
 
     public function getQuote(): CartInterface
     {
-        $incrementId = $this->getIncrementId();
-
-        return $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+        return $this->quoteResource->getQuoteByReservedOrderId($this->getIncrementId());
     }
 
     /**
@@ -137,7 +135,7 @@ class WaitingPageDataProvider implements ArgumentInterface
         return $this->productHelper->getSmallImageUrl($product);
     }
 
-    public function getResizedImageUrl(ModelProduct $product)
+    public function getResizedImageUrl(ModelProduct $product): string
     {
         return $this->imageHelper->init($product, 'product_page_image_small')
             ->setImageFile($product->getSmallImage())

@@ -44,8 +44,7 @@ class CardDate implements CardDateInterface
     public function getExpirationDate(CardPaymentMethodSpecificOutput $cardPaymentMethodSO): string
     {
         $card = $cardPaymentMethodSO->getCard();
-        $expirationDate = $this->processDate($card->getExpiryDate());
-        return $expirationDate->format('m/Y');
+        return $this->processDate($card->getExpiryDate())->format('m/Y');
     }
 
     /**

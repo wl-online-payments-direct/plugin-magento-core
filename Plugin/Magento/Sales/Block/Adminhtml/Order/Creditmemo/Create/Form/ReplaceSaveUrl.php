@@ -9,10 +9,14 @@ class ReplaceSaveUrl
 {
     private const WORLDLINE = 'worldline';
 
-    public function afterGetSaveUrl(Form $subject, string $result)
+    public function afterGetSaveUrl(Form $subject, string $result): string
     {
+        if (!$subject->getOrder()->getPayment()) {
+            return $result;
+        }
+
         $paymentMethodName = $subject->getOrder()->getPayment()->getMethod();
-        if (substr($paymentMethodName, 0, strlen(self::WORLDLINE)) !== self::WORLDLINE) {
+        if (strpos($paymentMethodName, self::WORLDLINE) !== 0) {
             return $result;
         }
 

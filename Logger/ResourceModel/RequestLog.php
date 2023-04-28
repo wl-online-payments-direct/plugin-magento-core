@@ -10,10 +10,7 @@ class RequestLog extends AbstractDb
 {
     public const TABLE_NAME = 'worldline_request_log';
 
-    /**
-     * @return void
-     */
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init(self::TABLE_NAME, 'id');
     }

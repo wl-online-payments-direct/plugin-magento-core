@@ -26,6 +26,7 @@ class PaymentIdFormatterTest extends TestCase
      * @return void
      *
      * @dataProvider dataProviderSuccessFormat
+     * @throws LocalizedException
      */
     public function testSuccessValidateAndFormat(string $input, string $output, bool $postfix): void
     {

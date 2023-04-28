@@ -56,7 +56,7 @@ define([
          * @private
          */
         _connect: function () {
-            var result = this.options.failedText,
+            let result = this.options.failedText,
                 element = $('#' + this.options.elementId),
                 self = this,
                 msg = '',

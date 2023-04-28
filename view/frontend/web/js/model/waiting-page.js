@@ -24,8 +24,9 @@ define([
         },
 
         showMessage: function(message) {
-            $('.message').html(message);
-            $('.message').show();
+            let messageElement = $('.message');
+            messageElement.html(message);
+            messageElement.show();
         },
 
         sendRequest: function(uiClass) {

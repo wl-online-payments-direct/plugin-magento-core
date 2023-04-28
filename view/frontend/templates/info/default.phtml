@@ -3,10 +3,10 @@
 $specificInfo = $block->getSpecificInformation();
 $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
 ?>
-<?= $block->escapeHtml($block->getPaymentTitle()); ?>
+<?= $block->escapeHtml($block->getPaymentTitle()) ?>
 
 <?php if ($cardNumbers): ?>
-    <span><?= $block->escapeHtml(__('ending')) ?></span> <?= $block->escapeHtml($cardNumbers); ?>
+    <span><?= $block->escapeHtml(__('ending')) ?></span> <?= $block->escapeHtml($cardNumbers) ?>
 <?php endif; ?>
 
 <?php if ($block->getIconUrl()): ?>

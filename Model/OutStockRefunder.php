@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model;
 
 use Magento\CatalogInventory\Api\StockStateInterface;
-use Magento\Framework\App\Area;
 use Magento\Quote\Api\Data\CartInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
@@ -50,11 +49,6 @@ class OutStockRefunder
     private $refundRequestDataBuilder;
 
     /**
-     * @var EmailSender
-     */
-    private $emailSender;
-
-    /**
      * @var AutoRefundAttemptNotification
      */
     private $autoRefundAttemptNotification;
@@ -66,7 +60,6 @@ class OutStockRefunder
         PaymentIdFormatterInterface $paymentIdFormatter,
         AutoRefundConfigProvider $autoRefundConfigProvider,
         RefundRequestDataBuilderInterface $refundRequestDataBuilder,
-        EmailSender $emailSender,
         AutoRefundAttemptNotification $autoRefundAttemptNotification
     ) {
         $this->stockState = $stockState;
@@ -75,7 +68,6 @@ class OutStockRefunder
         $this->paymentIdFormatter = $paymentIdFormatter;
         $this->autoRefundConfigProvider = $autoRefundConfigProvider;
         $this->refundRequestDataBuilder = $refundRequestDataBuilder;
-        $this->emailSender = $emailSender;
         $this->autoRefundAttemptNotification = $autoRefundAttemptNotification;
     }
 

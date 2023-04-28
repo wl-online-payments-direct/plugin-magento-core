@@ -5,7 +5,6 @@ namespace Worldline\PaymentCore\Model\Order;
 
 use Magento\Framework\DataObject;
 use Worldline\PaymentCore\Api\Data\CanPlaceOrderContextInterface;
-use Worldline\PaymentCore\Api\Data\CanPlaceOrderContextExtensionInterface;
 
 /**
  * Context for the validator pool

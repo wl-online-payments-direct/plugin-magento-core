@@ -84,7 +84,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 
         /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatusCode() == TransactionStatusInterface::PENDING_CAPTURE_CODE) {
+            if ($transaction->getStatusCode() === TransactionStatusInterface::PENDING_CAPTURE_CODE) {
                 return $transaction;
             }
         }
@@ -101,7 +101,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 
         /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatusCode() == TransactionStatusInterface::CAPTURED_CODE) {
+            if ($transaction->getStatusCode() === TransactionStatusInterface::CAPTURED_CODE) {
                 $result = $transaction;
                 break;
             }
@@ -119,7 +119,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 
         /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatusCode() == TransactionStatusInterface::CAPTURED_CODE) {
+            if ($transaction->getStatusCode() === TransactionStatusInterface::CAPTURED_CODE) {
                 $amount += $transaction->getAmount();
             }
         }
@@ -137,7 +137,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 
         /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatusCode() == TransactionStatusInterface::REFUNDED_CODE) {
+            if ($transaction->getStatusCode() === TransactionStatusInterface::REFUNDED_CODE) {
                 $result[$transaction->getTransactionId()] = $transaction;
             }
         }
@@ -167,8 +167,8 @@ class TransactionRepository implements TransactionRepositoryInterface
         $refundedTransaction = $this->getRefundedTransactions($incrementId);
         /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
-            if ($transaction->getStatusCode() == TransactionStatusInterface::PENDING_REFUND_CODE
-                && !in_array($transaction->getTransactionId(), array_keys($refundedTransaction))
+            if ($transaction->getStatusCode() === TransactionStatusInterface::PENDING_REFUND_CODE
+                && !array_key_exists($transaction->getTransactionId(), $refundedTransaction, true)
             ) {
                 $result[$transaction->getTransactionId()] = $transaction;
             }

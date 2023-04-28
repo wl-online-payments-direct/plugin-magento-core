@@ -35,10 +35,6 @@ class DeviceDataBuilder
         $this->customerDeviceFactory = $customerDeviceFactory;
     }
 
-    /**
-     * @param array $deviceData
-     * @return CustomerDevice
-     */
     public function build(array $deviceData): CustomerDevice
     {
         $customerDevice = $this->customerDeviceFactory->create();
@@ -53,12 +49,7 @@ class DeviceDataBuilder
         return $customerDevice;
     }
 
-    /**
-     * @param CustomerDevice $customerDevice
-     * @param array $deviceData
-     * @return void
-     */
-    private function addBrowserData(CustomerDevice $customerDevice, array $deviceData)
+    private function addBrowserData(CustomerDevice $customerDevice, array $deviceData): void
     {
         $browserData = $this->browserDataFactory->create();
         $browserData->setColorDepth($deviceData['BrowserData']['ColorDepth'] ?? '');

@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Controller\Returns;
 
+use Exception;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\MailException;
 use Magento\Framework\Phrase;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
@@ -47,7 +49,7 @@ class PendingOrder extends Action implements HttpPostActionInterface
             return $result->setData([
                 'error' => $this->processException($incrementId, $e->getMessage()),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $result->setData([
                 'error' => $this->processException($incrementId, __('Sorry, but something went wrong')),
             ]);
@@ -56,8 +58,9 @@ class PendingOrder extends Action implements HttpPostActionInterface
 
     /**
      * @param string $incrementId
-     * @param string|Phrase $errorMessage
+     * @param $errorMessage
      * @return string|Phrase
+     * @throws MailException
      */
     private function processException(string $incrementId, $errorMessage)
     {

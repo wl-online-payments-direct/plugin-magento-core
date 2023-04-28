@@ -28,6 +28,7 @@ class SendFeatureRequestTest extends TestCase
      * @var SendFeatureRequestFactory
      */
     private $sendFeatureRequestFactory;
+
     public function setUp(): void
     {
         Bootstrap::getInstance()->loadArea('adminhtml');
@@ -37,7 +38,7 @@ class SendFeatureRequestTest extends TestCase
         $this->sendFeatureRequestFactory = $objectManager->get(SendFeatureRequestFactory::class);
     }
 
-    public function testSendFeatureRequest()
+    public function testSendFeatureRequest(): void
     {
         $user = Bootstrap::getObjectManager()->create(User::class)
             ->loadByUsername(\Magento\TestFramework\Bootstrap::ADMIN_NAME);

@@ -35,7 +35,10 @@ class Surcharging extends Template
     public function initTotals(): Surcharging
     {
         $parent = $this->getParentBlock();
-        $order = $parent->getOrder();
+        if (!$order = $parent->getOrder()) {
+            return $this;
+        }
+
         $quoteId = (int)$order->getQuoteId();
         $paymentMethod = str_replace('_vault', '', (string)$order->getPayment()->getMethod());
         $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);

@@ -9,10 +9,7 @@ use Worldline\PaymentCore\Logger\RequestLog as RequestLogModel;
 
 class Collection extends AbstractCollection
 {
-    /**
-     * @return void
-     */
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init(RequestLogModel::class, RequestLogResource::class);
     }

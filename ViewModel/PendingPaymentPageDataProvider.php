@@ -63,7 +63,7 @@ class PendingPaymentPageDataProvider implements ArgumentInterface
                 'Please <a href="%1">Contact us</a> in case you don\'t receive the confirmation within %2 minutes.',
                 $this->getMailTo(),
                 $this->getFallbackTimeout()
-            );
+            )->render();
         }
 
         $message .= $messagePostfix;

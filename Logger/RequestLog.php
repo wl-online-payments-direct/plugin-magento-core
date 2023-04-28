@@ -9,10 +9,7 @@ use Worldline\PaymentCore\Api\Data\RequestLogInterface;
 
 class RequestLog extends AbstractModel implements RequestLogInterface
 {
-    /**
-     * @return void
-     */
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init(RequestLogResource::class);
     }

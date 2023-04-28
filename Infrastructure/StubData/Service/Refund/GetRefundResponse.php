@@ -12,6 +12,7 @@ class GetRefundResponse
     {
         $responsePool = [
             '3254564310' => static::getRefundResponse($incrementId),
+            '3254564310_0' => static::getRefundResponse($incrementId),
         ];
 
         return $responsePool[$paymentId] ?? '';

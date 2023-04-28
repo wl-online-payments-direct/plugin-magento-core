@@ -15,12 +15,12 @@ class EncryptedSecretKey extends Encrypted
      *
      * @return void
      */
-    public function beforeSave()
+    public function beforeSave(): void
     {
         $this->_dataSaveAllowed = false;
         $value = (string)$this->getValue();
         // Check if an obscured value was received. It should contain 6 * symbols.
-        if (!preg_match('/\*\*\*\*\*\*/', $value) && !empty($value)) {
+        if (!empty($value) && !preg_match('/\*\*\*\*\*\*/', $value)) {
             $this->_dataSaveAllowed = true;
             $encrypted = $this->_encryptor->encrypt($value);
             $this->setValue($encrypted);

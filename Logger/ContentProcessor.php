@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Logger;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\DataObject;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem;
 use Magento\MediaStorage\Helper\File\Storage;
 
@@ -30,10 +32,10 @@ class ContentProcessor
     }
 
     /**
-     * @return \Magento\Framework\DataObject
-     * @throws \Magento\Framework\Exception\FileSystemException
+     * @return DataObject
+     * @throws FileSystemException
      */
-    public function process(): \Magento\Framework\DataObject
+    public function process(): DataObject
     {
         $directory = $this->filesystem->getDirectoryRead(DirectoryList::LOG);
         $path = $directory->getAbsolutePath(self::FILENAME);
@@ -55,12 +57,9 @@ class ContentProcessor
             ->setContentModify($contentModify);
     }
 
-    /**
-     * @return \Magento\Framework\DataObject
-     */
-    private function getEmptyResultObject(): \Magento\Framework\DataObject
+    private function getEmptyResultObject(): DataObject
     {
-        $resultObject = new \Magento\Framework\DataObject();
+        $resultObject = new DataObject();
         return $resultObject->setContent('')
             ->setContentLength(0)
             ->setContentModify(time());

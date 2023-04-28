@@ -17,8 +17,8 @@ class MethodNameExtractor implements MethodNameExtractorInterface
     public function extract(Payment $payment): string
     {
         $methodName = $payment->getMethod();
-        if (preg_match('~[0-9]+~', $methodName)) {
-            $methodName = preg_replace('/[0-9]+/', '', $methodName);
+        if (preg_match('~\d+~', $methodName)) {
+            $methodName = preg_replace('/\d+/', '', $methodName);
             $methodName = rtrim($methodName, 'vault');
             $methodName = rtrim($methodName, '_');
         }

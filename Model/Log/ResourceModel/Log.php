@@ -11,7 +11,7 @@ class Log extends AbstractDb
 {
     public const TABLE_NAME = 'worldline_payment_log';
 
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init(self::TABLE_NAME, LogInterface::LOG_ID);
     }

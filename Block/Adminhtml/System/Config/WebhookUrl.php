@@ -21,19 +21,19 @@ class WebhookUrl extends Field
         $copyButtonLabel = __('Copy');
 
         return <<<HTML
-<tr id="{$elementId}">
+<tr id="$elementId">
     <td class="label">
-        <label for="{$elementId}">
-            <span data-config-scope="[GLOBAL]">{$label}</span>
+        <label for="$elementId">
+            <span data-config-scope="[GLOBAL]">$label</span>
         </label>
     </td>
     <td class="value">
-        <input disabled="disabled" value="{$webhookUrl}" type="text" style="float:left; width: 80%;">
+        <input disabled="disabled" value="$webhookUrl" type="text" style="float:left; width: 80%;">
         <button style="float:left;"
-                onclick="navigator.clipboard.writeText('{$webhookUrl}');"
-                type="button">{$copyButtonLabel}</button>
+                onclick="navigator.clipboard.writeText('$webhookUrl');"
+                type="button">$copyButtonLabel</button>
         <br><br>
-        <p class="note"><span>{$comment}</span></p>
+        <p class="note"><span>$comment</span></p>
     </td>
 </tr>
 HTML;

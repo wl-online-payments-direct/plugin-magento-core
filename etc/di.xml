@@ -155,6 +155,10 @@
         <plugin name="Worldline_PaymentCore::test_infrastructure_cancel_payment_service"
                 type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Payment\CancelPaymentServiceMock"/>
     </type>
+    <type name="Worldline\PaymentCore\Service\Services\SurchargeCalculationService">
+        <plugin name="Worldline_PaymentCore::test_infrastructure_surcharge_calculation_service"
+                type="Worldline\PaymentCore\Infrastructure\Plugin\Service\Services\SurchargeCalculationServiceMock"/>
+    </type>
     <type name="Worldline\PaymentCore\Model\Config\WebhookConfig">
         <plugin name="Worldline_PaymentCore::decrypt_keys_for_tests"
                 type="Worldline\PaymentCore\Infrastructure\Plugin\WebhookConfig\DecryptedKey"/>

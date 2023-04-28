@@ -29,7 +29,7 @@ class ParamsHandler
             return;
         }
 
-        if ($this->generalSettings->isAuthExemptionEnabled($storeId) && $baseSubtotal < self::THRESHOLD_VALUE) {
+        if ($baseSubtotal < self::THRESHOLD_VALUE && $this->generalSettings->isAuthExemptionEnabled($storeId)) {
             $threeDSecure->setExemptionRequest('low-value');
             return;
         }

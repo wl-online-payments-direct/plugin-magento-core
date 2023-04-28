@@ -50,8 +50,8 @@ class RequestLogManager
         string $requestBody = '',
         string $responseBody = ''
     ): void {
-        if (($this->configDebugProvider->getLogMode() === LogMode::LOG_ERROR_REQUESTS_ONLY)
-            && $responseCode < 400
+        if ($responseCode < 400
+            && ($this->configDebugProvider->getLogMode() === LogMode::LOG_ERROR_REQUESTS_ONLY)
         ) {
             return;
         }

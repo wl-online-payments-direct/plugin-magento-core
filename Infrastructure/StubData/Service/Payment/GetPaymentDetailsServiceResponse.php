@@ -16,7 +16,8 @@ class GetPaymentDetailsServiceResponse
             '3254564312_0' => static::getCreditCardResponseWithBundle($incrementId),
             '3254564313_0' => static::getCreditCardResponseWithConfigurable($incrementId),
             '3254564314_0' => static::getCreditCardResponseWithVirtual($incrementId),
-            '3254564315_0' => static::getErrorCreditCardResponse($incrementId)
+            '3254564315_0' => static::getErrorCreditCardResponse($incrementId),
+            '3254564316_0' => static::getCreditCardResponseWithSurcharging($incrementId)
         ];
 
         return $responsePool[$paymentId] ?? '{}';
@@ -573,6 +574,99 @@ DATA;
         "statusCategory": "UNSUCCESSFUL",
         "statusCode": 2
     }
+}
+DATA;
+    }
+
+    public static function getCreditCardResponseWithSurcharging(string $incrementId = 'test01'): string
+    {
+        return <<<DATA
+{
+   "paymentOutput":{
+      "amountOfMoney":{
+         "amount":1500,
+         "currencyCode":"EUR"
+      },
+      "references":{
+         "merchantReference":"$incrementId"
+      },
+      "acquiredAmount":{
+         "amount":1500,
+         "currencyCode":"EUR"
+      },
+      "surchargeSpecificOutput":{
+         "surchargeAmount":{
+         "amount":1000,
+         "currencyCode":"EUR"
+         }
+      },
+      "customer":{
+         "device":{
+            "ipAddressCountryCode":"99"
+         }
+      },
+      "cardPaymentMethodSpecificOutput":{
+         "paymentProductId":1,
+         "authorisationCode":"52188481",
+         "card":{
+            "cardNumber":"************4675",
+            "expiryDate":"0123",
+            "bin":"433026",
+            "countryCode":"BE"
+         },
+         "fraudResults":{
+            "fraudServiceResult":"accepted",
+            "avsResult":"0",
+            "cvvResult":"0"
+         },
+         "threeDSecureResults":{
+            "version":"2.2.0",
+            "flow":"frictionless",
+            "cavv":"AAABBEg0VhI0VniQEjRWAAAAAAA=",
+            "eci":"5",
+            "schemeEci":"05",
+            "authenticationStatus":"Y",
+            "acsTransactionId":"4C644F6D-F665-4DA3-B8C2-ECC7FFAACFA8",
+            "dsTransactionId":"f25084f0-5b16-4c0a-ae5d-b24808a95e4b",
+            "xid":"MzI1NDc5OTg1MA==",
+            "challengeIndicator":"no-challenge-requested",
+            "liability":"issuer",
+            "exemptionEngineFlow":"low-value-not-applicable-sca-requested-challenge-indicator-no-challenge-requested"
+         },
+         "token":"a856de2a-3ce8-4113-a873-7ae5218e18bc"
+      },
+      "paymentMethod":"card"
+   },
+   "Operations":[
+      {
+         "id":"3254564310_0",
+         "amountOfMoney":{
+            "amount":1500,
+            "currencyCode":"EUR"
+         },
+         "status":"CAPTURED",
+         "statusOutput":{
+            "isCancellable":false,
+            "statusCategory":"COMPLETED",
+            "statusCode":9,
+            "isAuthorized":false,
+            "isRefundable":true
+         },
+         "paymentMethod":"card",
+         "references":{
+            "merchantReference":"000000007"
+         }
+      }
+   ],
+   "status":"CAPTURED",
+   "statusOutput":{
+      "isCancellable":false,
+      "statusCategory":"COMPLETED",
+      "statusCode":9,
+      "isAuthorized":false,
+      "isRefundable":true
+   },
+   "id":"3254564316_0"
 }
 DATA;
     }

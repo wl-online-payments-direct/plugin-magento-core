@@ -29,8 +29,7 @@ class IgnoreMovedSettingsNotification extends Action implements HttpGetActionInt
     public function execute(): Redirect
     {
         $this->flagManager->saveFlag(AdminNotification::FLAG_IDENTITY, self::IGNORE_NOTIFICATION);
-
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        return $resultRedirect->setPath('*/*');
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+            ->setPath('*/*');
     }
 }
