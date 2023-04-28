@@ -12,23 +12,16 @@ class RequestHeaderGenerator extends SdkRequestHeaderGenerator
      */
     private $trackerData = [];
 
-    /**
-     * @param array $trackerData
-     * @return void
-     */
-    public function setTrackerData(array $trackerData)
+    public function setTrackerData(array $trackerData): void
     {
         $this->trackerData = $trackerData;
     }
 
-    /**
-     * @return string
-     */
     protected function getServerMetaInfoValue(): string
     {
         $serverMetaInfo = $this->trackerData;
 
-        $serverMetaInfo['platformIdentifier'] = sprintf('%s; php version %s', php_uname(), phpversion());
+        $serverMetaInfo['platformIdentifier'] = sprintf('%s; php version %s', php_uname(), PHP_VERSION);
         $serverMetaInfo['sdkIdentifier'] = 'PHPServerSDK/v' . static::SDK_VERSION;
         $serverMetaInfo['sdkCreator'] = 'Ingenico';
 

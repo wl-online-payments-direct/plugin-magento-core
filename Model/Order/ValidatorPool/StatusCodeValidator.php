@@ -20,7 +20,8 @@ class StatusCodeValidator implements PlaceOrderValidatorInterface
                 TransactionStatusInterface::PENDING_CAPTURE_CODE,
                 TransactionStatusInterface::CAPTURED_CODE,
                 TransactionStatusInterface::CAPTURE_REQUESTED,
-            ]
+            ],
+            true
         );
 
         if (!$isValid) {

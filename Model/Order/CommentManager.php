@@ -5,6 +5,7 @@ namespace Worldline\PaymentCore\Model\Order;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\OrderStatusHistoryRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
@@ -68,8 +69,14 @@ class CommentManager
         }
     }
 
-    private function getOrder(DataObject $response)
+    /**
+     * @param DataObject $response
+     * @return Order
+     * @throws LocalizedException
+     */
+    private function getOrder(DataObject $response): Order
     {
+        $incrementId = null;
         if ($response instanceof PaymentResponse) {
             $incrementId = (string) $response->getPaymentOutput()->getReferences()->getMerchantReference();
         } elseif ($response instanceof RefundResponse) {

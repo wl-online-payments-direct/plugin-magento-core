@@ -9,7 +9,6 @@ use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
 use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
-use Worldline\PaymentCore\Model\Webhook\WebhookResponseManager;
 
 /**
  * Handle the payment.cancelled type webhook
@@ -17,20 +16,13 @@ use Worldline\PaymentCore\Model\Webhook\WebhookResponseManager;
 class CancelledProcessor implements ProcessorInterface
 {
     /**
-     * @var WebhookResponseManager
-     */
-    private $webhookResponseManager;
-
-    /**
      * @var TransactionWLResponseManagerInterface
      */
     private $transactionWLResponseManager;
 
     public function __construct(
-        WebhookResponseManager $webhookResponseManager,
         TransactionWLResponseManagerInterface $transactionWLResponseManager
     ) {
-        $this->webhookResponseManager = $webhookResponseManager;
         $this->transactionWLResponseManager = $transactionWLResponseManager;
     }
 

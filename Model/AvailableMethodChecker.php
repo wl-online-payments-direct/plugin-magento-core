@@ -53,8 +53,8 @@ class AvailableMethodChecker implements AvailableMethodCheckerInterface
                 (string)$config->getValue('customer_group')
             ));
             $currentCustomerGroup = $this->getCustomerGroup($quote);
-            if (!in_array($currentCustomerGroup, $availableCustomerGroups)
-                && !in_array(32000, $availableCustomerGroups) // ALL GROUPS
+            if (!in_array($currentCustomerGroup, $availableCustomerGroups, true)
+                && !in_array(32000, $availableCustomerGroups, true) // ALL GROUPS
             ) {
                 $isValid = false;
             }

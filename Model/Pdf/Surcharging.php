@@ -67,6 +67,10 @@ class Surcharging extends DefaultTotal
 
     private function getQuoteSurcharging(): ?string
     {
+        if (!$this->getOrder()->getPayment()) {
+            return null;
+        }
+
         $quoteId = (int)$this->getOrder()->getQuoteId();
         $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
         $paymentMethod = str_replace('_vault', '', (string)$this->getOrder()->getPayment()->getMethod());

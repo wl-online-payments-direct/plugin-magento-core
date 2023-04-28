@@ -75,7 +75,7 @@ class DecryptPublicKeys implements DataPatchInterface
         return $this->moduleDataSetup->getConnection()->fetchAll($select);
     }
 
-    private function updateConfigRows(array $configRows): array
+    private function updateConfigRows(array $configRows): void
     {
         foreach ($configRows as $configRow) {
             try {
@@ -89,8 +89,6 @@ class DecryptPublicKeys implements DataPatchInterface
                 $this->logger->warning($exception->getMessage());
             }
         }
-
-        return $configRows;
     }
 
     public static function getDependencies(): array

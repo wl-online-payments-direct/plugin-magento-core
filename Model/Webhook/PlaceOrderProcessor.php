@@ -81,7 +81,7 @@ class PlaceOrderProcessor implements ProcessorInterface
         $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
         $this->paymentDataManager->savePaymentData($webhookEvent->getPayment());
 
-        if ($order->getId()) {
+        if ($order->getId() || !$webhookEvent->getPayment()) {
             return;
         }
 

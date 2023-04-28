@@ -24,7 +24,7 @@ class FakePaymentToken
         $token->setCreatedAt(strtotime('-1 day'));
         $token->setExpiresAt(strtotime('+1 day'));
         $tokenDetails = ['cc_last4' => '1111', 'cc_exp_year' => '2020', 'cc_exp_month' => '01', 'cc_type' => 'VI'];
-        $token->setTokenDetails(\json_encode($tokenDetails));
+        $token->setTokenDetails(json_encode($tokenDetails));
         $repository->save($token);
     }
 
@@ -49,7 +49,7 @@ class FakePaymentToken
             'cc_type' => 'VI',
             'payment_product_id' => PaymentProductsDetailsInterface::SEPA_DIRECT_DEBIT_PRODUCT_ID
         ];
-        $token->setTokenDetails(\json_encode($tokenDetails));
+        $token->setTokenDetails(json_encode($tokenDetails));
         $repository->save($token);
     }
 }

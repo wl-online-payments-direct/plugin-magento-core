@@ -5,11 +5,12 @@ namespace Worldline\PaymentCore\Logger\Handler;
 
 use Magento\Framework\Filesystem\Driver\File;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
 use Worldline\PaymentCore\Api\Data\LogInterfaceFactory;
 use Worldline\PaymentCore\Api\LogRepositoryInterface;
 use Worldline\PaymentCore\Model\Log\Log;
 
-class Debug extends \Monolog\Handler\StreamHandler
+class Debug extends StreamHandler
 {
     /**
      * @var File
@@ -52,10 +53,6 @@ class Debug extends \Monolog\Handler\StreamHandler
         $this->saveLogToDb($record);
     }
 
-    /**
-     * @param array $record
-     * @return void
-     */
     private function saveLogToDb(array $record): void
     {
         $content = var_export($record, true);

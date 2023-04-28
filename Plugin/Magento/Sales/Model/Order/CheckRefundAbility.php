@@ -20,14 +20,10 @@ class CheckRefundAbility
 
     public function afterCanCreditmemo(Order $subject, bool $result): bool
     {
-        if (!$result) {
-            return $result;
-        }
-
-        if (!$this->refundValidator->canRefund($subject)) {
+        if (!$result || !$this->refundValidator->canRefund($subject)) {
             return false;
         }
 
-        return $result;
+        return true;
     }
 }

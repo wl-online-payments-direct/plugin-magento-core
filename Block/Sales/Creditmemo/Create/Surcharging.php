@@ -51,6 +51,10 @@ class Surcharging extends Template
     public function initTotals(): Surcharging
     {
         $parent = $this->getParentBlock();
+        if (!$parent->getOrder()) {
+            return $this;
+        }
+
         $quoteId = (int)$parent->getOrder()->getQuoteId();
         $this->surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
         if (!$this->surchargingQuote->getId()
@@ -91,7 +95,7 @@ class Surcharging extends Template
     public function getSurchargeAmount(): float
     {
         $surchargingAmount = 0.0;
-        if ($this->surchargingQuote->getIsRefunded()) {
+        if ($this->surchargingQuote->getIsRefunded() || !$this->getParentBlock()->getOrder()) {
             return $surchargingAmount;
         }
 

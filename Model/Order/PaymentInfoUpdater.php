@@ -76,7 +76,7 @@ class PaymentInfoUpdater
                 return false;
             }
 
-            $paymentId = (string) $order->getPayment()->getAdditionalInformation(PaymentInterface::PAYMENT_ID);
+            $paymentId = $order->getPayment()->getAdditionalInformation()[PaymentInterface::PAYMENT_ID] ?? null;
             if (!$paymentId) {
                 return false;
             }

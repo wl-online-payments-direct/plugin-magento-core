@@ -29,7 +29,7 @@ class EmailNotification
 
     public function send(CreditmemoInterface $creditmemo): void
     {
-        if ($creditmemo->getOrder()->getCustomerNoteNotify() && $this->salesData->canSendNewCreditmemoEmail()) {
+        if ($this->salesData->canSendNewCreditmemoEmail() && $creditmemo->getOrder()->getCustomerNoteNotify()) {
             $this->creditmemoSender->send($creditmemo);
         }
     }

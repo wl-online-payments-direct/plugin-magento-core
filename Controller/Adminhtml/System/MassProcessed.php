@@ -5,13 +5,13 @@ namespace Worldline\PaymentCore\Controller\Adminhtml\System;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Ui\Component\MassAction\Filter;
-use Worldline\PaymentCore\Logger\ResourceModel\RequestLog\CollectionFactory;
 use Worldline\PaymentCore\Logger\ResourceModel\RequestLog as RequestLogResource;
+use Worldline\PaymentCore\Logger\ResourceModel\RequestLog\CollectionFactory;
 
 class MassProcessed extends Action implements HttpPostActionInterface
 {
@@ -62,7 +62,7 @@ class MassProcessed extends Action implements HttpPostActionInterface
             );
         }
 
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        return $resultRedirect->setPath('worldline/system/RequestLogs');
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+            ->setPath('worldline/system/RequestLogs');
     }
 }

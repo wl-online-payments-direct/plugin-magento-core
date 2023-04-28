@@ -35,7 +35,8 @@ class RefusedStatusProcessor
                 TransactionStatusInterface::AUTHORISATION_DECLINED,
                 TransactionStatusInterface::AUTHORISED_AND_CANCELLED,
                 TransactionStatusInterface::PAYMENT_REFUSED
-            ]
+            ],
+            true
         );
 
         if ($isPaymentRefused && $this->emailSender->sendPaymentRefusedEmail($quote)) {

@@ -36,27 +36,27 @@ class Uninstall implements UninstallInterface
     }
 
     /**
-     * @param SchemaSetupInterface $installer
+     * @param SchemaSetupInterface $setup
      * @param ModuleContextInterface $context
      * @return void
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function uninstall(SchemaSetupInterface $installer, ModuleContextInterface $context): void
+    public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context): void
     {
-        $installer->startSetup();
+        $setup->startSetup();
 
-        $installer->getConnection()->dropTable($installer->getTable(Log::TABLE_NAME));
-        $installer->getConnection()->dropTable($installer->getTable(Fraud::TABLE_NAME));
-        $installer->getConnection()->dropTable($installer->getTable(Payment::TABLE_NAME));
-        $installer->getConnection()->dropTable($installer->getTable(RequestLog::TABLE_NAME));
-        $installer->getConnection()->dropTable($installer->getTable(FailedPaymentLog::TABLE));
-        $installer->getConnection()->dropTable($installer->getTable(Transaction::TABLE_NAME));
-        $installer->getConnection()->dropTable($installer->getTable(RefundRequest::TABLE_NAME));
-        $installer->getConnection()->dropTable($installer->getTable(Webhook::TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Log::TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Fraud::TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Payment::TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(RequestLog::TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(FailedPaymentLog::TABLE));
+        $setup->getConnection()->dropTable($setup->getTable(Transaction::TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(RefundRequest::TABLE_NAME));
+        $setup->getConnection()->dropTable($setup->getTable(Webhook::TABLE_NAME));
         $this->clearConfigurations();
 
-        $installer->endSetup();
+        $setup->endSetup();
     }
 
     private function clearConfigurations(): void

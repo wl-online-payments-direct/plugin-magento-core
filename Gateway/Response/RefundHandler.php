@@ -50,7 +50,7 @@ class RefundHandler implements HandlerInterface
 
     protected function shouldCloseParentTransaction(Payment $orderPayment): bool
     {
-        if (!$orderPayment->getCreditmemo()) {
+        if (!$orderPayment->getCreditmemo() || !$orderPayment->getCreditmemo()->getInvoice()) {
             return false;
         }
 

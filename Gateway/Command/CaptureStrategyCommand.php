@@ -88,7 +88,6 @@ class CaptureStrategyCommand implements CommandInterface
      */
     public function execute(array $commandSubject): void
     {
-        /** @var PaymentDataObjectInterface $paymentDO */
         $paymentDO = $this->subjectReader->readPayment($commandSubject);
 
         if ($orderId = (int)$paymentDO->getOrder()->getId()) {
@@ -115,7 +114,7 @@ class CaptureStrategyCommand implements CommandInterface
 
         // if auth transaction does not exist then execute authorize&capture command
         $existsCapture = $this->isExistsCaptureTransaction($payment);
-        if (!$payment->getAuthorizationTransaction() && !$existsCapture) {
+        if (!$existsCapture && !$payment->getAuthorizationTransaction()) {
             return self::SALE;
         }
 

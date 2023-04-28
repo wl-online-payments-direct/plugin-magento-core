@@ -25,12 +25,6 @@ class TestConnection extends Field
         $this->serializer = $serializer;
     }
 
-    /**
-     * Retrieve HTML markup for given form element
-     *
-     * @param AbstractElement $element
-     * @return string
-     */
     public function render(AbstractElement $element): string
     {
         $element = clone $element;
@@ -38,9 +32,6 @@ class TestConnection extends Field
         return $this->_decorateRowHtml($element, $this->_getElementHtml($element));
     }
 
-    /**
-     * @return TestConnection
-     */
     protected function _prepareLayout(): TestConnection
     {
         parent::_prepareLayout();
@@ -48,10 +39,6 @@ class TestConnection extends Field
         return $this;
     }
 
-    /**
-     * @param AbstractElement $element
-     * @return string
-     */
     protected function _getElementHtml(AbstractElement $element): string
     {
         $originalData = $element->getOriginalData();
@@ -63,17 +50,14 @@ class TestConnection extends Field
                 'label' => __($originalData['label']),
                 'html_id' => $element->getHtmlId(),
                 'ajax_url' => $this->_urlBuilder->getUrl('worldline/system_config/testconnection', $urlParams),
-                'field_mapping' => str_replace('"', '\\"', $this->serializer->serialize($this->_getFieldMapping()))
+                'field_mapping' => str_replace('"', '\\"', $this->serializer->serialize($this->getFieldMapping()))
             ]
         );
 
         return $this->_toHtml();
     }
 
-    /**
-     * @return string[]
-     */
-    protected function _getFieldMapping()
+    private function getFieldMapping(): array
     {
         return [
             'api_key' => 'worldline_connection_connection_api_key',

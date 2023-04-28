@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\SurchargingCreditmemo;
 
-use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Worldline\PaymentCore\Api\Data\SurchargingCreditmemoInterface;
 use Worldline\PaymentCore\Api\Data\SurchargingCreditmemoInterfaceFactory;
 use Worldline\PaymentCore\Api\SurchargingCreditmemoRepositoryInterface;
@@ -12,11 +11,6 @@ use Worldline\PaymentCore\Model\SurchargingCreditmemo\ResourceModel\SurchargingC
 
 class SurchargingCreditmemoRepository implements SurchargingCreditmemoRepositoryInterface
 {
-    /**
-     * @var PriceCurrencyInterface
-     */
-    private $priceCurrency;
-
     /**
      * @var ResourceModel
      */
@@ -38,12 +32,10 @@ class SurchargingCreditmemoRepository implements SurchargingCreditmemoRepository
     private $storedSurchargingCreditmemo = [];
 
     public function __construct(
-        PriceCurrencyInterface $priceCurrency,
         ResourceModel $surchargingCreditmemoResource,
         SurchargingCreditmemoInterfaceFactory $surchargingCreditmemoFactory,
         CollectionFactory $surchargingCreditmemoCollectionFactory
     ) {
-        $this->priceCurrency = $priceCurrency;
         $this->surchargingCreditmemoResource = $surchargingCreditmemoResource;
         $this->surchargingCreditmemoFactory = $surchargingCreditmemoFactory;
         $this->surchargingCreditmemoCollectionFactory = $surchargingCreditmemoCollectionFactory;

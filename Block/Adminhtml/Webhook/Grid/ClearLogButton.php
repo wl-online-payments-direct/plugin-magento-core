@@ -28,7 +28,7 @@ class ClearLogButton implements ButtonProviderInterface
         $this->formKey = $formKey;
     }
 
-    public function getButtonData()
+    public function getButtonData(): array
     {
         return [
             'label' => __('Clear log'),

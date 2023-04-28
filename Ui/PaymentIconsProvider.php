@@ -58,10 +58,6 @@ class PaymentIconsProvider implements PaymentIconsProviderInterface
         return $this->getIcons($storeId)[$id] ?? [];
     }
 
-    /**
-     * @param int $storeId
-     * @return array
-     */
     public function getIcons(int $storeId): array
     {
         if (!empty($this->icons)) {
@@ -86,9 +82,14 @@ class PaymentIconsProvider implements PaymentIconsProviderInterface
             'Worldline_PaymentCore::images/pm/pp_logo_' . $id . '.svg',
             [Area::PARAM_AREA => Area::AREA_FRONTEND]
         );
+
+        if (!$asset) {
+            return;
+        }
+
         $placeholder = $this->assetSource->findSource($asset);
         if ($placeholder) {
-            list($width, $height) = $this->getDimensions($asset);
+            [$width, $height] = $this->getDimensions($asset);
             $this->icons[$id] = [
                 'url' => $asset->getUrl(),
                 'width' => $width,
@@ -101,6 +102,10 @@ class PaymentIconsProvider implements PaymentIconsProviderInterface
 
     /**
      * Create a file asset that's subject of fallback system.
+     *
+     * @param string $fileId
+     * @param array $params
+     * @return File|null
      */
     public function createAsset(string $fileId, array $params = []): ?File
     {

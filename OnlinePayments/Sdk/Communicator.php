@@ -101,8 +101,8 @@ class Communicator extends IngenicoCommunicator
      * @param string $relativeUriPath
      * @param string $clientMetaInfo
      * @param RequestObject|null $requestParameters
-     * @param CallContext $callContext
-     * @return DataObject
+     * @param CallContext|null $callContext
+     * @return DataObject|null
      * @throws ResponseException
      */
     public function get(
@@ -154,9 +154,9 @@ class Communicator extends IngenicoCommunicator
      * @param string $clientMetaInfo
      * @param DataObject|null $requestBodyObject
      * @param RequestObject|null $requestParameters
-     * @param CallContext $callContext
-     * @return DataObject
-     * @throws Exception
+     * @param CallContext|null $callContext
+     * @return DataObject|null
+     * @throws \Exception
      */
     public function post(
         ResponseClassMap $responseClassMap,

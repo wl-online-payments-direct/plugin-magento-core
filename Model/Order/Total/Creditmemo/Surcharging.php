@@ -53,6 +53,10 @@ class Surcharging extends AbstractTotal
     public function collect(Creditmemo $creditmemo): Surcharging
     {
         $order = $creditmemo->getOrder();
+        if (!$order->getPayment()) {
+            return $this;
+        }
+
         $quoteId = (int)$order->getQuoteId();
         $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
         $paymentMethod = str_replace('_vault', '', (string)$order->getPayment()->getMethod());

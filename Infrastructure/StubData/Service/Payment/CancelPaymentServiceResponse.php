@@ -12,6 +12,7 @@ class CancelPaymentServiceResponse
     {
         $responsePool = [
             '3254564310' => static::getCancelPaymentResponse($incrementId),
+            '3254564310_0' => static::getCancelPaymentResponse($incrementId)
         ];
 
         return $responsePool[$paymentId] ?? '';

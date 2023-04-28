@@ -59,6 +59,10 @@ class FeatureRequestBuilder
 
     public function build(int $storeId, string $companyName, string $message, ?string $pspid = null): void
     {
+        if (!$this->authSession->getUser()) {
+            return;
+        }
+
         if (!$pspid) {
             $pspid = $this->worldlineConfig->getMerchantId($storeId);
         }

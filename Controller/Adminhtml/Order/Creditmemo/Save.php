@@ -89,33 +89,30 @@ class Save extends Action implements HttpPostActionInterface
         }
         try {
             $creditmemo = $this->loadCreditMemo();
-            if ($creditmemo) {
-                if (!$creditmemo->isValidGrandTotal()) {
-                    throw new LocalizedException(__('The credit memo\'s total must be positive.'));
-                }
-
-                $this->addComment($creditmemo, $data);
-                $creditmemo->getOrder()->setCustomerNoteNotify(!empty($data['send_email']));
-
-                if ($this->isOffline()) {
-                    $this->creditmemoManagement->refund($creditmemo, true);
-                    $this->emailNotification->send($creditmemo);
-                    $this->messageManager->addSuccessMessage(__('You created the credit memo.'));
-                } else {
-                    $this->refundOnlineService->refund($creditmemo);
-                    $this->messageManager->addSuccessMessage(__('The credit memo request has been sent.'));
-                }
-
-                $this->_getSession()->getCommentText(true);
-                $resultRedirect->setPath('sales/order/view', ['order_id' => $creditmemo->getOrderId()]);
-
-                return $resultRedirect;
-            } else {
-                $resultForward = $this->resultForwardFactory->create();
-                $resultForward->forward('noroute');
-
-                return $resultForward;
+            if (!$creditmemo) {
+                return $this->resultForwardFactory->create()->forward('noroute');
             }
+
+            if (!$creditmemo->isValidGrandTotal()) {
+                throw new LocalizedException(__('The credit memo\'s total must be positive.'));
+            }
+
+            $this->addComment($creditmemo, $data);
+            $creditmemo->getOrder()->setCustomerNoteNotify(!empty($data['send_email']));
+
+            if ($this->isOffline()) {
+                $this->creditmemoManagement->refund($creditmemo, true);
+                $this->emailNotification->send($creditmemo);
+                $this->messageManager->addSuccessMessage(__('You created the credit memo.'));
+            } else {
+                $this->refundOnlineService->refund($creditmemo);
+                $this->messageManager->addSuccessMessage(__('The credit memo request has been sent.'));
+            }
+
+            $this->_getSession()->getCommentText(true);
+            $resultRedirect->setPath('sales/order/view', ['order_id' => $creditmemo->getOrderId()]);
+
+            return $resultRedirect;
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
             $this->_getSession()->setFormData($data);
@@ -123,8 +120,8 @@ class Save extends Action implements HttpPostActionInterface
             $this->logger->critical($e);
             $this->messageManager->addErrorMessage(__('We can\'t save the credit memo right now.'));
         }
-        $resultRedirect->setPath('sales/order_creditmemo/new', ['_current' => true]);
 
+        $resultRedirect->setPath('sales/order_creditmemo/new', ['_current' => true]);
         return $resultRedirect;
     }
 
@@ -162,6 +159,6 @@ class Save extends Action implements HttpPostActionInterface
     private function isOffline(): bool
     {
         $data = $this->getRequest()->getParam('creditmemo', []);
-        return isset($data['do_offline']) ? (bool)$data['do_offline'] : false;
+        return isset($data['do_offline']) && (bool)$data['do_offline'];
     }
 }

@@ -29,7 +29,7 @@ class WebhookInfo extends Field
         $step4 = __('Click on "SAVE" to confirm your settings');
 
         return <<<HTML
-<tr id="{$elementId}">
+<tr id="$elementId">
     <td class="label"></td>
     <td class="value">
         <p class="message message-notification">$message</p>
