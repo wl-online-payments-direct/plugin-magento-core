@@ -76,6 +76,10 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.8.2
+- Add support for the 5.3.0 version of PHP SDK.
+- Fix connection credential caching.
+
 #### 2.8.1
 - Add support for the 5.1.0 version of PHP SDK.
 - Add integration tests.
