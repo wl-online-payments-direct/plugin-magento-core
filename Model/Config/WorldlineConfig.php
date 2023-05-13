@@ -97,8 +97,7 @@ class WorldlineConfig implements WorldlineConfigInterface
         }
 
         $path = $this->isProductionMode($scopeCode) ? self::MERCHANT_ID . '_prod' : self::MERCHANT_ID;
-        $this->merchantId = (string)$this->scopeConfig->getValue($path, $scopeType, $scopeCode);
-        return $this->merchantId;
+        return (string) $this->scopeConfig->getValue($path, $scopeType, $scopeCode);
     }
 
     public function setMerchantId(string $merchantId): void
@@ -113,8 +112,7 @@ class WorldlineConfig implements WorldlineConfigInterface
         }
 
         $path = $this->isProductionMode($scopeCode) ? self::API_KEY . '_prod' : self::API_KEY;
-        $this->apiKey = (string) $this->scopeConfig->getValue($path, $scopeType, $scopeCode);
-        return $this->apiKey;
+        return (string) $this->scopeConfig->getValue($path, $scopeType, $scopeCode);
     }
 
     public function setApiKey(string $apiKey): void
@@ -129,10 +127,9 @@ class WorldlineConfig implements WorldlineConfigInterface
         }
 
         $path = $this->isProductionMode($scopeCode) ? self::API_SECRET . '_prod' : self::API_SECRET;
-        $this->apiSecret = $this->encryptor->decrypt(
+        return $this->encryptor->decrypt(
             $this->scopeConfig->getValue($path, $scopeType, $scopeCode)
         );
-        return $this->apiSecret;
     }
 
     public function setApiSecret(string $apiSecret): void
@@ -151,9 +148,7 @@ class WorldlineConfig implements WorldlineConfigInterface
             $xmlPath = self::API_PRODUCTION_ENDPOINT;
         }
 
-        $this->apiEndpoint = (string)$this->scopeConfig->getValue($xmlPath, $scopeType, $scopeCode);
-
-        return $this->apiEndpoint;
+        return (string)$this->scopeConfig->getValue($xmlPath, $scopeType, $scopeCode);
     }
 
     public function setApiEndpoint(string $apiEndpoint): void
