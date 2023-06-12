@@ -19,6 +19,7 @@
                 <fallback_timeout>10</fallback_timeout>
                 <fallback_timeout_limit>180</fallback_timeout_limit>
                 <cron_expr>* * * * *</cron_expr>
+                <sending_payment_refused_emails>1</sending_payment_refused_emails>
                 <refused_payment_template>worldline_order_creator_general_refused_payment_template</refused_payment_template>
                 <refused_payment_sender>general</refused_payment_sender>
             </general>

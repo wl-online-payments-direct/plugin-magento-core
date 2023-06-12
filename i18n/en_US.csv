@@ -223,3 +223,4 @@ Yes,Yes
 "Failed Orders Notification","Failed Orders Notification"
 "Auto Refund For Out Of Stock Orders","Auto Refund For Out Of Stock Orders"
 "Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock."
+"Enable Sending Payment Refused Emails","Enable Sending Payment Refused Emails"

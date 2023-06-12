@@ -5,6 +5,7 @@ namespace Worldline\PaymentCore\Model\Transaction;
 
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use Worldline\PaymentCore\Api\Data\TransactionInterfaceFactory;
@@ -58,8 +59,10 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
         $output = $this->getOutput($worldlineResponse);
 
         $amount = (int)$output->getAmountOfMoney()->getAmount();
-        if ($worldlineResponse instanceof PaymentResponse && $output->getSurchargeSpecificOutput()) {
-            $amount += (int)$output->getSurchargeSpecificOutput()->getSurchargeAmount()->getAmount();
+        if ($worldlineResponse instanceof PaymentResponse || $worldlineResponse instanceof PaymentDetailsResponse) {
+            if ($output->getSurchargeSpecificOutput()) {
+                $amount += (int)$output->getSurchargeSpecificOutput()->getSurchargeAmount()->getAmount();
+            }
         }
 
         $transaction = $this->transactionFactory->create();
@@ -82,7 +85,7 @@ class TransactionWLResponseManager implements TransactionWLResponseManagerInterf
     private function getOutput(DataObject $response): DataObject
     {
         $output = null;
-        if ($response instanceof PaymentResponse) {
+        if ($response instanceof PaymentResponse || $response instanceof PaymentDetailsResponse) {
             $output = $response->getPaymentOutput();
         }
 

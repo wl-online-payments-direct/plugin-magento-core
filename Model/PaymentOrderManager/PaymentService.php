@@ -5,9 +5,9 @@ namespace Worldline\PaymentCore\Model\PaymentOrderManager;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\Data\PaymentInterface;
-use OnlinePayments\Sdk\Domain\PaymentResponse;
+use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
-use Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface;
+use Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface;
 
 /**
  * Retrieve payment request
@@ -15,9 +15,9 @@ use Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface;
 class PaymentService
 {
     /**
-     * @var GetPaymentServiceInterface
+     * @var GetPaymentDetailsServiceInterface
      */
-    private $paymentService;
+    private $paymentDetailsService;
 
     /**
      * @var PaymentIdFormatterInterface
@@ -25,14 +25,14 @@ class PaymentService
     private $paymentIdFormatter;
 
     public function __construct(
-        GetPaymentServiceInterface $paymentService,
+        GetPaymentDetailsServiceInterface $paymentDetailsService,
         PaymentIdFormatterInterface $paymentIdFormatter
     ) {
-        $this->paymentService = $paymentService;
+        $this->paymentDetailsService = $paymentDetailsService;
         $this->paymentIdFormatter = $paymentIdFormatter;
     }
 
-    public function getPaymentResponse(PaymentInterface $payment): ?PaymentResponse
+    public function getPaymentResponse(PaymentInterface $payment): ?PaymentDetailsResponse
     {
         $wlPaymentId = $this->paymentIdFormatter->validateAndFormat(
             (string) $payment->getAdditionalInformation('payment_id'),
@@ -42,7 +42,7 @@ class PaymentService
         $storeId = (int)$payment->getMethodInstance()->getStore();
 
         try {
-            return $this->paymentService->execute($wlPaymentId, $storeId);
+            return $this->paymentDetailsService->execute($wlPaymentId, $storeId);
         } catch (LocalizedException $e) {
             return null;
         }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model;
 
+use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\FraudManagerInterface;
@@ -59,10 +60,10 @@ class PaymentDataManager implements PaymentDataManagerInterface
     /**
      * Validate and save payment, transaction, fraud information
      *
-     * @param PaymentResponse $paymentResponse
+     * @param PaymentResponse|PaymentDetailsResponse $paymentResponse
      * @return void
      */
-    public function savePaymentData(PaymentResponse $paymentResponse): void
+    public function savePaymentData($paymentResponse): void
     {
         if (!$this->isValid($paymentResponse)) {
             return;
@@ -73,7 +74,11 @@ class PaymentDataManager implements PaymentDataManagerInterface
         $this->fraudManager->saveFraudInformation($paymentResponse, $wlPayment);
     }
 
-    private function isValid(PaymentResponse $paymentResponse): bool
+    /**
+     * @param PaymentResponse|PaymentDetailsResponse $paymentResponse
+     * @return bool
+     */
+    private function isValid($paymentResponse): bool
     {
         $wlPaymentId = $this->paymentIdFormatter->validateAndFormat($paymentResponse->getId());
         $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($wlPaymentId);

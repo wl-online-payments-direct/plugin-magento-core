@@ -182,3 +182,4 @@ Result,Risultato
 "Failed Orders Notification","Notifica ordini non riusciti"
 "Auto Refund For Out Of Stock Orders","Rimborso automatico per ordini esauriti"
 "Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Abilita questa opzione per essere informato quando non è stato possibile creare un ordine. Questo può accadere ad esempio quando un articolo è esaurito."
+"Enable Sending Payment Refused Emails","Abilita l'invio di e-mail di pagamento rifiutato"

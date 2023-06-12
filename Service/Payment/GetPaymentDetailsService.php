@@ -32,6 +32,11 @@ class GetPaymentDetailsService implements GetPaymentDetailsServiceInterface
      */
     private $logger;
 
+    /**
+     * @var array
+     */
+    private $cachedRequests = [];
+
     public function __construct(
         ClientProviderInterface $clientProvider,
         WorldlineConfig $worldlineConfig,
@@ -52,11 +57,17 @@ class GetPaymentDetailsService implements GetPaymentDetailsServiceInterface
      */
     public function execute(string $paymentId, ?int $storeId = null): PaymentDetailsResponse
     {
+        if (isset($this->cachedRequests[$paymentId])) {
+            return $this->cachedRequests[$paymentId];
+        }
+
         try {
-            return $this->clientProvider->getClient($storeId)
+            $this->cachedRequests[$paymentId] = $this->clientProvider->getClient($storeId)
                 ->merchant($this->worldlineConfig->getMerchantId($storeId))
                 ->payments()
                 ->getPaymentDetails($paymentId);
+
+            return $this->cachedRequests[$paymentId];
         } catch (\Exception $e) {
             $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('GetPaymentDetailsApi request has failed'));

@@ -179,15 +179,19 @@
                     <label>Schedule (Cron Syntax)</label>
                     <comment><![CDATA[Default value: every minute. <a href="http://crontab.guru/" target="_blank">Need help?</a>]]></comment>
                 </field>
-                <field id="refused_payment_template" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1">
+                <field id="sending_payment_refused_emails" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1">
+                    <label>Enable Sending Payment Refused Emails</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="refused_payment_template" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1">
                     <label>Payment Refused Email Template</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
                 </field>
-                <field id="refused_payment_sender" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1">
+                <field id="refused_payment_sender" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1">
                     <label>Sender</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
                 </field>
-                <field id="auto_refund" translate="label tooltip" type="select" sortOrder="60" showInDefault="1" showInWebsite="1">
+                <field id="auto_refund" translate="label tooltip" type="select" sortOrder="70" showInDefault="1" showInWebsite="1">
                     <label>Enable Auto Refund If Order Creation Is Failed</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <tooltip>There are some cases when an order can not be created after a successful payment. E.g. if there is 1 product and several customers are trying to buy it. For the first buyer, the order will be created, and the rest will receive a refund (if the setting is set to yes) as the item is out of stock already.</tooltip>

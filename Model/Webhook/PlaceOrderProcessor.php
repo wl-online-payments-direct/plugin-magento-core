@@ -89,6 +89,9 @@ class PlaceOrderProcessor implements ProcessorInterface
             $this->surchargingQuoteManager->formatAndSaveSurchargingQuote($quote, $surchargeSO);
         }
 
+        $quote->setTotalsCollectedFlag(false);
+        $quote->collectTotals();
+
         try {
             $order = $this->quoteManagement->submit($quote);
             $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);

@@ -45,10 +45,14 @@ class Quote implements QuoteResourceInterface
     public function getQuoteByReservedOrderId(string $reservedOrderId): CartInterface
     {
         if (empty($this->quotes[$reservedOrderId])) {
+            // collection because the refund doesn't work in multishop context
             $collection = $this->quoteCollectionFactory->create();
             $collection->addFieldToFilter('reserved_order_id', ['eq' => $reservedOrderId]);
             $collection->getSelect()->limit(1);
-            $this->quotes[$reservedOrderId] = $collection->getFirstItem();
+            $quote = $collection->getFirstItem();
+            // need for load additional attributes
+            $loadedQuote = $this->cartRepository->get($quote->getId());
+            $this->quotes[$reservedOrderId] = $loadedQuote;
         }
 
         return $this->quotes[$reservedOrderId];
@@ -65,7 +69,9 @@ class Quote implements QuoteResourceInterface
         $collection = $this->quoteCollectionFactory->create();
         $collection->addFieldToFilter('entity_id', ['eq' => $quotePayment->getQuoteId()]);
         $collection->getSelect()->limit(1);
-        return $collection->getFirstItem();
+        $quote = $collection->getFirstItem();
+
+        return $this->cartRepository->get($quote->getId());
     }
 
     public function setPaymentIdAndSave(CartInterface $quote, int $paymentProductId): void
