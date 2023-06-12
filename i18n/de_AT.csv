@@ -178,3 +178,4 @@ Result,Ergebnis
 "Failed Orders Notification","Benachrichtigung über fehlgeschlagene Bestellungen"
 "Auto Refund For Out Of Stock Orders","Automatische Rückerstattung für nicht vorrätige Bestellungen"
 "Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Aktivieren Sie diese Option, um informiert zu werden, wenn eine Bestellung nicht erstellt werden konnte. Dies kann beispielsweise passieren, wenn ein Artikel nicht vorrätig ist."
+"Enable Sending Payment Refused Emails","Aktivieren Sie das Senden von E-Mails mit abgelehnten Zahlungen"

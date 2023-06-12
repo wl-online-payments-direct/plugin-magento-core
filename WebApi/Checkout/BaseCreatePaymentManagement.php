@@ -9,6 +9,7 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\AddressInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Api\Data\PaymentInterface;
+use Magento\Quote\Model\CustomerManagement;
 use Worldline\PaymentCore\Api\QuoteRestorationInterface;
 use Worldline\PaymentCore\Api\WebApi\Checkout\BaseCreatePaymentManagementInterface;
 use Worldline\PaymentCore\Api\WebApi\Checkout\QuoteManagerInterface;
@@ -37,6 +38,16 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
     private $quoteRestoration;
 
     /**
+     * @var CustomerManagement
+     */
+    private $customerManagement;
+
+    /**
+     * @var CustomerQuotePreparer
+     */
+    private $customerQuotePreparer;
+
+    /**
      * @var DataAssignerInterface[]
      */
     private $dataAssignerPool;
@@ -46,12 +57,16 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         CartRepositoryInterface $cartRepository,
         PaymentInformationManagementInterface $paymentInformationManagement,
         QuoteRestorationInterface $quoteRestoration,
+        CustomerManagement $customerManagement,
+        CustomerQuotePreparer $customerQuotePreparer,
         array $dataAssignerPool = []
     ) {
         $this->quoteManager = $quoteManager;
         $this->cartRepository = $cartRepository;
         $this->paymentInformationManagement = $paymentInformationManagement;
         $this->quoteRestoration = $quoteRestoration;
+        $this->customerManagement = $customerManagement;
+        $this->customerQuotePreparer = $customerQuotePreparer;
         $this->dataAssignerPool = $dataAssignerPool;
     }
 
@@ -106,6 +121,13 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         $this->validateAddress($quote->getBillingAddress());
 
         $this->paymentInformationManagement->savePaymentInformation($quote->getId(), $paymentMethod, $billingAddress);
+
+        if (!$quote->getCustomerIsGuest()) {
+            if ($quote->getCustomerId()) {
+                $this->customerQuotePreparer->prepare($quote);
+                $this->customerManagement->validateAddresses($quote);
+            }
+        }
 
         // For PWA additional information is used, for luma - additional_data
         $additionalData = array_merge(

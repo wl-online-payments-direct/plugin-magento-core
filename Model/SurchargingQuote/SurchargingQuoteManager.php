@@ -65,8 +65,5 @@ class SurchargingQuoteManager implements SurchargingQuoteManagerInterface
         $currency = $surchargeOutput->getSurchargeAmount()->getCurrencyCode();
         $surchargeAmount = $this->amountFormatter->formatToFloat($amount, $currency);
         $this->saveSurchargingQuote($quote, $surchargeAmount);
-
-        $quote->setTotalsCollectedFlag(false);
-        $quote->collectTotals();
     }
 }

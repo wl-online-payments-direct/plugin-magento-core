@@ -123,6 +123,9 @@ class PendingOrderManager implements PendingOrderManagerInterface
             $this->surchargingQuoteManager->formatAndSaveSurchargingQuote($quote, $surchargeSO);
         }
 
+        $quote->setTotalsCollectedFlag(false);
+        $quote->collectTotals();
+
         $statusCode = (int)$paymentResponse->getStatusOutput()->getStatusCode();
         $context = $this->canPlaceOrderContextManager->createContext($quote, $statusCode);
         if ($this->canPlaceOrderContextManager->canPlaceOrder($context)) {

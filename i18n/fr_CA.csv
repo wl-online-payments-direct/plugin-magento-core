@@ -183,3 +183,4 @@ Result,Résultat
 "Failed Orders Notification","Notification de commandes échouées"
 "Auto Refund For Out Of Stock Orders","Remboursement automatique pour les commandes en rupture de stock"
 "Enable this option in order to be informed when an order could not be created. This can happen for instance when an item is out of stock.","Activez cette option afin d'être informé lorsqu'une commande n'a pas pu être créée. Cela peut se produire par exemple lorsqu'un article est en rupture de stock."
+"Enable Sending Payment Refused Emails","Activer l'envoi d'e-mails de refus de paiement"

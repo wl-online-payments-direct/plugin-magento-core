@@ -64,6 +64,10 @@ class EmailSender
     public function sendPaymentRefusedEmail(CartInterface $quote): bool
     {
         $storeId = (int)$quote->getStoreId();
+        if (!$this->orderSynchronizationConfig->isPaymentRefusedEmailsEnabled($storeId)) {
+            return false;
+        }
+
         $sendTo = $quote->getCustomerEmail();
         if (!$sendTo) {
             return false;

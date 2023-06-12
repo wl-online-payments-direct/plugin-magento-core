@@ -168,7 +168,7 @@ class TransactionRepository implements TransactionRepositoryInterface
         /** @var TransactionInterface $transaction */
         foreach ($transactions as $transaction) {
             if ($transaction->getStatusCode() === TransactionStatusInterface::PENDING_REFUND_CODE
-                && !array_key_exists($transaction->getTransactionId(), $refundedTransaction, true)
+                && !array_key_exists($transaction->getTransactionId(), $refundedTransaction)
             ) {
                 $result[$transaction->getTransactionId()] = $transaction;
             }
