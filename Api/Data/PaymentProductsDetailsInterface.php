@@ -25,6 +25,7 @@ interface PaymentProductsDetailsInterface
     public const ALIPAY_PRODUCT_ID = 861;
     public const WECHAT_PAY_PRODUCT_ID = 863;
     public const BANCONTACT_PRODUCT_ID = 3012;
+    public const GIFTCARD_LIMONETIK_ID = 3111;
     public const ILLICADO_PRODUCT_ID = 3112;
     public const KLARNA_PAY_NOW_PRODUCT_ID = 3301;
     public const KLARNA_PAY_LATER_PRODUCT_ID = 3302;
@@ -111,6 +112,10 @@ interface PaymentProductsDetailsInterface
         self::BANCONTACT_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_CARD,
             'label' => 'Bancontact'
+        ],
+        self::GIFTCARD_LIMONETIK_ID => [
+            'group' => self::PAYMENT_GROUP_GIFT_CARD,
+            'label' => 'Giftcard Limonetik'
         ],
         self::ILLICADO_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_GIFT_CARD,

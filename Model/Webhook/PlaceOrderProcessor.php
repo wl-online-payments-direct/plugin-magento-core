@@ -8,6 +8,7 @@ use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
+use Worldline\PaymentCore\Api\SessionDataManagerInterface;
 use Worldline\PaymentCore\Api\SurchargingQuoteManagerInterface;
 use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
@@ -53,6 +54,11 @@ class PlaceOrderProcessor implements ProcessorInterface
      */
     private $eventManager;
 
+    /**
+     * @var SessionDataManagerInterface
+     */
+    private $sessionDataManager;
+
     public function __construct(
         QuoteManagement $quoteManagement,
         OrderFactory $orderFactory,
@@ -60,7 +66,8 @@ class PlaceOrderProcessor implements ProcessorInterface
         FailedOrderCreationNotification $failedOrderCreationNotification,
         PlaceOrderManagerInterface $placeOrderManager,
         SurchargingQuoteManagerInterface $surchargingQuoteManager,
-        EventManager $eventManager
+        EventManager $eventManager,
+        SessionDataManagerInterface $sessionDataManager
     ) {
         $this->quoteManagement = $quoteManagement;
         $this->orderFactory = $orderFactory;
@@ -69,6 +76,7 @@ class PlaceOrderProcessor implements ProcessorInterface
         $this->placeOrderManager = $placeOrderManager;
         $this->surchargingQuoteManager = $surchargingQuoteManager;
         $this->eventManager = $eventManager;
+        $this->sessionDataManager = $sessionDataManager;
     }
 
     public function process(WebhooksEvent $webhookEvent): void
@@ -78,7 +86,8 @@ class PlaceOrderProcessor implements ProcessorInterface
             return;
         }
 
-        $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
+        $incrementId = (string)$quote->getReservedOrderId();
+        $order = $this->orderFactory->create()->loadByIncrementId($incrementId);
         $this->paymentDataManager->savePaymentData($webhookEvent->getPayment());
 
         if ($order->getId() || !$webhookEvent->getPayment()) {
@@ -93,9 +102,20 @@ class PlaceOrderProcessor implements ProcessorInterface
         $quote->collectTotals();
 
         try {
+            if ($this->sessionDataManager->hasOrderCreationFlag($incrementId)) {
+                return;
+            }
+            $this->sessionDataManager->setOrderCreationFlag($incrementId);
+
             $order = $this->quoteManagement->submit($quote);
+            if (!$order) {
+                return;
+            }
+
             $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
+            $this->sessionDataManager->setOrderCreationFlag(null);
         } catch (\Exception $e) {
+            $this->sessionDataManager->setOrderCreationFlag(null);
             $this->failedOrderCreationNotification->notify(
                 $quote->getReservedOrderId(),
                 $e->getMessage(),

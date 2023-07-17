@@ -35,4 +35,14 @@ class SessionDataManager implements SessionDataManagerInterface
         $this->checkoutSession->clearStorage();
         $this->checkoutSession->setLastRealOrderId($reservedOrderId);
     }
+
+    public function setOrderCreationFlag(?string $reservedOrderId): void
+    {
+        $this->checkoutSession->setOrderCreationFlag($reservedOrderId);
+    }
+
+    public function hasOrderCreationFlag(string $reservedOrderId): bool
+    {
+        return (bool)$this->checkoutSession->getOrderCreationFlag($reservedOrderId);
+    }
 }
