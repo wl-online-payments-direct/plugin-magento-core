@@ -62,10 +62,13 @@ class Info extends Template
 
     public function getPaymentTitle(): string
     {
+        $methodUsed = __('Payment');
         $paymentProductId = $this->getPaymentInformation()->getPaymentProductId();
-        $methodUsed = ($paymentProductId)
-            ? PaymentProductsDetailsInterface::PAYMENT_PRODUCTS[$paymentProductId]['label']
-            : __('Payment');
+        if ($paymentProductId
+            && !empty(PaymentProductsDetailsInterface::PAYMENT_PRODUCTS[$paymentProductId]['label'])
+        ) {
+            $methodUsed = PaymentProductsDetailsInterface::PAYMENT_PRODUCTS[$paymentProductId]['label'];
+        }
 
         return __('%1 with Worldline', $methodUsed)->render();
     }

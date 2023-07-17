@@ -130,10 +130,20 @@ class PendingOrderManager implements PendingOrderManagerInterface
         $context = $this->canPlaceOrderContextManager->createContext($quote, $statusCode);
         if ($this->canPlaceOrderContextManager->canPlaceOrder($context)) {
             $this->paymentDataManager->savePaymentData($paymentResponse);
-            $order = $this->quoteManagement->submit($quote);
-            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
+            if ($this->sessionDataManager->hasOrderCreationFlag($incrementId)) {
+                return true;
+            }
+            $this->sessionDataManager->setOrderCreationFlag($incrementId);
 
+            $order = $this->quoteManagement->submit($quote);
+            if (!$order) {
+                $this->refusedStatusProcessor->process($quote, $statusCode);
+                return false;
+            }
+
+            $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
             $this->sessionDataManager->setOrderData($order);
+            $this->sessionDataManager->setOrderCreationFlag(null);
 
             return true;
         }

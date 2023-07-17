@@ -68,6 +68,10 @@ class RejectPaymentProcessor implements ProcessorInterface
     {
         /** @var RefundResponse $refundResponse */
         $refundResponse = $webhookEvent->getRefund();
+        if (!$refundResponse) {
+            return;
+        }
+
         $statusCode = (int)$refundResponse->getStatusOutput()->getStatusCode();
         if ($statusCode === self::REFUND_REFUSED_CODE) {
             $incrementId = $refundResponse->getRefundOutput()->getReferences()->getMerchantReference();
