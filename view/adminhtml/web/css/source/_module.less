@@ -9,7 +9,7 @@
 @input-text__border-color: #007bdb;
 @input-text-error__border-color: #adadad;
 @button-submit-form__background-color: #fff;
-@button-submit-form-hover__background-color: #2a469e;
+@button-submit-form-hover__background-color: #514943;
 
 & when (@media-common = true) {
     .worldline-float-right {
@@ -24,7 +24,7 @@
             border: none;
             float: left;
             height: 1px;
-            margin-top: 60px;
+            margin-top: 20px;
             width: 100%;
 
             &.bottom-line {
@@ -40,7 +40,7 @@
         .sub-title {
             font-size: 14px;
             font-weight: bold;
-            padding-top: 20px;
+            padding-top: 35px;
 
             &.version-title {
                 padding-top: 0;
@@ -57,17 +57,16 @@
         }
 
         .version-block .description,
-        .new-feature-block > .label {
-            display: block;
-            float: left;
-            max-width: ~'calc(100% - 162px)';
-            padding: 0;
+        .new-feature-block {
+            .button {
+                padding-top: 10px;
+            }
         }
 
         .github-button,
         .open-close-request-form-button {
             & {
-                background-color: royalblue;
+                background-color: @button-submit-form-hover__background-color;
                 border: none;
                 color: @button-submit-form__background-color;
                 float: right;
@@ -86,10 +85,6 @@
 
     .form-inline .new-feature-block {
         & {
-            align-items: flex-end;
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
             width: 100%;
         }
 
@@ -122,7 +117,7 @@
 
         .action-submit-form {
             & {
-                background-color: royalblue;
+                background-color: @button-submit-form-hover__background-color;
                 border: none;
                 color: @button-submit-form__background-color;
                 float: right;

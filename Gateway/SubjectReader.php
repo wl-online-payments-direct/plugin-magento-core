@@ -76,9 +76,7 @@ class SubjectReader implements SubjectReaderInterface
      */
     public function readAmount(array $subject)
     {
-        if (!isset($subject['amount'])
-            && isset($subject['payment'])
-            && ($subject['payment'] instanceof PaymentDataObject)) {
+        if (isset($subject['payment']) && ($subject['payment'] instanceof PaymentDataObject)) {
             $subject['amount'] = $subject['payment']->getPayment()->getOrder()->getGrandTotal();
         }
 

@@ -33,7 +33,7 @@ $quote = $pageDataProvider->getQuote();
             <tr class="totals sub">
                 <th class="mark"><?= $block->escapeHtml(__('Cart Subtotal')) ?></th>
                 <td class="amount">
-                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getSubtotal()) ?>
+                    <?= /* @noEscape */ $pageDataProvider->formatPrice((float)$quote->getSubtotal()) ?>
                 </td>
             </tr>
             <?php if ((int)$quote->getShippingAddress()->getDiscountAmount() !== 0): ?>
@@ -43,7 +43,7 @@ $quote = $pageDataProvider->getQuote();
                         <span class="discount coupon"></span>
                     </th>
                     <td class="amount">
-                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getDiscountAmount()) ?>
+                        <?= /* @noEscape */ $pageDataProvider->formatPrice((float)$quote->getShippingAddress()->getDiscountAmount()) ?>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -53,14 +53,14 @@ $quote = $pageDataProvider->getQuote();
                     <span class="value"><?= $block->escapeHtml($quote->getShippingAddress()->getShippingDescription()) ?></span>
                 </th>
                 <td class="amount">
-                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getShippingAmount()) ?>
+                    <?= /* @noEscape */ $pageDataProvider->formatPrice((float)$quote->getShippingAddress()->getShippingAmount()) ?>
                 </td>
             </tr>
             <?php if ($pageDataProvider->getSurchargeAmount() > 0.00001): ?>
                 <tr class="totals-surcharging">
                     <th class="mark" scope="row"><?= $block->escapeHtml(__('Surcharging')) ?></th>
                     <td class="amount">
-                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice($pageDataProvider->getSurchargeAmount()) ?>
+                        <?= /* @noEscape */ $pageDataProvider->formatPrice($pageDataProvider->getSurchargeAmount()) ?>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -68,7 +68,7 @@ $quote = $pageDataProvider->getQuote();
                 <tr class="totals-tax">
                     <th class="mark" scope="row"><?= $block->escapeHtml(__('Tax')) ?></th>
                     <td class="amount">
-                        <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getShippingAddress()->getTaxAmount()) ?>
+                        <?= /* @noEscape */ $pageDataProvider->formatPrice((float)$quote->getShippingAddress()->getTaxAmount()) ?>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -77,7 +77,7 @@ $quote = $pageDataProvider->getQuote();
                     <strong><?= $block->escapeHtml(__('Order Total')) ?></strong>
                 </th>
                 <td class="amount">
-                    <strong><?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$quote->getGrandTotal()) ?></strong>
+                    <strong><?= /* @noEscape */ $pageDataProvider->formatPrice((float)$quote->getGrandTotal()) ?></strong>
                 </td>
             </tr>
             </tbody>
@@ -118,7 +118,7 @@ $quote = $pageDataProvider->getQuote();
                                         <div class="subtotal">
                                             <span class="price-excluding-tax">
                                                 <span class="cart-price">
-                                                    <?= /* @noEscape */ $pageDataProvider->convertAndFormatPrice((float)$item->getPrice()) ?>
+                                                    <?= /* @noEscape */ $pageDataProvider->formatPrice((float)$item->getPrice()) ?>
                                                 </span>
                                             </span>
                                         </div>

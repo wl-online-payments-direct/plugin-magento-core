@@ -13,9 +13,12 @@ class Info extends Field
 {
     public const SEND_FEATURE_REQUEST = 'worldline/system_config/sendFeatureRequest';
 
-    private const ACCOUNT_LINK = 'https://support.direct.ingenico.com/get-started/account-management/test-environment/';
+    private const ACCOUNT_LINK = 'https://signup.direct.preprod.worldline-solutions.com/';
     private const SALES_LINK = 'https://worldline.com/en/home/solutions/online-payments/wl-online-payments.html';
-    private const SUPPORT_LINK = 'https://support.direct.ingenico.com';
+    private const SUPPORT_SITE_LINK = 'https://docs.direct.worldline-solutions.com/en/index';
+    private const SUPPORT_TEAM_LINK = 'https://docs.direct.worldline-solutions.com/en/about/contact/index';
+    private const MAGENTO_DOC_LINK
+        = 'https://docs.direct.worldline-solutions.com/en/integration/how-to-integrate/plugins/magento';
     private const GITHUB_LINK = 'https://github.com/wl-online-payments-direct/plugin-magento/releases/latest/';
 
     /**
@@ -56,7 +59,9 @@ class Info extends Field
             [
                 'logo_url' => $this->getLogoUrl(),
                 'account_url' => self::ACCOUNT_LINK,
-                'support_url' => self::SUPPORT_LINK,
+                'support_site_url' => self::SUPPORT_SITE_LINK,
+                'support_team_url' => self::SUPPORT_TEAM_LINK,
+                'magento_doc_url' => self::MAGENTO_DOC_LINK,
                 'sales_team_url' => self::SALES_LINK,
                 'git_hub_url' => self::GITHUB_LINK,
                 'html_id' => $element->getHtmlId(),

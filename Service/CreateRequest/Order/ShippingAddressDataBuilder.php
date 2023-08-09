@@ -59,7 +59,7 @@ class ShippingAddressDataBuilder implements ShippingAddressDataBuilderInterface
         $addressPersonal->setCity($shippingAddress->getCity());
         $addressPersonal->setCountryCode($shippingAddress->getCountryId());
         $addressPersonal->setState($shippingAddress->getRegion());
-        $addressPersonal->setStreet($shippingAddress->getStreetFull());
+        $addressPersonal->setStreet(str_replace("\n", " ", $shippingAddress->getStreetFull()));
         $addressPersonal->setZip($shippingAddress->getPostcode());
 
         $shipping->setAddress($addressPersonal);

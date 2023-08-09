@@ -25,6 +25,7 @@ class WorldlineConfig implements WorldlineConfigInterface
         1 => 'VI',
         2 => 'AE',
         3 => 'MC',
+        56 => 'UN',
         117 => 'MI',
         125 => 'JCB',
         130 => 'CB',

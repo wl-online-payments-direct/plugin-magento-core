@@ -1,14 +1,13 @@
 <div class="new-feature-block">
-    <label class="label">
-        <span data-bind="i18n: 'If you want to leave any feature suggestions, feel free to fill in the form.'"></span>
-    </label>
     <button type="button"
-            class="action-secondary open-close-request-form-button"
+            class="action-secondary"
             data-bind="click: openCloseForm">
-        <span data-bind="i18n: 'Request a new feature'"></span>
+        <span data-bind="i18n: 'Suggest a new feature'"></span>
     </button>
 </div>
+
 <br><br>
+
 <!-- ko if: isShowForm() -->
 <form class="form worldline-feature-form" data-worldline-js="feature-form">
     <fieldset>

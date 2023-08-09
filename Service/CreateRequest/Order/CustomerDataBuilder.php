@@ -141,7 +141,7 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
         $address->setZip($this->billingAddress->getPostcode());
         $address->setState($this->billingAddress->getRegion());
         $address->setCountryCode($this->billingAddress->getCountryId());
-        $address->setStreet($this->billingAddress->getStreetFull());
+        $address->setStreet(str_replace("\n", " ", $this->billingAddress->getStreetFull()));
         $this->customer->setBillingAddress($address);
     }
 
