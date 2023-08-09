@@ -13,6 +13,7 @@ interface PaymentProductsDetailsInterface
     public const VISA_PRODUCT_ID = 1;
     public const AMERICAN_EXPRESS_PRODUCT_ID = 2;
     public const MASTER_CARD_PRODUCT_ID = 3;
+    public const UNION_PAY_INT_ID = 56;
     public const MAESTRO_PRODUCT_ID = 117;
     public const JCB_PRODUCT_ID = 125;
     public const CARTE_BANCAIRE_PRODUCT_ID = 130;
@@ -27,6 +28,7 @@ interface PaymentProductsDetailsInterface
     public const BANCONTACT_PRODUCT_ID = 3012;
     public const GIFTCARD_LIMONETIK_ID = 3111;
     public const ILLICADO_PRODUCT_ID = 3112;
+    public const PRZELEWY24_PRODUCT_ID = 3124;
     public const KLARNA_PAY_NOW_PRODUCT_ID = 3301;
     public const KLARNA_PAY_LATER_PRODUCT_ID = 3302;
     public const KLARNA_FINANCING_PRODUCT_ID = 3303;
@@ -37,6 +39,8 @@ interface PaymentProductsDetailsInterface
     public const ONEY_3X_4X_PRODUCT_ID = 5110;
     public const ONEY_FINANCEMENT_LONG_PRODUCT_ID = 5125;
     public const MEALVOUCHERS_PRODUCT_ID = 5402;
+    public const EPS_PRODUCT_ID = 5406;
+    public const TWINT_PRODUCT_ID = 5407;
     public const MULTIBANCO_PRODUCT_ID = 5500;
     public const ONEY_BRANDED_GIFT_CARD_PRODUCT_ID = 5600;
     public const INTERSOLVE_PRODUCT_ID = 5700;
@@ -68,6 +72,10 @@ interface PaymentProductsDetailsInterface
         self::MAESTRO_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_CARD,
             'label' => 'Maestro'
+        ],
+        self::UNION_PAY_INT_ID => [
+            'group' => self::PAYMENT_GROUP_CARD,
+            'label' => 'Union Pay International'
         ],
         self::JCB_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_CARD,
@@ -121,6 +129,10 @@ interface PaymentProductsDetailsInterface
             'group' => self::PAYMENT_GROUP_GIFT_CARD,
             'label' => 'Illicado'
         ],
+        self::PRZELEWY24_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_REALTIME_BANKING,
+            'label' => 'Przelewy24'
+        ],
         self::KLARNA_PAY_NOW_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_INSTALMENT,
             'label' => 'Klarna Pay Now'
@@ -164,6 +176,14 @@ interface PaymentProductsDetailsInterface
         self::MULTIBANCO_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_POSTPAID,
             'label' => 'Multibanco'
+        ],
+        self::EPS_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_REALTIME_BANKING,
+            'label' => 'EPS'
+        ],
+        self::TWINT_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_REALTIME_BANKING,
+            'label' => 'Twint'
         ],
         self::ONEY_BRANDED_GIFT_CARD_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_GIFT_CARD,

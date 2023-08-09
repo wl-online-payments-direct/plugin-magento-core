@@ -12,11 +12,17 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Phrase;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
 
 class PendingOrder extends Action implements HttpPostActionInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     /**
      * @var PendingOrderManagerInterface
      */
@@ -29,10 +35,12 @@ class PendingOrder extends Action implements HttpPostActionInterface
 
     public function __construct(
         Context $context,
+        LoggerInterface $logger,
         PendingOrderManagerInterface $pendingOrderManager,
         FailedOrderCreationNotification $failedOrderCreationNotification
     ) {
         parent::__construct($context);
+        $this->logger = $logger;
         $this->pendingOrderManager = $pendingOrderManager;
         $this->failedOrderCreationNotification = $failedOrderCreationNotification;
     }
@@ -46,10 +54,12 @@ class PendingOrder extends Action implements HttpPostActionInterface
             $param['status'] = $this->pendingOrderManager->processPendingOrder($incrementId);
             return $result->setData($param);
         } catch (LocalizedException $e) {
+            $this->logger->error($e->getMessage(), ['reserved_order_id' => $incrementId]);
             return $result->setData([
                 'error' => $this->processException($incrementId, $e->getMessage()),
             ]);
         } catch (Exception $e) {
+            $this->logger->error($e->getMessage(), ['reserved_order_id' => $incrementId]);
             return $result->setData([
                 'error' => $this->processException($incrementId, __('Sorry, but something went wrong')),
             ]);

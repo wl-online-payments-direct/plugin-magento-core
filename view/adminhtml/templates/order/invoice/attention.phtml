@@ -1,0 +1,20 @@
+<?php
+/**
+ * @var $block \Worldline\PaymentCore\Block\Adminhtml\Invoice\PartialInvoiceChecker
+ * @var $secureRenderer \Magento\Framework\View\Helper\SecureHtmlRenderer
+ */
+?>
+
+<?php $scriptString = <<<script
+require([
+    'jquery',
+    'Magento_Ui/js/modal/confirm'
+], function ($, confirm) {
+    confirm({
+        title: $.mage.__('Attention!'),
+        content: $.mage.__('If a you tries to do a capture for less than the full authorized amount, you will not be able to capture the remaining amount.')
+    });
+});
+script;
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>

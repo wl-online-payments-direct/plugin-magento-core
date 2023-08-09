@@ -56,6 +56,9 @@ class CommentManager
         try {
             $response = $this->webhookResponseManager->getResponse($webhookEvent);
             $order = $this->getOrder($response);
+            if (!$order->getId()) {
+                return;
+            }
 
             $comment = $order->addCommentToStatusHistory(
                 'Webhook: ' . ' payment id (' . $response->getId() . '), '

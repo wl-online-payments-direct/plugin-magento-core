@@ -7,6 +7,7 @@ use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
 use Worldline\PaymentCore\Api\SessionDataManagerInterface;
 use Worldline\PaymentCore\Api\SurchargingQuoteManagerInterface;
@@ -19,6 +20,11 @@ use Worldline\PaymentCore\Api\Webhook\PlaceOrderManagerInterface;
  */
 class PlaceOrderProcessor implements ProcessorInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     /**
      * @var QuoteManagement
      */
@@ -60,6 +66,7 @@ class PlaceOrderProcessor implements ProcessorInterface
     private $sessionDataManager;
 
     public function __construct(
+        LoggerInterface $logger,
         QuoteManagement $quoteManagement,
         OrderFactory $orderFactory,
         PaymentDataManagerInterface $paymentDataManager,
@@ -69,6 +76,7 @@ class PlaceOrderProcessor implements ProcessorInterface
         EventManager $eventManager,
         SessionDataManagerInterface $sessionDataManager
     ) {
+        $this->logger = $logger;
         $this->quoteManagement = $quoteManagement;
         $this->orderFactory = $orderFactory;
         $this->paymentDataManager = $paymentDataManager;
@@ -115,6 +123,7 @@ class PlaceOrderProcessor implements ProcessorInterface
             $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
             $this->sessionDataManager->setOrderCreationFlag(null);
         } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ['reserved_order_id' => $incrementId]);
             $this->sessionDataManager->setOrderCreationFlag(null);
             $this->failedOrderCreationNotification->notify(
                 $quote->getReservedOrderId(),

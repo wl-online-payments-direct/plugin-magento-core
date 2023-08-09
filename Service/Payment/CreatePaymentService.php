@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Service\Payment;
 
 use Magento\Framework\Exception\LocalizedException;
+use OnlinePayments\Sdk\DeclinedPaymentException;
 use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use Psr\Log\LoggerInterface;
@@ -56,6 +57,9 @@ class CreatePaymentService implements CreatePaymentServiceInterface
                 ->merchant($this->worldlineConfig->getMerchantId($storeId))
                 ->payments()
                 ->createPayment($request);
+        } catch (DeclinedPaymentException $e) {
+            $this->logger->debug($e->getMessage());
+            throw new LocalizedException(__('Your payment has been refused, please try again.'));
         } catch (\Exception $e) {
             $this->logger->debug($e->getMessage());
             throw new LocalizedException(__('CreatePaymentApi request has failed. Please contact the provider.'));

@@ -148,6 +148,11 @@ class WaitingPageDataProvider implements ArgumentInterface
         return $this->priceCurrency->convertAndFormat($price);
     }
 
+    public function formatPrice(float $price): string
+    {
+        return $this->priceCurrency->format($price);
+    }
+
     public function getSurchargeAmount(): float
     {
         $quoteId = (int)$this->getQuote()->getId();
