@@ -84,6 +84,7 @@ class EmailSender
         int $storeId,
         string $sendFrom,
         string $sendTo,
+        string $ccTo = '',
         array $vars = [],
         array $options = []
     ): bool {
@@ -98,7 +99,7 @@ class EmailSender
                 ->setTemplateOptions($options)
                 ->setTemplateVars($vars)
                 ->setFromByScope($sendFrom, $storeId)
-                ->addTo($sendTo)
+                ->addTo([$sendTo, $ccTo])
                 ->getTransport();
 
             $transport->sendMessage();

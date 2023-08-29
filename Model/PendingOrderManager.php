@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model;
 
+use Exception;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 use Worldline\PaymentCore\Api\QuoteResourceInterface;
@@ -16,6 +18,8 @@ use Worldline\PaymentCore\Model\PaymentOrderManager\PaymentService;
 
 /**
  * Validate payment information and create an order
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  */
 class PendingOrderManager implements PendingOrderManagerInterface
 {
@@ -70,18 +74,10 @@ class PendingOrderManager implements PendingOrderManagerInterface
     private $eventManager;
 
     /**
-     * @param SessionDataManagerInterface $sessionDataManager
-     * @param OrderFactory $orderFactory
-     * @param QuoteResourceInterface $quoteResource
-     * @param QuoteManagement $quoteManagement
-     * @param CanPlaceOrderContextManager $canPlaceOrderContextManager
-     * @param RefusedStatusProcessor $refusedStatusProcessor
-     * @param PaymentService $paymentService
-     * @param PaymentDataManagerInterface $paymentDataManager
-     * @param SurchargingQuoteManagerInterface $surchargingQuoteManager
-     * @param EventManager $eventManager
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @var LoggerInterface
      */
+    private $logger;
+
     public function __construct(
         SessionDataManagerInterface $sessionDataManager,
         OrderFactory $orderFactory,
@@ -92,7 +88,8 @@ class PendingOrderManager implements PendingOrderManagerInterface
         PaymentService $paymentService,
         PaymentDataManagerInterface $paymentDataManager,
         SurchargingQuoteManagerInterface $surchargingQuoteManager,
-        EventManager $eventManager
+        EventManager $eventManager,
+        LoggerInterface $logger
     ) {
         $this->sessionDataManager = $sessionDataManager;
         $this->orderFactory = $orderFactory;
@@ -104,6 +101,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
         $this->paymentDataManager = $paymentDataManager;
         $this->surchargingQuoteManager = $surchargingQuoteManager;
         $this->eventManager = $eventManager;
+        $this->logger = $logger;
     }
 
     public function processPendingOrder(string $incrementId): bool
@@ -135,8 +133,14 @@ class PendingOrderManager implements PendingOrderManagerInterface
             }
             $this->sessionDataManager->setOrderCreationFlag($incrementId);
 
-            $order = $this->quoteManagement->submit($quote);
-            if (!$order) {
+            try {
+                $order = $this->quoteManagement->submit($quote);
+                if (!$order) {
+                    $this->refusedStatusProcessor->process($quote, $statusCode);
+                    return false;
+                }
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage(), ['reserved_order_id' => $incrementId]);
                 $this->refusedStatusProcessor->process($quote, $statusCode);
                 return false;
             }

@@ -6,8 +6,8 @@ namespace Worldline\PaymentCore\Model\ResourceModel;
 use Magento\Framework\DB\Select;
 use Magento\Quote\Model\ResourceModel\Quote\Collection as QuoteCollection;
 use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Model\Order\Creation\DateLimitProvider;
-use Worldline\PaymentCore\Model\Order\Creation\OrderCollectionFactory;
 
 class PendingOrderProvider
 {
@@ -17,7 +17,7 @@ class PendingOrderProvider
     private $allowedPaymentMethods;
 
     /**
-     * @var OrderCollectionFactory
+     * @var QuoteCollectionFactory
      */
     private $quoteCollectionFactory;
 
@@ -26,13 +26,20 @@ class PendingOrderProvider
      */
     private $dateLimitProvider;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         QuoteCollectionFactory $quoteCollectionFactory,
         DateLimitProvider $dateLimitProvider,
+        LoggerInterface $logger,
         array $allowedPaymentMethods = []
     ) {
         $this->quoteCollectionFactory = $quoteCollectionFactory;
         $this->dateLimitProvider = $dateLimitProvider;
+        $this->logger = $logger;
         $this->allowedPaymentMethods = $allowedPaymentMethods;
     }
 
@@ -46,7 +53,14 @@ class PendingOrderProvider
         $this->excludeQuotesWithoutReservedOrderId($collection);
         $this->adjustSelectedColumns($collection);
 
-        return $collection->getConnection()->fetchCol($collection->getSelect());
+        $result = $collection->getConnection()->fetchCol($collection->getSelect());
+
+        $this->logger->info(
+            'Reserved order ids to create by cron:',
+            ['ids' => implode('; ', array_values($result))]
+        );
+
+        return $result;
     }
 
     private function addTimeToFilter(QuoteCollection $collection): void
@@ -73,7 +87,6 @@ class PendingOrderProvider
                 'qp.payment_id = wfpl.quote_payment_id',
                 ['method']
             )
-            ->where('wfpl.quote_payment_id IS NULL')
             ->where('qp.method IN (?)', $this->allowedPaymentMethods);
     }
 

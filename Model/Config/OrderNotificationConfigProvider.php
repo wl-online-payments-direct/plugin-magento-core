@@ -14,6 +14,7 @@ class OrderNotificationConfigProvider
     public const SENDER = 'worldline_order_creator/notification/sender';
     public const RECIPIENT = 'worldline_order_creator/notification/recipient';
     public const EMAIL_TEMPLATE = 'worldline_order_creator/notification/email_template';
+    public const EMAIL_COPY_TO = 'worldline_order_creator/notification/copy_to';
 
     /**
      * @var ScopeConfigInterface
@@ -43,5 +44,10 @@ class OrderNotificationConfigProvider
     public function getEmailTemplate(): string
     {
         return (string) $this->scopeConfig->getValue(self::EMAIL_TEMPLATE);
+    }
+
+    public function getEmailCopyTo(): string
+    {
+        return (string) $this->scopeConfig->getValue(self::EMAIL_COPY_TO);
     }
 }

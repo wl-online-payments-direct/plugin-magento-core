@@ -23,7 +23,7 @@ class FailedPaymentLog
     {
         $connection = $this->resourceConnection->getConnection();
         $connection->insertOnDuplicate(
-            $connection->getTableName(self::TABLE),
+            $this->resourceConnection->getTableName(self::TABLE),
             ['quote_payment_id' => $quotePaymentId]
         );
     }

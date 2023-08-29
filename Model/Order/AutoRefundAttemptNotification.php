@@ -53,16 +53,13 @@ class AutoRefundAttemptNotification
      */
     public function notify(CartInterface $quote): void
     {
-        if (!$this->autoRefundConfigProvider->isEnabled()) {
-            return;
-        }
-
         $recipient = $this->senderResolver->resolve($this->autoRefundConfigProvider->getRecipient());
         $this->emailSender->sendEmail(
             $this->autoRefundConfigProvider->getEmailTemplate(),
             0,
             $this->autoRefundConfigProvider->getSender(),
             $recipient['email'] ?? '',
+            '',
             $this->getVariables($quote),
             ['area' => Area::AREA_ADMINHTML, 'store' => 0]
         );
