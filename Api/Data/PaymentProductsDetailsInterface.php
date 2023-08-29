@@ -44,6 +44,8 @@ interface PaymentProductsDetailsInterface
     public const MULTIBANCO_PRODUCT_ID = 5500;
     public const ONEY_BRANDED_GIFT_CARD_PRODUCT_ID = 5600;
     public const INTERSOLVE_PRODUCT_ID = 5700;
+    public const INTERSOLVE_AKTIESPORT_E_GIFTCARD_PRODUCT_ID = 5701;
+    public const INTERSOLVE_AKTIESPORT_PRODUCT_ID = 5702;
 
     public const PAYMENT_GROUP_MOBILE = 'Mobile';
     public const PAYMENT_GROUP_CARD = 'Cards (debit & credit)';
@@ -190,6 +192,14 @@ interface PaymentProductsDetailsInterface
             'label' => 'OneyBrandedGiftCard'
         ],
         self::INTERSOLVE_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_GIFT_CARD,
+            'label' => 'Intersolve'
+        ],
+        self::INTERSOLVE_AKTIESPORT_E_GIFTCARD_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_GIFT_CARD,
+            'label' => 'Intersolve'
+        ],
+        self::INTERSOLVE_AKTIESPORT_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_GIFT_CARD,
             'label' => 'Intersolve'
         ],

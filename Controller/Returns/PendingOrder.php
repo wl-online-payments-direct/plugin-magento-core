@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Controller\Returns;
 
-use Exception;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
@@ -52,16 +51,15 @@ class PendingOrder extends Action implements HttpPostActionInterface
 
         try {
             $param['status'] = $this->pendingOrderManager->processPendingOrder($incrementId);
+            if ($param['status'] === false) {
+                $this->processException($incrementId, __('Sorry, but something went wrong'));
+            }
+
             return $result->setData($param);
         } catch (LocalizedException $e) {
             $this->logger->error($e->getMessage(), ['reserved_order_id' => $incrementId]);
             return $result->setData([
                 'error' => $this->processException($incrementId, $e->getMessage()),
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error($e->getMessage(), ['reserved_order_id' => $incrementId]);
-            return $result->setData([
-                'error' => $this->processException($incrementId, __('Sorry, but something went wrong')),
             ]);
         }
     }

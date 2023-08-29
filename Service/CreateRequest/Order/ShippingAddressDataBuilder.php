@@ -9,6 +9,7 @@ use OnlinePayments\Sdk\Domain\PersonalNameFactory;
 use OnlinePayments\Sdk\Domain\Shipping;
 use OnlinePayments\Sdk\Domain\ShippingFactory;
 use Worldline\PaymentCore\Api\Service\CreateRequest\Order\ShippingAddressDataBuilderInterface;
+use Worldline\PaymentCore\Model\Quote\Address\Comparer;
 
 class ShippingAddressDataBuilder implements ShippingAddressDataBuilderInterface
 {
@@ -30,14 +31,21 @@ class ShippingAddressDataBuilder implements ShippingAddressDataBuilderInterface
      */
     private $personalNameFactory;
 
+    /**
+     * @var Comparer
+     */
+    private $addressComparer;
+
     public function __construct(
         ShippingFactory $shippingFactory,
         AddressPersonalFactory $addressPersonalFactory,
-        PersonalNameFactory $personalNameFactory
+        PersonalNameFactory $personalNameFactory,
+        Comparer $addressComparer
     ) {
         $this->shippingFactory = $shippingFactory;
         $this->addressPersonalFactory = $addressPersonalFactory;
         $this->personalNameFactory = $personalNameFactory;
+        $this->addressComparer = $addressComparer;
     }
 
     public function build(CartInterface $quote): Shipping
@@ -57,14 +65,13 @@ class ShippingAddressDataBuilder implements ShippingAddressDataBuilderInterface
         $addressPersonal = $this->addressPersonalFactory->create();
         $addressPersonal->setName($name);
         $addressPersonal->setCity($shippingAddress->getCity());
-        $addressPersonal->setCountryCode($shippingAddress->getCountryId());
-        $addressPersonal->setState($shippingAddress->getRegion());
-        $addressPersonal->setStreet(str_replace("\n", " ", $shippingAddress->getStreetFull()));
         $addressPersonal->setZip($shippingAddress->getPostcode());
-
+        $addressPersonal->setState($shippingAddress->getRegion());
+        $addressPersonal->setCountryCode($shippingAddress->getCountryId());
+        $addressPersonal->setStreet(str_replace("\n", " ", $shippingAddress->getStreetFull()));
         $shipping->setAddress($addressPersonal);
 
-        if ($shippingAddress->getSameAsBilling()) {
+        if ($this->addressComparer->isAddressTheSame($quote)) {
             $shipping->setAddressIndicator(self::SAME_AS_SHIPPING);
         } else {
             $shipping->setAddressIndicator(self::DIFFERENT_THAN_BILLING);

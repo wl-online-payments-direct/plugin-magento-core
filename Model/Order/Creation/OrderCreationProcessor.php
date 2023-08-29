@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Order\Creation;
 
-use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\PendingOrderManagerInterface;
 use Worldline\PaymentCore\Model\OutStockRefunder;
 use Worldline\PaymentCore\Model\ResourceModel\PendingOrderProvider;
@@ -15,11 +14,6 @@ class OrderCreationProcessor
      * @var PendingOrderProvider
      */
     private $quoteProvider;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
     /**
      * @var PendingOrderManagerInterface
@@ -38,13 +32,11 @@ class OrderCreationProcessor
 
     public function __construct(
         PendingOrderProvider $quoteProvider,
-        LoggerInterface $logger,
         PendingOrderManagerInterface $pendingOrderManager,
         FailedOrderCreationNotification $failedOrderCreationNotification,
         OutStockRefunder $outStockRefunder
     ) {
         $this->quoteProvider = $quoteProvider;
-        $this->logger = $logger;
         $this->pendingOrderManager = $pendingOrderManager;
         $this->failedOrderCreationNotification = $failedOrderCreationNotification;
         $this->outStockRefunder = $outStockRefunder;
@@ -64,16 +56,14 @@ class OrderCreationProcessor
 
     private function placeOrder(string $reservedOrderId): void
     {
-        try {
-            $this->pendingOrderManager->processPendingOrder($reservedOrderId);
-        } catch (\Exception $exception) {
+        $result = $this->pendingOrderManager->processPendingOrder($reservedOrderId);
+        if ($result === false) {
             $this->failedOrderCreationNotification->notify(
                 $reservedOrderId,
-                (string)$exception->getMessage(),
+                'Sorry, but something went wrong',
                 FailedOrderCreationNotification::WAITING_CRON_SPACE
             );
             $this->outStockRefunder->refundTransaction($reservedOrderId);
-            $this->logger->warning($exception->getMessage(), ['reserved_order_id' => $reservedOrderId]);
         }
     }
 }

@@ -48,6 +48,7 @@ class OrderCreator
             $this->orderCreationProcessor->process();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
+            $flagModel->setFlagData(false)->save();
         } finally {
             $flagModel->setFlagData(false)->save();
         }

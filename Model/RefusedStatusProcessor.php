@@ -40,8 +40,9 @@ class RefusedStatusProcessor
         );
 
         if ($isPaymentRefused) {
-            $this->failedPaymentLog->saveQuotePaymentId((int) $quote->getPayment()->getId());
             $this->emailSender->sendPaymentRefusedEmail($quote);
+        } else {
+            $this->failedPaymentLog->saveQuotePaymentId((int) $quote->getPayment()->getId());
         }
     }
 }

@@ -76,6 +76,7 @@ class FailedOrderCreationNotification
             0,
             $this->orderNotificationConfigProvider->getSender(),
             $recipient['email'] ?? '',
+            $this->orderNotificationConfigProvider->getEmailCopyTo(),
             $this->getVariables($incrementId, $errorMessage, $space),
             ['area' => Area::AREA_ADMINHTML, 'store' => 0]
         );
