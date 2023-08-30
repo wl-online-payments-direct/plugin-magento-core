@@ -46,7 +46,11 @@ class RefundDataBuilder implements BuilderInterface
         );
 
         $currencyCode = $payment->getOrder()->getOrderCurrencyCode();
-        $amount = (float)$this->subjectReader->readAmount($buildSubject);
+        if (isset($buildSubject['amount'])) {
+            $amount = (float)$buildSubject['amount'];
+        } else {
+            $amount = (float)$this->subjectReader->readAmount($buildSubject);
+        }
 
         return [
             self::TRANSACTION_ID => $txnId,
