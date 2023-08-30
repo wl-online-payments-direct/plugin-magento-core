@@ -63,10 +63,14 @@ class CaptureDataBuilder implements BuilderInterface
 
         $paymentId = $this->paymentIdFormatter->validateAndFormat((string) $paymentId, true);
 
-        $amount = $this->amountFormatter->formatToInteger(
-            (float) $this->subjectReader->readAmount($buildSubject),
-            (string) $payment->getOrder()->getOrderCurrencyCode()
-        );
+        $currencyCode = (string)$payment->getOrder()->getOrderCurrencyCode();
+        if (isset($buildSubject['amount'])) {
+            $amount = (float)$buildSubject['amount'];
+        } else {
+            $amount = (float)$this->subjectReader->readAmount($buildSubject);
+        }
+
+        $amount = $this->amountFormatter->formatToInteger($amount, $currencyCode);
 
         return [
             self::PAYMENT_ID => $paymentId,
