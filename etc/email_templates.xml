@@ -18,4 +18,10 @@
               type="html"
               module="Worldline_PaymentCore"
               area="adminhtml"/>
+    <template id="worldline_order_creator_refund_refused_notification_email_template"
+              label="Refund Refused"
+              file="refund_refused.html"
+              type="html"
+              module="Worldline_PaymentCore"
+              area="adminhtml"/>
 </config>

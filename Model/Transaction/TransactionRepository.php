@@ -145,6 +145,24 @@ class TransactionRepository implements TransactionRepositoryInterface
         return $result;
     }
 
+    public function getRefundRejectedTransactions(string $incrementId): array
+    {
+        $transactions = $this->getAllTransactions($incrementId);
+        $result = [];
+        if (!$transactions) {
+            return $result;
+        }
+
+        /** @var TransactionInterface $transaction */
+        foreach ($transactions as $transaction) {
+            if ($transaction->getStatusCode() === TransactionStatusInterface::REFUND_REJECTED_CODE) {
+                $result[$transaction->getTransactionId()] = $transaction;
+            }
+        }
+
+        return $result;
+    }
+
     public function getRefundedTransactionsAmount(string $incrementId): float
     {
         $refundAmount = 0;

@@ -239,3 +239,6 @@ Yes,Yes
 "Currently installed version of the Worldline Online Payments plugin is <b>%1</b>","Currently installed version of the Worldline Online Payments plugin is <b>%1</b>"
 "The latest version of the plugin is <b>%1</b>.","The latest version of the plugin is <b>%1</b>."
 "Check latest updates","Check latest updates"
+"Refund Refused Notifications","Refund Refused Notifications"
+"Enable receiving emails in case your credit memo (refund) gets rejected by your acquirer.","Enable receiving emails in case your credit memo (refund) gets rejected by your acquirer."
+"Comma-separated.","Comma-separated."

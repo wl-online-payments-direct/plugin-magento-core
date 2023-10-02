@@ -199,3 +199,6 @@ Result,Résultat
 "Currently installed version of the Worldline Online Payments plugin is <b>%1</b>","La version actuellement installée du plugin Worldline Online Payments est <b>%1</b>"
 "The latest version of the plugin is <b>%1</b>.","La dernière version du plugin est <b>%1</b>."
 "Check latest updates","Vérifier les dernières mises à jour"
+"Refund Refused Notifications","Notifications de refus de remboursement"
+"Enable receiving emails in case your credit memo (refund) gets rejected by your acquirer.","Activez la réception d'e-mails au cas où votre note de crédit (remboursement) serait rejetée par votre acquéreur."
+"Comma-separated.","Séparées par des virgules."

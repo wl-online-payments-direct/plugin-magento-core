@@ -198,3 +198,6 @@ Result,Resultaat
 "Currently installed version of the Worldline Online Payments plugin is <b>%1</b>","De momenteel geïnstalleerde versie van de plug-in Worldline Online Payments is <b>%1</b>"
 "The latest version of the plugin is <b>%1</b>.","De nieuwste versie van de plug-in is <b>%1</b>."
 "Check latest updates","Controleer de laatste updates"
+"Refund Refused Notifications","Terugbetaling geweigerde meldingen"
+"Enable receiving emails in case your credit memo (refund) gets rejected by your acquirer.","Schakel het ontvangen van e-mails in voor het geval uw creditnota (terugbetaling) wordt afgewezen door uw acquirer."
+"Comma-separated.","Kommagescheiden."

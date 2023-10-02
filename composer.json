@@ -4,10 +4,10 @@
     "require": {
         "php": ">=7.3",
         "ext-json": "*",
-        "wl-online-payments-direct/sdk-php": "5.7.0"
+        "wl-online-payments-direct/sdk-php": "5.8.2"
     },
     "type": "magento2-module",
-    "version": "2.11.1",
+    "version": "2.12.0",
     "license": ["MIT"],
     "authors": [
         {

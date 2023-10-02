@@ -16,6 +16,8 @@ interface TransactionStatusInterface
     // Refunded statuses
     public const PENDING_REFUND_CODE = 81;
     public const REFUNDED_CODE = 8;
+    public const REFUND_UNCERTAIN_CODE = 82;
+    public const REFUND_REJECTED_CODE = 83;
 
     // Failed payment statuses
     public const CANCELLED_BY_CUSTOMER = 1;
