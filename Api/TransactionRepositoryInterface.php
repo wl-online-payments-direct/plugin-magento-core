@@ -52,6 +52,12 @@ interface TransactionRepositoryInterface
 
     /**
      * @param string $incrementId
+     * @return array
+     */
+    public function getRefundRejectedTransactions(string $incrementId): array;
+
+    /**
+     * @param string $incrementId
      * @return float
      */
     public function getRefundedTransactionsAmount(string $incrementId): float;

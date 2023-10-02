@@ -92,6 +92,11 @@ class EmailSender
             $options = ['area' => Area::AREA_FRONTEND, 'store' => $storeId];
         }
 
+        $addTo[] = $sendTo; // fix for 2.3.7 Magento version
+        if ($ccTo) {
+            $addTo[] = $ccTo;
+        }
+
         try {
             $this->inlineTranslation->suspend();
             $transport = $this->transportBuilder
@@ -99,7 +104,7 @@ class EmailSender
                 ->setTemplateOptions($options)
                 ->setTemplateVars($vars)
                 ->setFromByScope($sendFrom, $storeId)
-                ->addTo([$sendTo, $ccTo])
+                ->addTo($addTo)
                 ->getTransport();
 
             $transport->sendMessage();

@@ -4,30 +4,23 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\Webhook;
 
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Config as OrderConfig;
 use Magento\Sales\Model\Order\Creditmemo;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
-use Worldline\PaymentCore\Api\Data\RefundRequestInterface;
+use Worldline\PaymentCore\Api\QuoteResourceInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
 use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
+use Worldline\PaymentCore\Model\RefundRequest\RefundRefusedNotification;
+use Worldline\PaymentCore\Model\RefundRequest\RefundRefusedProcessor;
+use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
 class RejectPaymentProcessor implements ProcessorInterface
 {
-    public const REFUND_REFUSED_CODE = 83;
-
     /**
      * @var RefundRequestRepositoryInterface
      */
     private $refundRequestRepository;
-
-    /**
-     * @var CreditmemoRepositoryInterface
-     */
-    private $creditmemoRepository;
 
     /**
      * @var TransactionWLResponseManagerInterface
@@ -35,27 +28,39 @@ class RejectPaymentProcessor implements ProcessorInterface
     private $transactionWLResponseManager;
 
     /**
-     * @var OrderRepositoryInterface
+     * @var RefundRefusedProcessor
      */
-    private $orderRepository;
+    private $refundRefusedProcessor;
 
     /**
-     * @var OrderConfig
+     * @var CreditmemoRepositoryInterface
      */
-    private $orderConfig;
+    private $creditmemoRepository;
+
+    /**
+     * @var RefundRefusedNotification
+     */
+    private $refundRefusedNotification;
+
+    /**
+     * @var QuoteResourceInterface
+     */
+    private $quoteResource;
 
     public function __construct(
         RefundRequestRepositoryInterface $refundRequestRepository,
-        CreditmemoRepositoryInterface $creditmemoRepository,
         TransactionWLResponseManagerInterface $transactionWLResponseManager,
-        OrderRepositoryInterface $orderRepository,
-        OrderConfig $orderConfig
+        RefundRefusedProcessor $refundRefusedProcessor,
+        CreditmemoRepositoryInterface $creditmemoRepository,
+        RefundRefusedNotification $refundRefusedNotification,
+        QuoteResourceInterface $quoteResource
     ) {
         $this->refundRequestRepository = $refundRequestRepository;
-        $this->creditmemoRepository = $creditmemoRepository;
         $this->transactionWLResponseManager = $transactionWLResponseManager;
-        $this->orderRepository = $orderRepository;
-        $this->orderConfig = $orderConfig;
+        $this->refundRefusedProcessor = $refundRefusedProcessor;
+        $this->creditmemoRepository = $creditmemoRepository;
+        $this->refundRefusedNotification = $refundRefusedNotification;
+        $this->quoteResource = $quoteResource;
     }
 
     /**
@@ -73,30 +78,26 @@ class RejectPaymentProcessor implements ProcessorInterface
         }
 
         $statusCode = (int)$refundResponse->getStatusOutput()->getStatusCode();
-        if ($statusCode === self::REFUND_REFUSED_CODE) {
+        if ($statusCode === TransactionStatusInterface::REFUND_REJECTED_CODE) {
             $incrementId = $refundResponse->getRefundOutput()->getReferences()->getMerchantReference();
             $amount = (int)$refundResponse->getRefundOutput()->getAmountOfMoney()->getAmount();
             $refundRequest = $this->refundRequestRepository->getByIncrementIdAndAmount((string)$incrementId, $amount);
-            if (!$refundRequest->getCreditMemoId()) {
+            $creditmemoId = $refundRequest->getCreditMemoId();
+            if (!$creditmemoId) {
+                return;
+            }
+
+            $creditmemoEntity = $this->creditmemoRepository->get($creditmemoId);
+            if ($creditmemoEntity->getState() == Creditmemo::STATE_CANCELED) {
                 return;
             }
 
             $this->transactionWLResponseManager->saveTransaction($refundResponse);
 
-            $this->processRefused($refundRequest);
+            $this->refundRefusedProcessor->process($refundRequest);
+
+            $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+            $this->refundRefusedNotification->notify($quote, $incrementId, $creditmemoId);
         }
-    }
-
-    private function processRefused(RefundRequestInterface $refundRequest): void
-    {
-        $creditmemoEntity = $this->creditmemoRepository->get($refundRequest->getCreditMemoId());
-        $order = $creditmemoEntity->getOrder();
-
-        $creditmemoEntity->setState(Creditmemo::STATE_CANCELED);
-        $order->setState(Order::STATE_CANCELED);
-        $order->setStatus($this->orderConfig->getStateDefaultStatus(Order::STATE_CANCELED));
-
-        $this->creditmemoRepository->save($creditmemoEntity);
-        $this->orderRepository->save($order);
     }
 }

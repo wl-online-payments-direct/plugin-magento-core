@@ -204,7 +204,45 @@
                     </depends>
                 </field>
             </group>
-            <group id="notification" translate="label" type="text" sortOrder="30" showInDefault="1">
+            <group id="refund_refused_notification" translate="label" type="text" sortOrder="30" showInDefault="1">
+                <label>Refund Refused Notifications</label>
+                <field id="active" translate="label tooltip" type="select" sortOrder="10" showInDefault="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>Enable receiving emails in case your credit memo (refund) gets rejected by your acquirer.</tooltip>
+                </field>
+                <field id="sender" translate="label" type="select" sortOrder="20" showInDefault="1" canRestore="1">
+                    <label>Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="recipient" translate="label" type="select" sortOrder="30" showInDefault="1" canRestore="1">
+                    <label>Recipient</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="copy_to" translate="label" type="text" sortOrder="40" showInDefault="1">
+                    <label>Email Copy To</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <comment>Comma-separated.</comment>
+                    <validate>validate-email</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="email_template" translate="label" type="select" sortOrder="50" showInDefault="1" canRestore="1">
+                    <label>Email Template</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="notification" translate="label" type="text" sortOrder="40" showInDefault="1">
                 <label>Failed Orders Notifications</label>
                 <field id="active" translate="label tooltip" type="select" sortOrder="10" showInDefault="1">
                     <label>Enable</label>
@@ -228,6 +266,7 @@
                 <field id="copy_to" translate="label" type="text" sortOrder="40" showInDefault="1">
                     <label>Email Copy To</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <comment>Comma-separated.</comment>
                     <validate>validate-email</validate>
                     <depends>
                         <field id="active">1</field>
@@ -241,7 +280,7 @@
                     </depends>
                 </field>
             </group>
-            <group id="auto_refund" translate="label" type="text" sortOrder="40" showInDefault="1">
+            <group id="auto_refund" translate="label" type="text" sortOrder="50" showInDefault="1">
                 <label>Auto Refund For Out Of Stock Orders</label>
                 <field id="active" translate="label tooltip" type="select" sortOrder="10" showInDefault="1">
                     <label>Enable</label>

@@ -48,9 +48,8 @@ class RefundRequestRepository implements RefundRequestRepositoryInterface
         $collection->addFieldToFilter(RefundRequestInterface::INCREMENT_ID, ['eq' => $incrementId]);
         $collection->addFieldToFilter(RefundRequestInterface::AMOUNT, ['eq' => $amount]);
         $collection->addFieldToFilter(RefundRequestInterface::REFUNDED, ['eq' => 0]);
-        $collection->getSelect()->limit(1);
 
-        return $collection->getFirstItem();
+        return $collection->getLastItem();
     }
 
     /**

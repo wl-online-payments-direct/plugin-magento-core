@@ -23,6 +23,12 @@
                 <refused_payment_sender>general</refused_payment_sender>
                 <refused_payment_template>worldline_order_creator_refused_notification_refused_payment_template</refused_payment_template>
             </general>
+            <refund_refused_notification>
+                <active>1</active>
+                <recipient>general</recipient>
+                <sender>general</sender>
+                <email_template>worldline_order_creator_refund_refused_notification_email_template</email_template>
+            </refund_refused_notification>
             <notification>
                 <active>1</active>
                 <recipient>general</recipient>

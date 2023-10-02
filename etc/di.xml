@@ -116,6 +116,7 @@
                 <item name="payment.rejected" xsi:type="object">Worldline\PaymentCore\Model\Webhook\RejectPaymentProcessor</item>
                 <item name="payment.cancelled" xsi:type="object">Worldline\PaymentCore\Model\Webhook\Payment\CancelledProcessor</item>
                 <item name="refund.refund_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
+                <item name="refund.rejected" xsi:type="object">Worldline\PaymentCore\Model\Webhook\RejectPaymentProcessor</item>
             </argument>
         </arguments>
     </type>

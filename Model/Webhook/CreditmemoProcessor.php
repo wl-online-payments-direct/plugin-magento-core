@@ -9,12 +9,10 @@ use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\TransactionWLResponseManagerInterface;
 use Worldline\PaymentCore\Api\Webhook\ProcessorInterface;
 use Worldline\PaymentCore\Model\RefundRequest\RefundProcessor;
+use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
 class CreditmemoProcessor implements ProcessorInterface
 {
-    public const REFUND_CODE = 8;
-    public const REFUND_UNCERTAIN_CODE = 82;
-
     /**
      * @var RefundProcessor
      */
@@ -45,11 +43,11 @@ class CreditmemoProcessor implements ProcessorInterface
         /** @var RefundResponse $refundResponse */
         $refundResponse = $webhookEvent->getRefund();
         $statusCode = (int)$refundResponse->getStatusOutput()->getStatusCode();
-        if ($statusCode === self::REFUND_UNCERTAIN_CODE) {
+        if ($statusCode === TransactionStatusInterface::REFUND_UNCERTAIN_CODE) {
             return;
         }
 
-        if ($statusCode === self::REFUND_CODE) {
+        if ($statusCode === TransactionStatusInterface::REFUNDED_CODE) {
             $incrementId = $refundResponse->getRefundOutput()->getReferences()->getMerchantReference();
             $amount = (int)$refundResponse->getRefundOutput()->getAmountOfMoney()->getAmount();
             $refundRequest = $this->refundRequestRepository->getByIncrementIdAndAmount((string)$incrementId, $amount);
