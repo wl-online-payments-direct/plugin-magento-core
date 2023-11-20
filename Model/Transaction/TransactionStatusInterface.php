@@ -24,4 +24,7 @@ interface TransactionStatusInterface
     public const AUTHORISATION_DECLINED = 2;
     public const AUTHORISED_AND_CANCELLED = 6;
     public const PAYMENT_REFUSED = 93;
+
+    // Waiting payment statuses
+    public const WAITING_AUTHENTICATION = 46;
 }

@@ -1,0 +1,17 @@
+<!--@subject {{trans "Your order %reserved_order_id has been refunded" reserved_order_id=$reserved_order_id}} @-->
+<!--@vars {
+"var store_id":"Store Id",
+"var reserved_order_id":"Order Id",
+"var customer_name":"Customer Name"
+} @-->
+
+<div class="wl-main-container">
+    <div class="wl-text-container">
+        <p class="wl-header-message">
+            <strong class="wl-name">{{trans 'Dear %customer_name,' customer_name=$customer_name}}</strong>
+        </p>
+        <p class="wl-message">
+            {{trans 'You recently made a payment for order %reserved_order_id. Your payment was refunded due to a lack of stock on one or more items.' reserved_order_id=$reserved_order_id}}
+        </p>
+    </div>
+</div>

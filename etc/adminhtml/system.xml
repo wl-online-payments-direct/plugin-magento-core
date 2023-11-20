@@ -92,7 +92,7 @@
                     </depends>
                 </field>
                 <field id="test_connection" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>Test Connection &amp; Save Credentials</label>
+                    <label><![CDATA[Test Connection & Save Credentials]]></label>
                     <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\TestConnection</frontend_model>
                 </field>
             </group>
@@ -177,7 +177,7 @@
                 </field>
                 <field id="cron_expr" sortOrder="30" type="text" showInDefault="1" translate="label comment" canRestore="1">
                     <label>Schedule (Cron Syntax)</label>
-                    <comment><![CDATA[Default value: every minute. <a href="http://crontab.guru/" target="_blank">Need help?</a>]]></comment>
+                    <comment><![CDATA[Default value: every minute. <a href='http://crontab.guru/' target='_blank'>Need help?</a>]]></comment>
                 </field>
             </group>
             <group id="refused_notification" translate="label" type="text" sortOrder="20" showInDefault="1">
@@ -280,7 +280,7 @@
                     </depends>
                 </field>
             </group>
-            <group id="auto_refund" translate="label" type="text" sortOrder="50" showInDefault="1">
+            <group id="auto_refund" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1">
                 <label>Auto Refund For Out Of Stock Orders</label>
                 <field id="active" translate="label tooltip" type="select" sortOrder="10" showInDefault="1">
                     <label>Enable</label>
@@ -301,11 +301,47 @@
                         <field id="active">1</field>
                     </depends>
                 </field>
-                <field id="email_template" translate="label" type="select" sortOrder="40" showInDefault="1" canRestore="1">
+                <field id="copy_to" translate="label" type="text" sortOrder="40" showInDefault="1">
+                    <label>Email Copy To</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <comment>Comma-separated.</comment>
+                    <validate>validate-email</validate>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="email_template" translate="label" type="select" sortOrder="50" showInDefault="1" canRestore="1">
                     <label>Email Template</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
                     <depends>
                         <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="active_to_customer" translate="label tooltip" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Enable Email To Customer</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <tooltip>When an automatic refund is issued due to out-of-stock item(s),
+                        you can choose to activate this option which will trigger an email
+                        notification to be sent to your customer.
+                    </tooltip>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="to_customer_sender" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Email To Customer Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="active_to_customer">1</field>
+                    </depends>
+                </field>
+                <field id="to_customer_template" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Email To Customer Template</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="active_to_customer">1</field>
                     </depends>
                 </field>
             </group>

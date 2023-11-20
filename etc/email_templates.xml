@@ -24,4 +24,10 @@
               type="html"
               module="Worldline_PaymentCore"
               area="adminhtml"/>
+    <template id="worldline_order_creator_auto_refund_to_customer_template"
+              label="Auto Refund To Customer"
+              file="auto_refund_to_customer.html"
+              type="html"
+              module="Worldline_PaymentCore"
+              area="frontend"/>
 </config>

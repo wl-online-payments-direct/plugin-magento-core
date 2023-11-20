@@ -15,6 +15,7 @@ use Worldline\PaymentCore\Api\SessionDataManagerInterface;
 use Worldline\PaymentCore\Api\SurchargingQuoteManagerInterface;
 use Worldline\PaymentCore\Model\Order\CanPlaceOrderContextManager;
 use Worldline\PaymentCore\Model\PaymentOrderManager\PaymentService;
+use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
 /**
  * Validate payment information and create an order
@@ -125,6 +126,10 @@ class PendingOrderManager implements PendingOrderManagerInterface
         $quote->collectTotals();
 
         $statusCode = (int)$paymentResponse->getStatusOutput()->getStatusCode();
+        if ($statusCode === TransactionStatusInterface::WAITING_AUTHENTICATION) {
+            return true;
+        }
+
         $context = $this->canPlaceOrderContextManager->createContext($quote, $statusCode);
         if ($this->canPlaceOrderContextManager->canPlaceOrder($context)) {
             $this->paymentDataManager->savePaymentData($paymentResponse);

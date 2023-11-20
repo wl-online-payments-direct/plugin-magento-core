@@ -16,6 +16,9 @@
     <preference type="Worldline\PaymentCore\Model\PendingOrderManager" for="Worldline\PaymentCore\Api\PendingOrderManagerInterface" />
     <preference type="Worldline\PaymentCore\Model\CacheIdentifier" for="Worldline\PaymentCore\Api\Data\CacheIdentifierInterface" />
 
+    <preference type="Worldline\PaymentCore\Model\EmailSendingList" for="Worldline\PaymentCore\Api\Data\EmailSendingListInterface" />
+    <preference type="Worldline\PaymentCore\Model\EmailSendingListRepository" for="Worldline\PaymentCore\Api\EmailSendingListRepositoryInterface" />
+
     <preference type="Worldline\PaymentCore\Model\OrderState\OrderState" for="Worldline\PaymentCore\Api\Data\OrderStateInterface" />
     <preference type="Worldline\PaymentCore\Model\OrderState\OrderStateManager" for="Worldline\PaymentCore\Api\OrderStateManagerInterface" />
 

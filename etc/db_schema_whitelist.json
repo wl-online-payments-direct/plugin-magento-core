@@ -136,5 +136,15 @@
             "WORLDLINE_SURCHARGING_CREDITMEMO_QUOTE_ID_QUOTE_ENTITY_ID": true,
             "WORLDLINE_SURCHARGING_CREDITMEMO_CREDITMEMO_ID_SALES_CREDITMEMO_ENTITY_ID": true
         }
+    },
+    "worldline_email_sending_list": {
+        "column": {
+            "entity_id": true,
+            "increment_id": true,
+            "level": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
     }
 }
