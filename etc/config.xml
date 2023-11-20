@@ -40,6 +40,9 @@
                 <recipient>general</recipient>
                 <sender>general</sender>
                 <email_template>worldline_order_creator_auto_refund_email_template</email_template>
+                <active_to_customer>0</active_to_customer>
+                <to_customer_sender>general</to_customer_sender>
+                <to_customer_template>worldline_order_creator_auto_refund_to_customer_template</to_customer_template>
             </auto_refund>
         </worldline_order_creator>
         <worldline_debug>

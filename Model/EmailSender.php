@@ -11,6 +11,8 @@ use Magento\Framework\Mail\TransportInterfaceFactory;
 use Magento\Framework\Translate\Inline\StateInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Psr\Log\LoggerInterface;
+use Worldline\PaymentCore\Api\Data\EmailSendingListInterface;
+use Worldline\PaymentCore\Api\EmailSendingListRepositoryInterface;
 use Worldline\PaymentCore\Model\Config\OrderSynchronizationConfig;
 
 class EmailSender
@@ -45,13 +47,19 @@ class EmailSender
      */
     private $mailTransportFactory;
 
+    /**
+     * @var EmailSendingListRepositoryInterface
+     */
+    private $emailSendingListRepository;
+
     public function __construct(
         StateInterface $inlineTranslation,
         TransportBuilder $transportBuilder,
         LoggerInterface $logger,
         OrderSynchronizationConfig $orderSynchronizationConfig,
         MessageInterfaceFactory $messageFactory,
-        TransportInterfaceFactory $mailTransportFactory
+        TransportInterfaceFactory $mailTransportFactory,
+        EmailSendingListRepositoryInterface $emailSendingListRepository
     ) {
         $this->inlineTranslation = $inlineTranslation;
         $this->transportBuilder = $transportBuilder;
@@ -59,12 +67,19 @@ class EmailSender
         $this->orderSynchronizationConfig = $orderSynchronizationConfig;
         $this->messageFactory = $messageFactory;
         $this->mailTransportFactory = $mailTransportFactory;
+        $this->emailSendingListRepository = $emailSendingListRepository;
     }
 
     public function sendPaymentRefusedEmail(CartInterface $quote): bool
     {
         $storeId = (int)$quote->getStoreId();
         if (!$this->orderSynchronizationConfig->isPaymentRefusedEmailsEnabled($storeId)) {
+            return false;
+        }
+
+        $incrementId = (string)$quote->getReservedOrderId();
+
+        if ($this->emailSendingListRepository->count($incrementId, EmailSendingListInterface::PAYMENT_REFUSED) > 0) {
             return false;
         }
 
@@ -76,7 +91,14 @@ class EmailSender
         $sendFrom = $this->orderSynchronizationConfig->getRefusedPaymentSender($storeId);
         $emailTemplate = $this->orderSynchronizationConfig->getRefusedPaymentTemplate($storeId);
 
-        return $this->sendEmail($emailTemplate, $storeId, $sendFrom, $sendTo);
+        $this->sendEmail($emailTemplate, $storeId, $sendFrom, $sendTo);
+
+        $this->emailSendingListRepository->setQuoteToEmailList(
+            $incrementId,
+            EmailSendingListInterface::PAYMENT_REFUSED
+        );
+
+        return true;
     }
 
     public function sendEmail(

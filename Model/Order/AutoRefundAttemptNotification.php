@@ -59,7 +59,7 @@ class AutoRefundAttemptNotification
             0,
             $this->autoRefundConfigProvider->getSender(),
             $recipient['email'] ?? '',
-            '',
+            $this->autoRefundConfigProvider->getEmailCopyTo(),
             $this->getVariables($quote),
             ['area' => Area::AREA_ADMINHTML, 'store' => 0]
         );

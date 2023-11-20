@@ -11,6 +11,7 @@ use Worldline\PaymentCore\Api\QuoteResourceInterface;
 use Worldline\PaymentCore\Api\Service\Refund\RefundRequestDataBuilderInterface;
 use Worldline\PaymentCore\Model\Config\AutoRefundConfigProvider;
 use Worldline\PaymentCore\Model\Order\AutoRefundAttemptNotification;
+use Worldline\PaymentCore\Model\Order\AutoRefundToCustomerNotification;
 use Worldline\PaymentCore\Service\Refund\CreateRefundService;
 
 class OutStockRefunder
@@ -53,6 +54,11 @@ class OutStockRefunder
      */
     private $autoRefundAttemptNotification;
 
+    /**
+     * @var AutoRefundToCustomerNotification
+     */
+    private $autoRefundToCustomerNotification;
+
     public function __construct(
         StockStateInterface $stockState,
         QuoteResourceInterface $quoteResource,
@@ -60,7 +66,8 @@ class OutStockRefunder
         PaymentIdFormatterInterface $paymentIdFormatter,
         AutoRefundConfigProvider $autoRefundConfigProvider,
         RefundRequestDataBuilderInterface $refundRequestDataBuilder,
-        AutoRefundAttemptNotification $autoRefundAttemptNotification
+        AutoRefundAttemptNotification $autoRefundAttemptNotification,
+        AutoRefundToCustomerNotification $autoRefundToCustomerNotification
     ) {
         $this->stockState = $stockState;
         $this->quoteResource = $quoteResource;
@@ -69,6 +76,7 @@ class OutStockRefunder
         $this->autoRefundConfigProvider = $autoRefundConfigProvider;
         $this->refundRequestDataBuilder = $refundRequestDataBuilder;
         $this->autoRefundAttemptNotification = $autoRefundAttemptNotification;
+        $this->autoRefundToCustomerNotification = $autoRefundToCustomerNotification;
     }
 
     public function refundTransaction(string $incrementId): void
@@ -89,6 +97,7 @@ class OutStockRefunder
         $refundRequest = $this->refundRequestDataBuilder->build((float)$quote->getGrandTotal(), $currency);
         $storeId = (int)$quote->getStoreId();
         $this->autoRefundAttemptNotification->notify($quote);
+        $this->autoRefundToCustomerNotification->notify($quote);
         $this->createRefundService->execute($paymentId, $refundRequest, $storeId);
 
         $quote->setReservedOrderId(null);

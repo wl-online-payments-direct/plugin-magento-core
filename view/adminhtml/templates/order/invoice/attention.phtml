@@ -12,7 +12,8 @@ require([
 ], function ($, confirm) {
     confirm({
         title: $.mage.__('Attention!'),
-        content: $.mage.__('If a you tries to do a capture for less than the full authorized amount, you will not be able to capture the remaining amount.')
+        content: $.mage.__('If a you tries to do a capture for less than the full authorized amount, ' +
+            'you will not be able to capture the remaining amount.')
     });
 });
 script;

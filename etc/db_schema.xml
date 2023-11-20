@@ -146,4 +146,12 @@
                     referenceColumn="entity_id"
                     onDelete="NO ACTION"/>
     </table>
+    <table name="worldline_email_sending_list" resource="default" engine="innodb" comment="Worldline Email Sending List">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="varchar" name="increment_id" nullable="false" length="32" comment="Increment Order ID"/>
+        <column xsi:type="varchar" name="level" nullable="true" length="32" comment="Level"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
 </schema>
