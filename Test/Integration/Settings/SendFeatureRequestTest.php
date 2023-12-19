@@ -50,6 +50,7 @@ class SendFeatureRequestTest extends TestCase
             'pspid' => 'test_pspid',
             'store_id' => '1',
             'company_name' => 'test_company',
+            'contact_email' => 'test@gmail.com',
             'body_message' => 'test_message'
         ];
 

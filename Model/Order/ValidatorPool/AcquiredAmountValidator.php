@@ -7,6 +7,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
 use Worldline\PaymentCore\Api\Service\GetPaymentDetailsServiceInterface;
 use Worldline\PaymentCore\Model\Order\CanPlaceContext;
+use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
 
 /**
  * Validate if acquired amount is valid for placing order
@@ -43,6 +44,7 @@ class AcquiredAmountValidator implements PlaceOrderValidatorInterface
         if (!$paymentOutput->getAcquiredAmount()
             || $paymentOutput->getSurchargeSpecificOutput()
             || $paymentOutput->getSepaDirectDebitPaymentMethodSpecificOutput()
+            || $response->getStatusOutput()->getStatusCode() === TransactionStatusInterface::CAPTURE_REQUESTED
         ) {
             return;
         }

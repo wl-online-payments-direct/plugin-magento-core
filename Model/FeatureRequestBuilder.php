@@ -15,7 +15,7 @@ use Worldline\PaymentCore\Model\Config\WorldlineConfig;
  */
 class FeatureRequestBuilder
 {
-    private const SEND_TO = 'DL_ShoppingCarts@ingenico.com';
+    private const SEND_TO = 'dl-dl_shoppingcarts@worldline.com';
     private const EXTENSION_NAME = 'Worldline_PaymentCore';
 
     /**
@@ -57,8 +57,13 @@ class FeatureRequestBuilder
         $this->productMetadata = $productMetadata;
     }
 
-    public function build(int $storeId, string $companyName, string $message, ?string $pspid = null): void
-    {
+    public function build(
+        int $storeId,
+        string $companyName,
+        string $message,
+        string $contactEmail,
+        ?string $pspid = null
+    ): void {
         if (!$this->authSession->getUser()) {
             return;
         }
@@ -67,7 +72,6 @@ class FeatureRequestBuilder
             $pspid = $this->worldlineConfig->getMerchantId($storeId);
         }
 
-        $adminUserEmail = (string)$this->authSession->getUser()->getEmail();
         $adminUserName = (string)$this->authSession->getUser()->getUserName();
         $magentoVersion = (string)$this->productMetadata->getVersion();
         $pluginVersion = (string)$this->packageInfo->getVersion(self::EXTENSION_NAME);
@@ -76,8 +80,9 @@ class FeatureRequestBuilder
             . __('Message: %1', $message) . "\n"
             . __('PSPID: %1', $pspid) . "\n"
             . __('Magento version: %1', $magentoVersion) . "\n"
-            . __('Plugin version: %1', $pluginVersion);
+            . __('Plugin version: %1', $pluginVersion) . "\n"
+            . __('Contact email: %1', $contactEmail) . "\n";
 
-        $this->emailSender->sendEmailWithoutTemplate($emailBody, $adminUserEmail, $adminUserName, self::SEND_TO);
+        $this->emailSender->sendEmailWithoutTemplate($emailBody, $contactEmail, $adminUserName, self::SEND_TO);
     }
 }

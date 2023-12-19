@@ -232,3 +232,6 @@ Result,Risultato
 "Your order %reserved_order_id has been refunded","Il tuo ordine %reserved_order_id è stato rimborsato"
 "You recently made a payment for order %reserved_order_id. Your payment was refunded due to a lack of stock on one or more items.","Ha recentemente effettuato un pagamento per l'ordine %reserved_order_id. Il suo pagamento è stato rimborsato a causa della mancanza di stock su uno o più articoli."
 "Dear %customer_name,","Gentile %customer_name,"
+"New feature suggestion for Magento","Nuovo suggerimento di funzionalità per Magento"
+"Contact email","Contatto email"
+"Leave your email address in case we need to get back to you for more information","Lascia il tuo indirizzo email nel caso avessimo bisogno di ricontattarti per ulteriori informazioni"

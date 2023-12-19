@@ -62,10 +62,11 @@ class SendFeatureRequest extends Action implements HttpPostActionInterface
         $pspid = $this->getRequest()->getParam('pspid');
         $storeId = (int)$this->getRequest()->getParam('store_id');
         $companyName = $this->getRequest()->getParam('company_name');
+        $contactEmail = $this->getRequest()->getParam('contact_email');
         $bodyMessage = $this->getRequest()->getParam('body_message');
 
         try {
-            $this->featureRequestBuilder->build($storeId, $companyName, $bodyMessage, $pspid);
+            $this->featureRequestBuilder->build($storeId, $companyName, $bodyMessage, $contactEmail, $pspid);
             $result['success'] = true;
         } catch (LocalizedException $e) {
             $result['errorMessage'] = $e->getMessage();

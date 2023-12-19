@@ -257,3 +257,6 @@ Yes,Yes
 "Your order %reserved_order_id has been refunded","Your order %reserved_order_id has been refunded"
 "You recently made a payment for order %reserved_order_id. Your payment was refunded due to a lack of stock on one or more items.","You recently made a payment for order %reserved_order_id. Your payment was refunded due to a lack of stock on one or more items."
 "Dear %customer_name,","Dear %customer_name,"
+"New feature suggestion for Magento","New feature suggestion for Magento"
+"Contact email","Contact email"
+"Leave your email address in case we need to get back to you for more information","Leave your email address in case we need to get back to you for more information"

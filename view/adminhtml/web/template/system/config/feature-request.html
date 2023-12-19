@@ -32,6 +32,17 @@
                        data-bind="attr: {placeholder: $t('Your company name')}">
             </div>
         </div>
+        <div class="field required contact-email">
+            <label class="label"><span data-bind="i18n: 'Contact email'"></span></label>
+            <div class="control">
+                <input class="input-text"
+                       type="text"
+                       id="contact-email"
+                       name="contact_email"
+                       data-validate="{required:true, 'validate-email':true}"
+                       data-bind="attr: {placeholder: $t('Leave your email address in case we need to get back to you for more information')}">
+            </div>
+        </div>
         <div class="field required body-message">
             <label class="label"><span data-bind="i18n: 'Message'"></span></label>
             <div class="control">
