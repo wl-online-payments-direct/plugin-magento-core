@@ -34,18 +34,18 @@ class GetPaymentProductsServiceResponse
             "allowsTokenization": false,
             "displayHints": {
                 "displayOrder": 0,
-                "label": "alipay",
-                "logo": "https:\/\/assets.test.cdn.v-psp.com\/s2s\/dda64ecf143c424d6523\/images\/pm\/alipay.gif"
+                "label": "alipay_plus",
+                "logo": "https:\/\/assets.test.cdn.v-psp.com\/s2s\/dda64ecf143c424d6523\/images\/pm\/alipay_plus.gif"
             },
             "displayHintsList": [
                 {
                     "displayOrder": 0,
-                    "label": "alipay",
-                    "logo": "https:\/\/assets.test.cdn.v-psp.com\/s2s\/dda64ecf143c424d6523\/images\/pm\/alipay.gif"
+                    "label": "alipay_plus",
+                    "logo": "https:\/\/assets.test.cdn.v-psp.com\/s2s\/dda64ecf143c424d6523\/images\/pm\/alipay_plus.gif"
                 }
             ],
             "fields": [],
-            "id": 861,
+            "id": 5405,
             "paymentMethod": "redirect",
             "usesRedirectionTo3rdParty": true
         },
@@ -581,7 +581,7 @@ class GetPaymentProductsServiceResponse
                 }
             ],
             "fields": [],
-            "id": 863,
+            "id": 5404,
             "paymentMethod": "redirect",
             "usesRedirectionTo3rdParty": true
         }

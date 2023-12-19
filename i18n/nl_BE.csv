@@ -233,3 +233,6 @@ Result,Resultaat
 "You recently made a payment for order %reserved_order_id. Your payment was refunded due to a lack of stock on one or more items.","U heeft onlangs een betaling gedaan voor bestelling %reserved_order_id. Uw betaling is terugbetaald vanwege een gebrek aan voorraad op één of meerdere items."
 "Dear %customer_name,","Beste %customer_name,"
 "Failed Orders Notifications","Mislukte bestellingen meldingen"
+"New feature suggestion for Magento","Suggestie voor nieuwe functies voor Magento"
+"Contact email","Contact email"
+"Leave your email address in case we need to get back to you for more information","Laat uw e-mailadres achter voor het geval we contact met u opnemen voor meer informatie"

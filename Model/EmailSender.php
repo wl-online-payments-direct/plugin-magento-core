@@ -147,7 +147,7 @@ class EmailSender
             $message = $this->messageFactory->create();
             $message->setFromAddress($from, $userName);
             $message->addTo($addTo);
-            $message->setSubject(__('Request a new feature'));
+            $message->setSubject(__('New feature suggestion for Magento'));
             $message->setBodyHtml($body);
             $transport = $this->mailTransportFactory->create(['message' => $message]);
             $transport->sendMessage();

@@ -167,9 +167,9 @@
 "WorldLine refund has failed. Please contact the provider.","Le remboursement Worldline a échoué. Veuillez contacter le prestataire."
 "Yes","Oui"
 "Your company name","Le nom de votre société"
-"Your order is still being processed and you will receive a confirmation e-mail.","Votre commande est encore en cours de traîtement, et vous allez recevoir un email de confirmation."
+"Your order is still being processed and you will receive a confirmation e-mail.","Votre commande est encore en cours de traitement, et vous allez recevoir un email de confirmation."
 "Your payment couldn't be completed, please try again","Votre paiement n'a pas pu être confirmé, veuillez réessayer"
-"Your payment is being processed","Votre paiement est en cours de traîtement"
+"Your payment is being processed","Votre paiement est en cours de traitement"
 Authentication status,Statut d'authentification
 Exemption,Exonération
 Liability,Responsabilité
@@ -233,3 +233,6 @@ Result,Résultat
 "Your order %reserved_order_id has been refunded","Votre commande %reserved_order_id a été remboursée"
 "You recently made a payment for order %reserved_order_id. Your payment was refunded due to a lack of stock on one or more items.","Vous avez récemment effectué un paiement pour la commande %reserved_order_id. Votre paiement a été remboursé en raison d'un manque de stock sur un ou plusieurs articles."
 "Dear %customer_name,","Cher %customer_name,"
+"New feature suggestion for Magento","Suggestion de nouvelles fonctionnalités pour Magento"
+"Contact email","Email du contact"
+"Leave your email address in case we need to get back to you for more information","Laissez votre adresse e-mail au cas où nous aurions besoin de vous répondre pour plus d'informations"

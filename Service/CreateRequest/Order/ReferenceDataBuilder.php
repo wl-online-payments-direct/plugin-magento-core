@@ -23,8 +23,10 @@ class ReferenceDataBuilder implements ReferenceDataBuilderInterface
 
     public function build(CartInterface $quote): OrderReferences
     {
+        /** @var OrderReferences $references */
         $references = $this->orderReferencesFactory->create();
         $references->setMerchantReference($quote->getReservedOrderId());
+
         return $references;
     }
 }

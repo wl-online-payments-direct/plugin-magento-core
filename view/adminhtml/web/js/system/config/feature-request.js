@@ -43,6 +43,7 @@ define([
                     store_id: this.storeId,
                     pspid: $('#pspid').val(),
                     company_name: $('#company-name').val(),
+                    contact_email: $('#contact-email').val(),
                     body_message: $('#body-message').val()
                 }
             }).done($.proxy(function (response) {
@@ -58,6 +59,7 @@ define([
             })).always($.proxy(function () {
                 $('#pspid').val('');
                 $('#company-name').val('');
+                $('#contact-email').val('');
                 $('#body-message').val('');
             }, this));
         },

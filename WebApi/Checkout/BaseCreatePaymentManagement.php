@@ -117,14 +117,15 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         PaymentInterface $paymentMethod,
         AddressInterface $billingAddress = null
     ): string {
-        $this->validateAddress($quote->getShippingAddress());
-        $this->validateAddress($quote->getBillingAddress());
+        if (!$quote->isVirtual()) {
+            $this->validateAddress($quote->getShippingAddress());
+            $this->validateAddress($quote->getBillingAddress());
+        }
 
         $this->paymentInformationManagement->savePaymentInformation($quote->getId(), $paymentMethod, $billingAddress);
 
         if (!$quote->getCustomerIsGuest()) {
             if ($quote->getCustomerId()) {
-                $this->customerQuotePreparer->prepare($quote);
                 $this->customerManagement->validateAddresses($quote);
             }
         }

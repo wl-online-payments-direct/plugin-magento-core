@@ -23,8 +23,6 @@ interface PaymentProductsDetailsInterface
     public const SEPA_DIRECT_DEBIT_PRODUCT_ID = 771;
     public const IDEAL_PRODUCT_ID = 809;
     public const PAYPAL_PRODUCT_ID = 840;
-    public const ALIPAY_PRODUCT_ID = 861;
-    public const WECHAT_PAY_PRODUCT_ID = 863;
     public const BANCONTACT_PRODUCT_ID = 3012;
     public const GIFTCARD_LIMONETIK_ID = 3111;
     public const ILLICADO_PRODUCT_ID = 3112;
@@ -39,8 +37,11 @@ interface PaymentProductsDetailsInterface
     public const ONEY_3X_4X_PRODUCT_ID = 5110;
     public const ONEY_FINANCEMENT_LONG_PRODUCT_ID = 5125;
     public const MEALVOUCHERS_PRODUCT_ID = 5402;
+    public const WECHAT_PAY_PRODUCT_ID = 5404;
+    public const ALIPAY_PLUS_PRODUCT_ID = 5405;
     public const EPS_PRODUCT_ID = 5406;
     public const TWINT_PRODUCT_ID = 5407;
+    public const BANK_TRANSFER_PRODUCT_ID = 5408;
     public const MULTIBANCO_PRODUCT_ID = 5500;
     public const ONEY_BRANDED_GIFT_CARD_PRODUCT_ID = 5600;
     public const INTERSOLVE_PRODUCT_ID = 5700;
@@ -109,11 +110,11 @@ interface PaymentProductsDetailsInterface
         ],
         self::PAYPAL_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_E_WALLET,
-            'label' => 'Paypal'
+            'label' => 'PayPal'
         ],
-        self::ALIPAY_PRODUCT_ID => [
+        self::ALIPAY_PLUS_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_MOBILE,
-            'label' => 'Alipay'
+            'label' => 'Alipay+'
         ],
         self::WECHAT_PAY_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_MOBILE,
@@ -203,5 +204,9 @@ interface PaymentProductsDetailsInterface
             'group' => self::PAYMENT_GROUP_GIFT_CARD,
             'label' => 'Intersolve'
         ],
+        self::BANK_TRANSFER_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_REALTIME_BANKING,
+            'label' => 'Bank Transfer by Worldline'
+        ]
     ];
 }

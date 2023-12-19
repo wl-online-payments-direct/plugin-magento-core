@@ -5,6 +5,7 @@ namespace Worldline\PaymentCore\Model\Transaction;
 
 /**
  * Interface container for worldline statuses
+ * @link https://docs.direct.worldline-solutions.com/en/integration/api-developer-guide/statuses
  */
 interface TransactionStatusInterface
 {
@@ -27,4 +28,7 @@ interface TransactionStatusInterface
 
     // Waiting payment statuses
     public const WAITING_AUTHENTICATION = 46;
+    public const PAYMENT_PROCESSING = 91;
+    public const PAYMENT_UNCERTAIN = 92;
+    public const BEING_PROCESSED = 99;
 }
