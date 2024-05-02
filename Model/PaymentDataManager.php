@@ -82,7 +82,7 @@ class PaymentDataManager implements PaymentDataManagerInterface
     {
         $wlPaymentId = $this->paymentIdFormatter->validateAndFormat($paymentResponse->getId());
         $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($wlPaymentId);
-        if (!$quote->getId()) {
+        if (!$quote || !$quote->getId()) {
             return false;
         }
 

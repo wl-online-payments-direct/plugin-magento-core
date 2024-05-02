@@ -103,6 +103,9 @@ class FailedOrderCreationNotification
     private function getVariables(string $incrementId, string $errorMessage, string $space): array
     {
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+        if (!$quote) {
+            return [];
+        }
 
         return [
             'store_id' => $quote->getStoreId(),

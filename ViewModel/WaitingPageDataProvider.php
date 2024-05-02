@@ -121,7 +121,7 @@ class WaitingPageDataProvider implements ArgumentInterface
         return $this->request->getParam('incrementId', '');
     }
 
-    public function getQuote(): CartInterface
+    public function getQuote(): ?CartInterface
     {
         return $this->quoteResource->getQuoteByReservedOrderId($this->getIncrementId());
     }
@@ -155,9 +155,14 @@ class WaitingPageDataProvider implements ArgumentInterface
 
     public function getSurchargeAmount(): float
     {
-        $quoteId = (int)$this->getQuote()->getId();
+        $quote = $this->getQuote();
+        if (!$quote) {
+            return 0.0;
+        }
+
+        $quoteId = (int)$quote->getId();
         $surcharging = $this->surchargingRepository->getByQuoteId($quoteId);
-        $paymentMethod = str_replace('_vault', '', (string)$this->getQuote()->getPayment()->getMethod());
+        $paymentMethod = str_replace('_vault', '', (string)$quote->getPayment()->getMethod());
         if ($paymentMethod !== $surcharging->getPaymentMethod()) {
             return 0.0;
         }

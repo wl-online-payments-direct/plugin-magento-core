@@ -73,6 +73,10 @@ class RequestProcessor
         }
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+        if (!$quote) {
+            return null;
+        }
+
         return (int) $quote->getStoreId();
     }
 

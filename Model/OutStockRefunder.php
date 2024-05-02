@@ -86,6 +86,10 @@ class OutStockRefunder
         }
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+        if (!$quote) {
+            return;
+        }
+
         if (!$this->isOutStockReason($quote)) {
             return;
         }

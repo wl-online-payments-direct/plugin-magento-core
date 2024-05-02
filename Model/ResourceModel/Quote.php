@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\ResourceModel;
 
+use Psr\Log\LoggerInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory as QuoteCollectionFactory;
@@ -28,6 +29,11 @@ class Quote implements QuoteResourceInterface
     private $cartRepository;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var array
      */
     private $quotes = [];
@@ -35,14 +41,16 @@ class Quote implements QuoteResourceInterface
     public function __construct(
         QuotePaymentCollectionFactory $quotePaymentCollectionFactory,
         QuoteCollectionFactory $quoteCollectionFactory,
-        CartRepositoryInterface $cartRepository
+        CartRepositoryInterface $cartRepository,
+        LoggerInterface $logger
     ) {
         $this->quotePaymentCollectionFactory = $quotePaymentCollectionFactory;
         $this->quoteCollectionFactory = $quoteCollectionFactory;
         $this->cartRepository = $cartRepository;
+        $this->logger = $logger;
     }
 
-    public function getQuoteByReservedOrderId(string $reservedOrderId): CartInterface
+    public function getQuoteByReservedOrderId(string $reservedOrderId): ?CartInterface
     {
         if (empty($this->quotes[$reservedOrderId])) {
             // collection because the refund doesn't work in multishop context
@@ -50,6 +58,9 @@ class Quote implements QuoteResourceInterface
             $collection->addFieldToFilter('reserved_order_id', ['eq' => $reservedOrderId]);
             $collection->getSelect()->limit(1);
             $quote = $collection->getFirstItem();
+            if ($quote->isEmpty()) {
+                return null;
+            }
             // need for load additional attributes
             $loadedQuote = $this->cartRepository->get($quote->getId());
             $this->quotes[$reservedOrderId] = $loadedQuote;
@@ -58,13 +69,17 @@ class Quote implements QuoteResourceInterface
         return $this->quotes[$reservedOrderId];
     }
 
-    public function getQuoteByWorldlinePaymentId(string $paymentId): CartInterface
+    public function getQuoteByWorldlinePaymentId(string $paymentId): ?CartInterface
     {
         $collection = $this->quotePaymentCollectionFactory->create();
         $collection->addFieldToFilter('additional_information', ['like' => '%' . $paymentId . '%']);
         $collection->setOrder('payment_id');
         $collection->getSelect()->limit(1);
         $quotePayment = $collection->getFirstItem();
+        if ($quotePayment->isEmpty()) {
+            $this->logger->warning('No quote_payment entity with payment_id: ' . $paymentId);
+            return null;
+        }
 
         $collection = $this->quoteCollectionFactory->create();
         $collection->addFieldToFilter('entity_id', ['eq' => $quotePayment->getQuoteId()]);

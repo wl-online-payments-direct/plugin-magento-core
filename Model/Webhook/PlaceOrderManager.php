@@ -12,6 +12,7 @@ use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
 use Worldline\PaymentCore\Api\QuoteResourceInterface;
 use Worldline\PaymentCore\Api\Webhook\PlaceOrderManagerInterface;
 use Worldline\PaymentCore\Model\Order\CanPlaceValidator;
+use Worldline\PaymentCore\Model\QuotePayment\QuotePaymentRepository;
 
 /**
  * Helper for a place order processor
@@ -38,16 +39,23 @@ class PlaceOrderManager implements PlaceOrderManagerInterface
      */
     private $paymentIdFormatter;
 
+    /**
+     * @var QuotePaymentRepository
+     */
+    private $quotePaymentRepository;
+
     public function __construct(
         QuoteResourceInterface $quoteResource,
         CanPlaceValidator $canPlaceValidator,
         CanPlaceOrderContextInterfaceFactory $canPlaceOrderContextFactory,
-        PaymentIdFormatterInterface $paymentIdFormatter
+        PaymentIdFormatterInterface $paymentIdFormatter,
+        QuotePaymentRepository $quotePaymentRepository
     ) {
         $this->quoteResource = $quoteResource;
         $this->canPlaceValidator = $canPlaceValidator;
         $this->canPlaceOrderContextFactory = $canPlaceOrderContextFactory;
         $this->paymentIdFormatter = $paymentIdFormatter;
+        $this->quotePaymentRepository = $quotePaymentRepository;
     }
 
     public function getValidatedQuote(WebhooksEvent $webhookEvent): ?CartInterface
@@ -56,9 +64,15 @@ class PlaceOrderManager implements PlaceOrderManagerInterface
         $paymentResponse = $webhookEvent->getPayment();
         $paymentId = $this->paymentIdFormatter->validateAndFormat((string)$paymentResponse->getId());
         $quote = $this->quoteResource->getQuoteByWorldlinePaymentId($paymentId);
-        if (!$quote->getId()) {
+        if (!$quote || !$quote->getId()) {
             return null;
         }
+
+        $payment = $quote->getPayment();
+        $payment->setAdditionalInformation('payment_id', $paymentId);
+        $quotePayment = $this->quotePaymentRepository->getByPaymentIdentifier($paymentId);
+        $payment->setMethod($quotePayment->getMethod());
+        $this->quoteResource->save($quote);
 
         if (!$this->isValid($paymentResponse, $quote)) {
             return null;
