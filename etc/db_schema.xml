@@ -154,4 +154,21 @@
             <column name="entity_id"/>
         </constraint>
     </table>
+    <table name="worldline_quote_payment_information" resource="default" engine="innodb" comment="Worldline Quote Payment Info">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="int" name="payment_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Payment ID"/>
+        <column xsi:type="varchar" name="payment_identifier" nullable="true" length="255" comment="Payment Identifier"/>
+        <column xsi:type="varchar" name="method" nullable="true" length="255" comment="Method"/>
+        <column xsi:type="text" name="device_data" comment="Device Data"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign"
+                    referenceId="WORLDLINE_QUOTE_PAYMENT_PAYMENT_ID_QUOTE_PAYMENT_PAYMENT_ID"
+                    table="worldline_quote_payment_information"
+                    column="payment_id"
+                    referenceTable="quote_payment"
+                    referenceColumn="payment_id"
+                    onDelete="NO ACTION"/>
+    </table>
 </schema>

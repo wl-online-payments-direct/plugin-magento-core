@@ -10,10 +10,13 @@ use Magento\Quote\Api\Data\AddressInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Quote\Model\CustomerManagement;
+use Worldline\PaymentCore\Api\Data\QuotePaymentInterfaceFactory;
+use Worldline\PaymentCore\Api\QuotePaymentRepositoryInterface;
 use Worldline\PaymentCore\Api\QuoteRestorationInterface;
 use Worldline\PaymentCore\Api\WebApi\Checkout\BaseCreatePaymentManagementInterface;
 use Worldline\PaymentCore\Api\WebApi\Checkout\QuoteManagerInterface;
 use Worldline\PaymentCore\Model\DataAssigner\DataAssignerInterface;
+use Worldline\PaymentCore\Model\QuotePayment\QuotePaymentRepository;
 
 class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterface
 {
@@ -43,9 +46,14 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
     private $customerManagement;
 
     /**
-     * @var CustomerQuotePreparer
+     * @var QuotePaymentInterfaceFactory
      */
-    private $customerQuotePreparer;
+    private $wlQuotePaymentFactory;
+
+    /**
+     * @var QuotePaymentRepository
+     */
+    private $wlQuotePaymentRepository;
 
     /**
      * @var DataAssignerInterface[]
@@ -58,7 +66,8 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         PaymentInformationManagementInterface $paymentInformationManagement,
         QuoteRestorationInterface $quoteRestoration,
         CustomerManagement $customerManagement,
-        CustomerQuotePreparer $customerQuotePreparer,
+        QuotePaymentInterfaceFactory $wlQuotePaymentFactory,
+        QuotePaymentRepositoryInterface $wlQuotePaymentRepository,
         array $dataAssignerPool = []
     ) {
         $this->quoteManager = $quoteManager;
@@ -66,7 +75,8 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         $this->paymentInformationManagement = $paymentInformationManagement;
         $this->quoteRestoration = $quoteRestoration;
         $this->customerManagement = $customerManagement;
-        $this->customerQuotePreparer = $customerQuotePreparer;
+        $this->wlQuotePaymentFactory = $wlQuotePaymentFactory;
+        $this->wlQuotePaymentRepository = $wlQuotePaymentRepository;
         $this->dataAssignerPool = $dataAssignerPool;
     }
 
@@ -138,13 +148,15 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
 
         $quote->reserveOrderId();
 
+        $wlQuotePayment = $this->wlQuotePaymentFactory->create();
         foreach ($this->dataAssignerPool as $dataAssigner) {
-            $dataAssigner->assign($quote->getPayment(), $additionalData);
+            $dataAssigner->assign($quote->getPayment(), $wlQuotePayment, $additionalData);
         }
 
         $quote->setIsActive(false);
         $this->quoteRestoration->preserveQuoteId((int)$quote->getId());
         $this->cartRepository->save($quote);
+        $this->wlQuotePaymentRepository->save($wlQuotePayment);
 
         return (string) $quote->getPayment()->getWlRedirectUrl();
     }

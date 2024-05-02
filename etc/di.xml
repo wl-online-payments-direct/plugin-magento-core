@@ -30,6 +30,9 @@
     <preference type="Worldline\PaymentCore\Model\Payment\PaymentManager" for="Worldline\PaymentCore\Api\PaymentManagerInterface" />
     <preference type="Worldline\PaymentCore\Model\Payment\PaymentIdFormatter" for="Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface" />
 
+    <preference type="Worldline\PaymentCore\Model\QuotePayment\QuotePayment" for="Worldline\PaymentCore\Api\Data\QuotePaymentInterface" />
+    <preference type="Worldline\PaymentCore\Model\QuotePayment\QuotePaymentRepository" for="Worldline\PaymentCore\Api\QuotePaymentRepositoryInterface" />
+
     <preference type="Worldline\PaymentCore\Model\Fraud\Fraud" for="Worldline\PaymentCore\Api\Data\FraudInterface" />
     <preference type="Worldline\PaymentCore\Model\Fraud\FraudRepository" for="Worldline\PaymentCore\Api\FraudRepositoryInterface" />
     <preference type="Worldline\PaymentCore\Model\Fraud\FraudManager" for="Worldline\PaymentCore\Api\FraudManagerInterface" />

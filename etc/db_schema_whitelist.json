@@ -146,5 +146,18 @@
         "constraint": {
             "PRIMARY": true
         }
+    },
+    "worldline_quote_payment_information": {
+        "column": {
+            "entity_id": true,
+            "payment_id": true,
+            "payment_identifier": true,
+            "method": true,
+            "device_data": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "WORLDLINE_QUOTE_PAYMENT_PAYMENT_ID_QUOTE_PAYMENT_PAYMENT_ID": true
+        }
     }
 }

@@ -113,6 +113,17 @@ class PendingOrderManager implements PendingOrderManagerInterface
         }
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+        if (!$quote) {
+            return false;
+        }
+
+        $payment = $quote->getPayment();
+        if (!$payment->getAdditionalInformation('payment_id')) {
+            $paymentIds = (array)$payment->getAdditionalInformation('payment_ids');
+            $payment->setAdditionalInformation('payment_id', end($paymentIds));
+            $this->quoteResource->save($quote);
+        }
+
         $paymentResponse = $this->paymentService->getPaymentResponse($quote->getPayment());
         if (!$paymentResponse) {
             return false;

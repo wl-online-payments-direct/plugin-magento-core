@@ -97,6 +97,10 @@ class RejectPaymentProcessor implements ProcessorInterface
             $this->refundRefusedProcessor->process($refundRequest);
 
             $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+            if (!$quote) {
+                return;
+            }
+
             $this->refundRefusedNotification->notify($quote, $incrementId, $creditmemoId);
         }
     }

@@ -84,6 +84,10 @@ class CreditmemoUpdater
         }
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
+        if (!$quote) {
+            return;
+        }
+
         $currentAmount = $this->amountFormatter->formatToInteger(
             (float) $grandTotal,
             (string) $quote->getCurrency()->getQuoteCurrencyCode()

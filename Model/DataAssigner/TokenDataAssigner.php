@@ -5,14 +5,18 @@ namespace Worldline\PaymentCore\Model\DataAssigner;
 
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
+use Worldline\PaymentCore\Api\Data\QuotePaymentInterface;
 
 /**
  * Assign token and customer id to the payment
  */
 class TokenDataAssigner implements DataAssignerInterface
 {
-    public function assign(PaymentInterface $payment, array $additionalInformation): void
-    {
+    public function assign(
+        PaymentInterface $payment,
+        QuotePaymentInterface $wlQuotePayment,
+        array $additionalInformation
+    ): void {
         if (!$publicToken = $additionalInformation['public_hash'] ?? false) {
             return;
         }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Service\CreateRequest\Order;
 
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Data\AddressAdapterInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Quote\Api\Data\CartInterface;
@@ -15,11 +16,17 @@ use OnlinePayments\Sdk\Domain\PersonalInformationFactory;
 use OnlinePayments\Sdk\Domain\PersonalNameFactory;
 use Worldline\PaymentCore\Api\Service\CreateRequest\Order\CustomerDataBuilderInterface;
 use Worldline\PaymentCore\Gateway\Request\Customer\DeviceDataBuilder;
+use Worldline\PaymentCore\Model\QuotePayment\QuotePaymentRepository;
 
 class CustomerDataBuilder implements CustomerDataBuilderInterface
 {
     public const GUEST_VALUE = 'none';
     public const CUSTOMER_VALUE = 'existing';
+
+    /**
+     * @var Json
+     */
+    private $jsonSerializer;
 
     /**
      * @var CustomerFactory
@@ -71,15 +78,23 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
      */
     private $deviceDataBuilder;
 
+    /**
+     * @var QuotePaymentRepository
+     */
+    private $wlQuotePaymentRepository;
+
     public function __construct(
+        Json $jsonSerializer,
         CustomerFactory $customerFactory,
         PersonalNameFactory $personalNameFactory,
         PersonalInformationFactory $personalInformationFactory,
         CompanyInformationFactory $companyInformationFactory,
         AddressFactory $addressFactory,
         ContactDetailsFactory $contactDetailsFactory,
-        DeviceDataBuilder $deviceDataBuilder
+        DeviceDataBuilder $deviceDataBuilder,
+        QuotePaymentRepository $wlQuotePaymentRepository
     ) {
+        $this->jsonSerializer = $jsonSerializer;
         $this->customerFactory = $customerFactory;
         $this->personalNameFactory = $personalNameFactory;
         $this->personalInformationFactory = $personalInformationFactory;
@@ -87,6 +102,7 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
         $this->addressFactory = $addressFactory;
         $this->contactDetailsFactory = $contactDetailsFactory;
         $this->deviceDataBuilder = $deviceDataBuilder;
+        $this->wlQuotePaymentRepository = $wlQuotePaymentRepository;
     }
 
     public function build(CartInterface $quote): Customer
@@ -156,8 +172,9 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
 
     private function addDeviceData(): void
     {
-        $deviceData = $this->payment->getAdditionalInformation('device') ?? [];
+        $deviceData = $this->payment->getAdditionalInformation('device_data') ?? [];
         $customerDevice = $this->deviceDataBuilder->build($deviceData);
         $this->customer->setDevice($customerDevice);
+        $this->payment->unsAdditionalInformation('device_data');
     }
 }

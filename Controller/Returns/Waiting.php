@@ -37,7 +37,7 @@ class Waiting extends Action implements HttpGetActionInterface
         }
 
         $quote = $this->quoteResource->getQuoteByReservedOrderId($incrementId);
-        if (!$quote->getId()) {
+        if (!$quote || !$quote->getId()) {
             return $redirect;
         }
 
