@@ -57,7 +57,7 @@
             </argument>
             <settings>
                 <statefull>
-                    <property name="applied" xsi:type="boolean">false</property>
+                    <property name="applied" xsi:type="boolean">true</property>
                 </statefull>
             </settings>
         </filters>

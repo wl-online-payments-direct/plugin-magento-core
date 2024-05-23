@@ -52,11 +52,13 @@ class ClientProvider implements ClientProviderInterface
 
     public function getClient(?int $storeId = null): Client
     {
-        if (!$this->client) {
-            $this->client = $this->clientFactory->create(['communicator' => $this->getCommunicator($storeId)]);
+        if (!isset($this->client[$storeId])) {
+            $this->client[$storeId] = $this->clientFactory->create(
+                ['communicator' => $this->getCommunicator($storeId)]
+            );
         }
 
-        return $this->client;
+        return $this->client[$storeId];
     }
 
     private function getCommunicator(?int $storeId = null): Communicator

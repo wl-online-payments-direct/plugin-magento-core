@@ -18,6 +18,9 @@ use Worldline\PaymentCore\Api\WebApi\Checkout\QuoteManagerInterface;
 use Worldline\PaymentCore\Model\DataAssigner\DataAssignerInterface;
 use Worldline\PaymentCore\Model\QuotePayment\QuotePaymentRepository;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterface
 {
     /**

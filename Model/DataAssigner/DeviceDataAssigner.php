@@ -49,6 +49,7 @@ class DeviceDataAssigner implements DataAssignerInterface
              ],
          ];
 
+        $payment->setAdditionalInformation('payment_id', '');
         $payment->setAdditionalInformation('device_data', $deviceData);
         $wlQuotePayment->setPaymentId((int)$payment->getId());
         $wlQuotePayment->setDeviceData($this->jsonSerializer->serialize($deviceData));

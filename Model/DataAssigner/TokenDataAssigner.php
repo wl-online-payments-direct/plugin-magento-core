@@ -18,9 +18,11 @@ class TokenDataAssigner implements DataAssignerInterface
         array $additionalInformation
     ): void {
         if (!$publicToken = $additionalInformation['public_hash'] ?? false) {
+            $payment->setAdditionalInformation(PaymentTokenInterface::PUBLIC_HASH, '');
             return;
         }
 
+        $wlQuotePayment->setPublicHash($publicToken);
         $payment->setAdditionalInformation(PaymentTokenInterface::PUBLIC_HASH, $publicToken);
         $payment->setAdditionalInformation(PaymentTokenInterface::CUSTOMER_ID, $payment->getQuote()->getCustomerId());
     }

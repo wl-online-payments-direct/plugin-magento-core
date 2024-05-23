@@ -17,6 +17,9 @@ namespace Worldline\PaymentCore\Api\Data;
  *
  * @method getDeviceData(): string
  * @method setDeviceData(string $deviceData): QuotePaymentInterface
+ *
+ * @method getPublicHash(): string
+ * @method setPublicHash(string $publicHash): QuotePaymentInterface
  */
 interface QuotePaymentInterface
 {

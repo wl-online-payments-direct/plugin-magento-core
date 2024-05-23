@@ -158,6 +158,7 @@
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"/>
         <column xsi:type="int" name="payment_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Payment ID"/>
         <column xsi:type="varchar" name="payment_identifier" nullable="true" length="255" comment="Payment Identifier"/>
+        <column xsi:type="varchar" name="public_hash" nullable="true" length="255" comment="Public Hash"/>
         <column xsi:type="varchar" name="method" nullable="true" length="255" comment="Method"/>
         <column xsi:type="text" name="device_data" comment="Device Data"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
