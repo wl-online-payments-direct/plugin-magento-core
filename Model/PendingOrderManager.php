@@ -21,6 +21,8 @@ use Worldline\PaymentCore\Model\Transaction\TransactionStatusInterface;
  * Validate payment information and create an order
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.NPathComplexity)
  */
 class PendingOrderManager implements PendingOrderManagerInterface
 {

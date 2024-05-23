@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="worldline_solutions" type="host">payment.direct.worldline-solutions.com</value>
+                <value id="worldline_solutions_preprod" type="host">payment.preprod.direct.worldline-solutions.com</value>
+                <value id="worldline_anz_solutions" type="host">payment.anzworldline-solutions.com.au</value>
+                <value id="worldline_anz_solutions_preprod" type="host">payment.preprod.anzworldline-solutions.com.au</value>
+                <value id="worldline_payone_solutions" type="host">payment.payone.com</value>
+                <value id="worldline_payone_solutions_preprod" type="host">payment.preprod.payone.com</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="worldline_solutions" type="host">payment.direct.worldline-solutions.com</value>
+                <value id="worldline_solutions_preprod" type="host">payment.preprod.direct.worldline-solutions.com</value>
+                <value id="worldline_anz_solutions" type="host">payment.anzworldline-solutions.com.au</value>
+                <value id="worldline_anz_solutions_preprod" type="host">payment.preprod.anzworldline-solutions.com.au</value>
+                <value id="worldline_payone_solutions" type="host">payment.payone.com</value>
+                <value id="worldline_payone_solutions_preprod" type="host">payment.preprod.payone.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="worldline_solutions" type="host">payment.direct.worldline-solutions.com</value>
+                <value id="worldline_solutions_preprod" type="host">payment.preprod.direct.worldline-solutions.com</value>
+                <value id="worldline_anz_solutions" type="host">payment.anzworldline-solutions.com.au</value>
+                <value id="worldline_anz_solutions_preprod" type="host">payment.preprod.anzworldline-solutions.com.au</value>
+                <value id="worldline_payone_solutions" type="host">payment.payone.com</value>
+                <value id="worldline_payone_solutions_preprod" type="host">payment.preprod.payone.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

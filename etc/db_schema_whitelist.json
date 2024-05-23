@@ -152,6 +152,7 @@
             "entity_id": true,
             "payment_id": true,
             "payment_identifier": true,
+            "public_hash": true,
             "method": true,
             "device_data": true
         },
