@@ -76,6 +76,11 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.19.0
+- Fixed validation for HTML template ID configuration. It is no longer required to have extension on HTML templates.
+- Fixed issue where items quantities in decimals were not taken into account.
+- Improved handling of orders where the total amount does not match the sum of line items amount due to the rounding.
+
 #### 2.18.0
 - Fixed issue where FPT (Fixed Product Tax) rates were not taken into account.
 - Update "wl-online-payments-direct/sdk-php" library to 5.16.1
