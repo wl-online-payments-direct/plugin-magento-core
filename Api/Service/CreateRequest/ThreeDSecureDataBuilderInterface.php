@@ -8,5 +8,5 @@ use OnlinePayments\Sdk\Domain\ThreeDSecure;
 
 interface ThreeDSecureDataBuilderInterface
 {
-    public function build(CartInterface $quote): ThreeDSecure;
+    public function build(CartInterface $quote, $isCreditCardPayment = false): ThreeDSecure;
 }

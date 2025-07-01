@@ -3,5 +3,8 @@ let config = {
         '*': {
             checkConnection: 'Worldline_PaymentCore/js/testconnection'
         }
-    }
+    },
+    deps: [
+        'Worldline_PaymentCore/js/system-config-reset'
+    ]
 };
