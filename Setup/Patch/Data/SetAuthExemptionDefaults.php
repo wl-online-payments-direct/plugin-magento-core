@@ -84,7 +84,10 @@ class SetAuthExemptionDefaults implements DataPatchInterface
         }
 
         // Apply to default scope if enabled
-        if ($this->scopeConfig->getValue(GeneralSettingsConfig::AUTH_EXEMPTION, ScopeConfigInterface::SCOPE_TYPE_DEFAULT)) {
+        if ($this->scopeConfig->getValue(
+            GeneralSettingsConfig::AUTH_EXEMPTION,
+            ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+        )) {
             $this->configWriter->save(
                 GeneralSettingsConfig::AUTH_EXEMPTION_TYPE,
                 self::LOW_VALUE_EXEMPTION_TYPE,

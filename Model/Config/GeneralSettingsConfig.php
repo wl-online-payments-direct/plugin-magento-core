@@ -18,7 +18,8 @@ class GeneralSettingsConfig implements GeneralSettingsConfigInterface
     public const AUTH_EXEMPTION = 'worldline_payment/general_settings/authentication_exemption';
     public const AUTH_EXEMPTION_TYPE = 'worldline_payment/general_settings/authentication_exemption_type';
     public const AUTH_LOW_VALUE_AMOUNT = 'worldline_payment/general_settings/authentication_exemption_limit_30';
-    public const AUTH_TRANSACTION_RISK_ANALYSIS_AMOUNT = 'worldline_payment/general_settings/authentication_exemption_limit_100';
+    public const AUTH_TRANSACTION_RISK_ANALYSIS_AMOUNT =
+        'worldline_payment/general_settings/authentication_exemption_limit_100';
     public const PWA_ROUTE = 'worldline_payment/general_settings/pwa_route';
     public const APPLY_SURCHARGE = 'worldline_payment/general_settings/apply_surcharge';
 
@@ -42,8 +43,12 @@ class GeneralSettingsConfig implements GeneralSettingsConfigInterface
      */
     private $configWriter;
 
-    public function __construct(State $appState, UrlInterface $urlBuilder, ScopeConfigInterface $scopeConfig,   WriterInterface $configWriter)
-    {
+    public function __construct(
+        State $appState,
+        UrlInterface $urlBuilder,
+        ScopeConfigInterface $scopeConfig,
+        WriterInterface $configWriter
+    ) {
         $this->appState = $appState;
         $this->urlBuilder = $urlBuilder;
         $this->scopeConfig = $scopeConfig;
@@ -87,13 +92,21 @@ class GeneralSettingsConfig implements GeneralSettingsConfigInterface
 
     public function getAuthTransactionRiskAnalysisAmount(?int $scopeCode = null): ?string
     {
-        return $this->scopeConfig->getValue(self::AUTH_TRANSACTION_RISK_ANALYSIS_AMOUNT,
-            ScopeInterface::SCOPE_STORE, $scopeCode);
+        return $this->scopeConfig->getValue(
+            self::AUTH_TRANSACTION_RISK_ANALYSIS_AMOUNT,
+            ScopeInterface::SCOPE_STORE,
+            $scopeCode
+        );
     }
 
     public function getReturnUrl(string $returnUrl, ?int $scopeCode = null): ?string
     {
-        $pwaRoute = (string)$this->scopeConfig->getValue(self::PWA_ROUTE, ScopeInterface::SCOPE_STORE, $scopeCode);
+        $pwaRoute = (string)$this->scopeConfig->getValue(
+            self::PWA_ROUTE,
+            ScopeInterface::SCOPE_STORE,
+            $scopeCode
+        );
+
         if ($pwaRoute && $this->appState->getAreaCode() === Area::AREA_GRAPHQL) {
             return $pwaRoute;
         }
