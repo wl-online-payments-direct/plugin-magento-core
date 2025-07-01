@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.21.0
+- Update plugin translations
+
 #### 2.20.0
 - Add 3DS exemption types to the plugin
 
