@@ -52,7 +52,7 @@ class PaymentManager implements PaymentManagerInterface
     {
         $output = $worldlineResponse->getPaymentOutput();
         $cardPaymentMethod = $output->getCardPaymentMethodSpecificOutput();
-        if (!$cardPaymentMethod) {
+        if (!$cardPaymentMethod || !$cardPaymentMethod->getCard()) {
             return;
         }
 
