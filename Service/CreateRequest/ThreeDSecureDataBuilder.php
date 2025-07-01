@@ -65,7 +65,7 @@ class ThreeDSecureDataBuilder implements ThreeDSecureDataBuilderInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function build(CartInterface $quote): ThreeDSecure
+    public function build(CartInterface $quote, $isCreditCardPayment = false): ThreeDSecure
     {
         $methodCode = $this->methodNameExtractor->extract($quote->getPayment());
         $returnUrl = $this->returnUrls[$methodCode] ?? '';
@@ -73,9 +73,11 @@ class ThreeDSecureDataBuilder implements ThreeDSecureDataBuilderInterface
         $storeId = (int)$quote->getStoreId();
         $threeDSecure = $this->threeDSecureFactory->create();
 
-        $this->threeDSecureParamsHandler->handle($threeDSecure, (float)$quote->getBaseSubtotal(), $storeId);
+        $this->threeDSecureParamsHandler->handle($threeDSecure, (float)$quote->getGrandTotal(), $storeId);
 
-        $threeDSecure->setRedirectionData($this->getRedirectionData($returnUrl, $storeId));
+        if ($isCreditCardPayment && $this->generalSettings->isThreeDEnabled($storeId)) {
+            $threeDSecure->setRedirectionData($this->getRedirectionData($returnUrl, $storeId));
+        }
 
         return $threeDSecure;
     }

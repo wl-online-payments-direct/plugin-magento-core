@@ -8,7 +8,7 @@ use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 
 class ParamsHandler
 {
-    public const THRESHOLD_VALUE = 30;
+    public const LOW_VALUE_EXEMPTION_TYPE = 'low-value';
 
     /**
      * @var GeneralSettingsConfigInterface
@@ -23,15 +23,22 @@ class ParamsHandler
     public function handle(ThreeDSecure $threeDSecure, float $baseSubtotal, int $storeId): void
     {
         $isThreeDEnabled = $this->generalSettings->isThreeDEnabled($storeId);
+        $isAuthExemptionEnabled = $this->generalSettings->isAuthExemptionEnabled($storeId);
+        $threeDSExemptedType = $this->generalSettings->getAuthExemptionType($storeId);
+        $threeDSExemptedAmount = $threeDSExemptedType === self::LOW_VALUE_EXEMPTION_TYPE ?
+            $this->generalSettings->getAuthLowValueAmount($storeId)
+            : $this->generalSettings->getAuthTransactionRiskAnalysisAmount($storeId);
+
         $threeDSecure->setSkipAuthentication(!$isThreeDEnabled);
 
         if (!$isThreeDEnabled) {
             return;
         }
 
-        if ($baseSubtotal < self::THRESHOLD_VALUE && $this->generalSettings->isAuthExemptionEnabled($storeId)) {
-            $threeDSecure->setExemptionRequest('low-value');
-            return;
+        if ($isAuthExemptionEnabled && (float)$threeDSExemptedAmount >= $baseSubtotal) {
+            $threeDSecure->setSkipAuthentication(true);
+            $threeDSecure->setExemptionRequest($threeDSExemptedType);
+            $threeDSecure->setSkipSoftDecline(false);
         }
 
         if ($this->generalSettings->isEnforceAuthEnabled($storeId)) {
