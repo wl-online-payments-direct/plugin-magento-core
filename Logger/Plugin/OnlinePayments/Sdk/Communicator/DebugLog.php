@@ -6,9 +6,9 @@ namespace Worldline\PaymentCore\Logger\Plugin\OnlinePayments\Sdk\Communicator;
 use Magento\Payment\Model\Method\Logger;
 use OnlinePayments\Sdk\CallContext;
 use OnlinePayments\Sdk\Communicator;
-use OnlinePayments\Sdk\DataObject;
-use OnlinePayments\Sdk\RequestObject;
-use OnlinePayments\Sdk\ResponseClassMap;
+use OnlinePayments\Sdk\Domain\DataObject;
+use OnlinePayments\Sdk\Communication\RequestObject;
+use OnlinePayments\Sdk\Communication\ResponseClassMap;
 
 class DebugLog
 {
@@ -40,9 +40,9 @@ class DebugLog
         ResponseClassMap $responseClassMap,
         string $relativeUriPath,
         string $clientMetaInfo = '',
-        DataObject $requestBodyObject = null,
-        RequestObject $requestParameters = null,
-        CallContext $callContext = null
+        ?DataObject $requestBodyObject = null,
+        ?RequestObject $requestParameters = null,
+        ?CallContext $callContext = null
     ): ?DataObject {
         $data = [
             'requestUri' => $subject->buildRequestUri($relativeUriPath, $requestParameters),

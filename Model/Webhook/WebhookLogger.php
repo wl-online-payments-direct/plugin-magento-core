@@ -66,7 +66,7 @@ class WebhookLogger
         $webhookEntity = $this->webhookFactory->create();
 
         try {
-            $webhookEntity->setType((string) $webhookEvent->getType());
+            $webhookEntity->setType((string) $webhookEvent->type);
             $webhookEntity->setStatusCode((int) $response->getStatusOutput()->getStatusCode());
             if ($response instanceof PaymentResponse) {
                 $webhookEntity->setIncrementId(

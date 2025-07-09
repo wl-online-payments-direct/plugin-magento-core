@@ -96,7 +96,7 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
     public function createRequest(
         int $cartId,
         PaymentInterface $paymentMethod,
-        AddressInterface $billingAddress = null
+        ?AddressInterface $billingAddress = null
     ): string {
         $quote = $this->quoteManager->getQuote($cartId);
 
@@ -118,7 +118,7 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         string $cartId,
         PaymentInterface $paymentMethod,
         string $email,
-        AddressInterface $billingAddress = null
+        ?AddressInterface $billingAddress = null
     ): string {
         $quote = $this->quoteManager->getQuoteForGuest($cartId, $email);
 
@@ -128,7 +128,7 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
     private function process(
         CartInterface $quote,
         PaymentInterface $paymentMethod,
-        AddressInterface $billingAddress = null
+        ?AddressInterface $billingAddress = null
     ): string {
         if (!$quote->isVirtual()) {
             $this->validateAddress($quote->getShippingAddress());

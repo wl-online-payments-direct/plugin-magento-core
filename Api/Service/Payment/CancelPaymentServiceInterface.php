@@ -5,16 +5,17 @@ namespace Worldline\PaymentCore\Api\Service\Payment;
 
 use Magento\Framework\Exception\LocalizedException;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
+use OnlinePayments\Sdk\Domain\PaymentResponse;
 
 interface CancelPaymentServiceInterface
 {
     /**
      * Cancel payment by payment id
      *
-     * @param string $paymentId
+     * @param PaymentResponse $payment
      * @param int|null $storeId
      * @return CancelPaymentResponse
      * @throws LocalizedException
      */
-    public function execute(string $paymentId, ?int $storeId = null): CancelPaymentResponse;
+    public function execute(PaymentResponse $payment, ?int $storeId = null): CancelPaymentResponse;
 }

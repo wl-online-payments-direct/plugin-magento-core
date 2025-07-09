@@ -55,17 +55,17 @@ class AutoRefundConfigProvider
         return (string) $this->scopeConfig->getValue(self::EMAIL_TEMPLATE);
     }
 
-    public function isEnabledToCustomer(int $store = null): bool
+    public function isEnabledToCustomer(?int $store = null): bool
     {
         return $this->scopeConfig->isSetFlag(self::IS_ENABLED_TO_CUSTOMER, ScopeInterface::SCOPE_STORE, $store);
     }
 
-    public function getSenderToCustomer(int $store = null): string
+    public function getSenderToCustomer(?int $store = null): string
     {
         return (string) $this->scopeConfig->getValue(self::SENDER_TO_CUSTOMER, ScopeInterface::SCOPE_STORE, $store);
     }
 
-    public function getEmailTemplateToCustomer(int $store = null): string
+    public function getEmailTemplateToCustomer(?int $store = null): string
     {
         return (string) $this->scopeConfig->getValue(
             self::EMAIL_TEMPLATE_TO_CUSTOMER,

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Fraud;
 
-use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\DataObject;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificOutput;
 use OnlinePayments\Sdk\Domain\MobilePaymentMethodSpecificOutput;
 use Worldline\PaymentCore\Api\Data\FraudInterface;

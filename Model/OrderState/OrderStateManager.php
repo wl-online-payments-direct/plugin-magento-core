@@ -22,7 +22,7 @@ class OrderStateManager implements OrderStateManagerInterface
         string $reservedOrderId,
         string $paymentCode,
         string $state,
-        int $paymentProductId = null
+        ?int $paymentProductId = null
     ): OrderState {
         /** @var OrderState $orderState */
         $orderState = $this->orderStateFactory->create();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Api;
 
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\DataObject;
 
 interface SubjectReaderInterface
 {

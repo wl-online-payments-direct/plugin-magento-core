@@ -71,6 +71,6 @@ class GeneralProcessor implements ProcessorInterface
             }
         }
 
-        return $this->processors[$webhookEvent->getType()] ?? null;
+        return $this->processors[$webhookEvent->type] ?? null;
     }
 }

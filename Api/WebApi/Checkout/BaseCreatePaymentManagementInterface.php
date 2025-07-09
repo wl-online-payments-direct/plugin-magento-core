@@ -19,7 +19,7 @@ interface BaseCreatePaymentManagementInterface
     public function createRequest(
         int $cartId,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
-        \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
+        ?\Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ): string;
 
     /**
@@ -35,6 +35,6 @@ interface BaseCreatePaymentManagementInterface
         string $cartId,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         string $email,
-        \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
+        ?\Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ): string;
 }
