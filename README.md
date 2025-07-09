@@ -76,6 +76,10 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.23.0
+- Add compatibility with PHP 8.4
+- Update SDK version
+
 #### 2.22.0
 - Fixed order creation using Google Pay & Apple Pay
 

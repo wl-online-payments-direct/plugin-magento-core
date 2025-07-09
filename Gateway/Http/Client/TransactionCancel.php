@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Gateway\Http\Client;
 
 use Magento\Framework\Exception\LocalizedException;
-use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\DataObject;
 use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\Service\Payment\CancelPaymentServiceInterface;
 use Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface;
@@ -54,7 +54,7 @@ class TransactionCancel extends AbstractTransaction
         }
 
         return $this->cancelPaymentService->execute(
-            $data[VoidAndCancelDataBuilder::TRANSACTION_ID],
+            $payment,
             $data[VoidAndCancelDataBuilder::STORE_ID]
         );
     }

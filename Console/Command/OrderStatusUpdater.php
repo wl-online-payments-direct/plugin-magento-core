@@ -27,7 +27,7 @@ class OrderStatusUpdater extends Command
     public function __construct(
         OrderCreationProcessor $worldLineApiProcessor,
         State $state,
-        string $name = null
+        ?string $name = null
     ) {
         parent::__construct($name);
         $this->orderCreationProcessor = $worldLineApiProcessor;

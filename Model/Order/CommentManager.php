@@ -7,7 +7,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\OrderStatusHistoryRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
-use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\DataObject;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
@@ -62,7 +62,7 @@ class CommentManager
 
             $comment = $order->addCommentToStatusHistory(
                 'Webhook: ' . ' payment id (' . $response->getId() . '), '
-                . 'type (' . $webhookEvent->getType() . '), '
+                . 'type (' . $webhookEvent->type . '), '
                 . 'status code (' . $response->getStatusOutput()->getStatusCode() . ')'
             );
 

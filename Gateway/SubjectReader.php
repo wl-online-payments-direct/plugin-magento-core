@@ -7,7 +7,7 @@ use InvalidArgumentException;
 use Magento\Payment\Gateway\Data\PaymentDataObject;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper;
-use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\DataObject;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use Worldline\PaymentCore\Api\SubjectReaderInterface;
 
@@ -62,7 +62,7 @@ class SubjectReader implements SubjectReaderInterface
         if (empty($transaction)
             || !$transaction instanceof DataObject
         ) {
-            throw new InvalidArgumentException('The object is not a class \OnlinePayments\Sdk\DataObject.');
+            throw new InvalidArgumentException('The object is not a class \OnlinePayments\Sdk\Domain\DataObject.');
         }
 
         return $transaction;

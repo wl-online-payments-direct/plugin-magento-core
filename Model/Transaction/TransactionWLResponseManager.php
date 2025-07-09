@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\Transaction;
 
 use Magento\Framework\Exception\LocalizedException;
-use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\DataObject;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\RefundResponse;

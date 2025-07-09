@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model;
 
+use OnlinePayments\Sdk\Authentication\V1HmacAuthenticator;
 use OnlinePayments\Sdk\Client;
 use OnlinePayments\Sdk\ClientFactory;
 use OnlinePayments\Sdk\CommunicatorConfigurationFactory;
@@ -70,6 +71,13 @@ class ClientProvider implements ClientProviderInterface
             'integrator' => 'Ingenico',
         ]);
 
-        return $this->communicatorFactory->create(['communicatorConfiguration' => $communicatorConfiguration]);
+        $authenticator = new V1HmacAuthenticator($communicatorConfiguration);
+
+        return $this->communicatorFactory->create(
+            [
+                'communicatorConfiguration' => $communicatorConfiguration,
+                'authenticator' => $authenticator
+            ]
+        );
     }
 }

@@ -62,7 +62,7 @@ class OrderState implements OrderStateInterface
         return $this->paymentProductId;
     }
 
-    public function setPaymentProductId(int $paymentProductId = null): void
+    public function setPaymentProductId(?int $paymentProductId = null): void
     {
         $this->paymentProductId = $paymentProductId;
     }

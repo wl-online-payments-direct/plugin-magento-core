@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\OnlinePayments\Sdk;
 
-use OnlinePayments\Sdk\RequestHeaderGenerator as SdkRequestHeaderGenerator;
+use OnlinePayments\Sdk\Communication\MetadataProvider;
 
-class RequestHeaderGenerator extends SdkRequestHeaderGenerator
+class RequestHeaderGenerator extends MetadataProvider
 {
     /**
      * @var array
@@ -17,7 +17,7 @@ class RequestHeaderGenerator extends SdkRequestHeaderGenerator
         $this->trackerData = $trackerData;
     }
 
-    protected function getServerMetaInfoValue(): string
+    public function getServerMetaInfoValue(): string
     {
         $serverMetaInfo = $this->trackerData;
 

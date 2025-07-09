@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Model\Payment;
 
-use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\DataObject;
 use Worldline\PaymentCore\Api\Data\PaymentInterface;
 use Worldline\PaymentCore\Api\PaymentManagerInterface;
 use Worldline\PaymentCore\Api\PaymentRepositoryInterface;
