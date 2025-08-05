@@ -8,6 +8,7 @@ use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Model\OrderFactory;
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use Psr\Log\LoggerInterface;
+use Worldline\PaymentCore\Api\Data\PaymentProductsDetailsInterface;
 use Worldline\PaymentCore\Api\PaymentDataManagerInterface;
 use Worldline\PaymentCore\Api\SessionDataManagerInterface;
 use Worldline\PaymentCore\Api\SurchargingQuoteManagerInterface;
@@ -89,6 +90,9 @@ class PlaceOrderProcessor implements ProcessorInterface
 
     public function process(WebhooksEvent $webhookEvent): void
     {
+        if (!$this->shouldHandleEvent($webhookEvent)) {
+            return;
+        }
         $quote = $this->placeOrderManager->getValidatedQuote($webhookEvent);
         if (!$quote) {
             return;
@@ -131,5 +135,27 @@ class PlaceOrderProcessor implements ProcessorInterface
                 FailedOrderCreationNotification::WEBHOOK_SPACE
             );
         }
+    }
+
+    /**
+     * @param WebhooksEvent $event
+     *
+     * @return bool
+     */
+    private function shouldHandleEvent(WebhooksEvent $event): bool
+    {
+        $payment = $event->getPayment() ?: null;
+        $paymentOutput = $payment ? $payment->getPaymentOutput() : null;
+        $redirectMethodSpecificInput = $paymentOutput ? $paymentOutput->getRedirectPaymentMethodSpecificOutput() : null;
+        $paymentProductId = $redirectMethodSpecificInput ? $redirectMethodSpecificInput->getPaymentProductId() : null;
+        $amountOfMoney = $paymentOutput->getAmountOfMoney() ? $paymentOutput->getAmountOfMoney()->getAmount() : null;
+        $acquiredAmount = $paymentOutput->getAcquiredAmount() ? $paymentOutput->getAcquiredAmount()->getAmount() : null;
+
+        if ($paymentProductId === PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID
+            || $paymentProductId === PaymentProductsDetailsInterface::CHEQUE_VACANCES_CONNECT_PRODUCT_ID) {
+            return $amountOfMoney && $acquiredAmount && ($amountOfMoney === $acquiredAmount);
+        }
+
+        return true;
     }
 }

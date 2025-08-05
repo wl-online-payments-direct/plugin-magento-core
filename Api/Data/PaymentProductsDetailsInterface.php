@@ -37,6 +37,7 @@ interface PaymentProductsDetailsInterface
     public const ONEY_3X_4X_PRODUCT_ID = 5110;
     public const ONEY_FINANCEMENT_LONG_PRODUCT_ID = 5125;
     public const MEALVOUCHERS_PRODUCT_ID = 5402;
+    public const CHEQUE_VACANCES_CONNECT_PRODUCT_ID = 5403;
     public const WECHAT_PAY_PRODUCT_ID = 5404;
     public const ALIPAY_PLUS_PRODUCT_ID = 5405;
     public const EPS_PRODUCT_ID = 5406;
@@ -175,6 +176,10 @@ interface PaymentProductsDetailsInterface
         self::MEALVOUCHERS_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_PREPAID,
             'label' => 'Mealvouchers'
+        ],
+        self::CHEQUE_VACANCES_CONNECT_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_PREPAID,
+            'label' => 'Cheque Vacances Connect'
         ],
         self::MULTIBANCO_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_POSTPAID,

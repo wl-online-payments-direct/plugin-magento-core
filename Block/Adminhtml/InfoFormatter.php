@@ -14,6 +14,7 @@ class InfoFormatter implements InfoFormatterInterface
     public function format(PaymentInfoInterface $paymentInfo): array
     {
         $data = [
+            'paymentProductId' => $paymentInfo->getPaymentProductId(),
             ['label' => __('Payment method'), 'value' => $paymentInfo->getPaymentMethod()],
             ['label' => __('Status'), 'value' => $paymentInfo->getStatus()],
             ['label' => __('Status code'), 'value' => $paymentInfo->getStatusCode()],

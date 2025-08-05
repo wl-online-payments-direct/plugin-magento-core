@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Model\RefundRequest;
 
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
+use Magento\Sales\Api\Data\CreditmemoInterface;
 use Worldline\PaymentCore\Api\Data\RefundRequestInterface;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 
@@ -51,5 +52,15 @@ class RefundProcessor
         $this->refundRequestRepository->save($refundRequest);
 
         $this->emailNotification->send($creditmemoEntity);
+    }
+
+    /**
+     * @param $creditMemoId
+     *
+     * @return CreditmemoInterface
+     */
+    public function getCreditMemoById($creditMemoId)
+    {
+        return $this->creditmemoRepository->get($creditMemoId);
     }
 }

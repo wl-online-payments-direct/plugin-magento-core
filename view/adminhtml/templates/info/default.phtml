@@ -3,41 +3,45 @@
 $specificInfo = $block->getSpecificInformation();
 $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
 ?>
-<?= $block->escapeHtml($block->getPaymentTitle()) ?>
-
-<?php if ($cardNumbers): ?>
-    <span><?= $block->escapeHtml(__('ending')) ?></span> <?= $block->escapeHtml($cardNumbers) ?>
-<?php endif; ?>
-
-<?php if ($block->getIconUrl()): ?>
-    <img src="<?= $block->escapeUrl($block->getIconUrl()) ?>"
-         style="max-height: <?= $block->escapeHtmlAttr($block->getMaxHeight()) ?>;
-                aspect-ratio: <?= $block->escapeHtml($block->getAspectRatio()) ?>;"
-         alt="<?= $block->escapeHtmlAttr($block->escapeHtml($block->getIconTitle())) ?>"
-    >
-<?php endif; ?>
 
 <?php if ($specificInfo): ?>
-    <table class="data-table admin__table-secondary">
-        <?php foreach ($specificInfo as $item): ?>
-            <tr>
-                <th><?= $block->escapeHtml($item['label']) ?>:</th>
-                <td><?= $block->escapeHtml($item['value']) ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-<?php endif;?>
+    <?php foreach ($specificInfo as $info): ?>
+        <?= $block->escapeHtml($block->getPaymentTitle($info)) ?>
+
+        <?php if ($cardNumbers): ?>
+            <span><?= $block->escapeHtml(__('ending')) ?></span> <?= $block->escapeHtml($cardNumbers) ?>
+        <?php endif; ?>
+
+        <?php if ($block->getIconUrl($info)): ?>
+            <img src="<?= $block->escapeUrl($block->getIconUrl($info)) ?>"
+                 style="max-height: <?= $block->escapeHtmlAttr($block->getMaxHeight()) ?>;
+                         aspect-ratio: <?= $block->escapeHtml($block->getAspectRatio()) ?>;"
+                 alt="<?= $block->escapeHtmlAttr($block->escapeHtml($block->getIconTitle($info))) ?>"
+            >
+        <?php endif; ?>
+        <table class="data-table admin__table-secondary">
+            <?php foreach ($info as $item): ?>
+                <?php if (isset($item['label'], $item['value'])): ?>
+                    <tr>
+                        <th><?= $block->escapeHtml($item['label']) ?>:</th>
+                        <td><?= $block->escapeHtml($item['value']) ?></td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </table>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <div data-bind="scope: 'update-payment-details'"><!-- ko template: getTemplate() --><!-- /ko --></div>
 <script type="text/x-magento-init">
-{
-    "*": {
-        "Magento_Ui/js/core/app": {
-            "components": {
-                "update-payment-details": {
-                    "component": "Worldline_PaymentCore/js/model/update-payment-details",
-                    "template": "Worldline_PaymentCore/order/update-payment-details",
-                    "storeId": "<?= $block->escapeHtml($block->getInfo()->getOrder()->getStoreId()) ?>",
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "update-payment-details": {
+                        "component": "Worldline_PaymentCore/js/model/update-payment-details",
+                        "template": "Worldline_PaymentCore/order/update-payment-details",
+                        "storeId": "<?= $block->escapeHtml($block->getInfo()->getOrder()->getStoreId()) ?>",
                     "incrementId": "<?= $block->escapeHtml($block->getInfo()->getOrder()->getIncrementId()) ?>",
                     "updateUrl": "<?= $block->escapeUrl($block->getUrl('worldline/PaymentDetails/update')) ?>"
                 }

@@ -76,6 +76,10 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.24.0
+- Add Mealvoucher payment product
+- Add CVCO (Cheque Vacances Connect) payment product
+
 #### 2.23.0
 - Add compatibility with PHP 8.4
 - Update SDK version

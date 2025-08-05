@@ -47,17 +47,55 @@ class CreditmemoProcessor implements ProcessorInterface
             return;
         }
 
+        sleep(5);
+
         if ($statusCode === TransactionStatusInterface::REFUNDED_CODE) {
             $incrementId = $refundResponse->getRefundOutput()->getReferences()->getMerchantReference();
             $amount = (int)$refundResponse->getRefundOutput()->getAmountOfMoney()->getAmount();
             $refundRequest = $this->refundRequestRepository->getByIncrementIdAndAmount((string)$incrementId, $amount);
+
             if (!$refundRequest->getCreditMemoId()) {
-                return;
+                $this->handleSplitPayment($incrementId, $amount, $refundRequest);
             }
 
             $this->transactionWLResponseManager->saveTransaction($refundResponse);
 
             $this->refundProcessor->process($refundRequest);
         }
+    }
+
+    /**
+     * @param $incrementId
+     * @param $amount
+     * @param $refundRequest
+     *
+     * @return void
+     */
+    private function handleSplitPayment($incrementId, $amount, &$refundRequest): void
+    {
+        $refunds = $this->refundRequestRepository->getListByIncrementId($incrementId);
+
+        if (empty($refunds)) {
+            return;
+        }
+        $refund = reset($refunds);
+
+        $leftToRefund = $refund->getAmount() - $amount;
+
+        // handle partial payment
+        if ($leftToRefund < 0) {
+            $creditMemo = $this->refundProcessor->getCreditMemoById($refund->getCreditMemoId());
+            $invoice = $creditMemo->getInvoice();
+            $leftToRefund = ($invoice->getBaseGrandTotal() - $creditMemo->getGrandTotal()) * 100;
+        }
+
+        $refund->setAmount((int) $leftToRefund);
+        $this->refundRequestRepository->save($refund);
+
+        if ($leftToRefund !== 0) {
+            return;
+        }
+
+        $refundRequest->setCreditMemoId($refund->getCreditMemoId());
     }
 }
