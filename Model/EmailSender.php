@@ -114,7 +114,8 @@ class EmailSender
             $options = ['area' => Area::AREA_FRONTEND, 'store' => $storeId];
         }
 
-        $addTo[] = $sendTo; // fix for 2.3.7 Magento version
+        $addTo = $this->emailsStringToArray($sendTo);
+
         if ($ccTo) {
             $addTo[] = $ccTo;
         }
@@ -154,5 +155,21 @@ class EmailSender
         } catch (LocalizedException $e) {
             $this->logger->critical($e->getMessage());
         }
+    }
+
+
+    /**
+     * Converts a string of emails to array
+     *
+     * @param string $emails
+     *
+     * @return string[]
+     */
+    private function emailsStringToArray(string $emails): array
+    {
+        $emailsCleaned = str_replace(' ', '', $emails);
+        $emailsArray = explode(',', $emailsCleaned);
+
+        return array_filter($emailsArray, function ($email) { return $email !== ''; });
     }
 }
