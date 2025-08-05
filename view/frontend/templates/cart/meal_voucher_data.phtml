@@ -1,0 +1,7 @@
+<?php
+$eligibleItems = $block->getEligibleCartItems();
+?>
+
+<script type="text/javascript">
+    window.worldlineEligibleCartItems = <?= json_encode($eligibleItems) ?>;
+</script>

@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\OnlinePayments\Sdk;
 
-use Magento\Backend\Block\Widget\Grid\Massaction\Item\Additional\DefaultAdditional;
-use OnlinePayments\Sdk\Authentication\Authenticator;
 use OnlinePayments\Sdk\CallContext;
-use OnlinePayments\Sdk\Communication\DefaultConnection;
 use OnlinePayments\Sdk\Communicator as IngenicoCommunicator;
 use OnlinePayments\Sdk\CommunicatorConfiguration;
 use OnlinePayments\Sdk\Communication\Connection;
@@ -14,10 +11,12 @@ use OnlinePayments\Sdk\Domain\DataObject;
 use OnlinePayments\Sdk\Communication\RequestObject;
 use OnlinePayments\Sdk\Communication\ResponseBuilder;
 use OnlinePayments\Sdk\Communication\ResponseClassMap;
+use OnlinePayments\Sdk\ExceptionFactory;
 use OnlinePayments\Sdk\ResponseException;
 use UnexpectedValueException;
 use Worldline\PaymentCore\Logger\RequestLogManager;
 use Worldline\PaymentCore\Model\TrackerDataProvider;
+use OnlinePayments\Sdk\Authentication\V1HmacAuthenticator;
 
 /**
  * @core
@@ -47,17 +46,24 @@ class Communicator extends IngenicoCommunicator
      */
     private $requestLogManager;
 
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /** @var ExceptionFactory|null */
+    private $responseExceptionFactory = null;
+
     public function __construct(
-        Authenticator $authenticator,
+        Connection $connection,
         CommunicatorConfiguration $communicatorConfiguration,
         TrackerDataProvider $trackerDataProvider,
         RequestHeaderGeneratorFactory $requestHeaderGeneratorFactory,
         RequestLogManager $requestLogManager
     ) {
-        $connection = new DefaultConnection($communicatorConfiguration);
+        parent::__construct($communicatorConfiguration, new V1HmacAuthenticator($communicatorConfiguration), $connection);
 
-        parent::__construct($communicatorConfiguration, $authenticator, $connection);
-
+        $this->connection = $connection;
         $this->trackerDataProvider = $trackerDataProvider;
         $this->communicatorConfiguration = $communicatorConfiguration;
         $this->requestHeaderGeneratorFactory = $requestHeaderGeneratorFactory;
@@ -83,11 +89,11 @@ class Communicator extends IngenicoCommunicator
      * @throws ResponseException
      */
     public function get(
-        \OnlinePayments\Sdk\Communication\ResponseClassMap $responseClassMap,
-                                                           $relativeUriPath,
-                                                           $clientMetaInfo = '',
-        ?\OnlinePayments\Sdk\Communication\RequestObject   $requestParameters = null,
-        ?CallContext                                       $callContext = null
+        ResponseClassMap $responseClassMap,
+                         $relativeUriPath,
+                         $clientMetaInfo = '',
+        RequestObject $requestParameters = null,
+        CallContext $callContext = null
     ) {
         $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
         $requestHeaders = $this->getRequestHeaders('GET', $relativeUriPathWithRequestParameters, null, $clientMetaInfo, $callContext);
@@ -136,12 +142,12 @@ class Communicator extends IngenicoCommunicator
      * @throws \Exception
      */
     public function post(
-        \OnlinePayments\Sdk\Communication\ResponseClassMap $responseClassMap,
-                                                           $relativeUriPath,
-                                                           $clientMetaInfo = '',
-                                                           $requestBodyObject = null,
-        ?\OnlinePayments\Sdk\Communication\RequestObject   $requestParameters = null,
-        ?CallContext                                       $callContext = null
+        ResponseClassMap $responseClassMap,
+                         $relativeUriPath,
+                         $clientMetaInfo = '',
+                         $requestBodyObject = null,
+        RequestObject $requestParameters = null,
+        CallContext $callContext = null
     ) {
         $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
         if ($requestBodyObject instanceof DataObject || is_null($requestBodyObject)) {
@@ -182,5 +188,14 @@ class Communicator extends IngenicoCommunicator
             throw $this->getResponseExceptionFactory()->createException($httpStatusCode, $response, $callContext);
         }
         return $response;
+    }
+
+    /** @return ExceptionFactory */
+    private function getResponseExceptionFactory()
+    {
+        if (is_null($this->responseExceptionFactory)) {
+            $this->responseExceptionFactory = new ExceptionFactory();
+        }
+        return $this->responseExceptionFactory;
     }
 }

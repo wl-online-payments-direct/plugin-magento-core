@@ -2,6 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <!-- Preference -->
+    <preference type="OnlinePayments\Sdk\Communication\DefaultConnection" for="OnlinePayments\Sdk\Communication\Connection" />
     <preference type="Magento\Framework\Filesystem\Driver\File" for="Magento\Framework\Filesystem\DriverInterface" />
     <preference type="Worldline\PaymentCore\Model\Log\Log" for="Worldline\PaymentCore\Api\Data\LogInterface" />
     <preference type="Worldline\PaymentCore\Model\Log\LogRepository" for="Worldline\PaymentCore\Api\LogRepositoryInterface" />
@@ -108,6 +109,10 @@
         <arguments>
             <argument name="infoFormatter" xsi:type="object">Worldline\PaymentCore\Block\InfoFormatter</argument>
         </arguments>
+    </type>
+
+    <type name="Magento\Catalog\Block\Product\View">
+        <plugin name="add_meal_voucher_to_json_config" type="Worldline\PaymentCore\Plugin\Magento\Catalog\Block\ProductView" />
     </type>
 
     <type name="Worldline\PaymentCore\Model\Webhook\GeneralProcessor">
