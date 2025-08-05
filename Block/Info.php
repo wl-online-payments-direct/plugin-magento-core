@@ -65,6 +65,16 @@ class Info extends Template
     private $splitPayment;
 
     /**
+     * @var bool
+     */
+    private $isSplitPayment = false;
+
+    /**
+     * @var string
+     */
+    private $splitPaymentAmount;
+
+    /**
      * @var string
      */
     protected $_template = 'Worldline_PaymentCore::info/default.phtml';
@@ -97,9 +107,17 @@ class Info extends Template
                 $this->getPaymentInformation()->getPaymentProductId() !==
                 PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID
             )) {
+            $this->isSplitPayment = true;
             $specificInformation[] = $this->infoFormatter->format($splitPaymentInfo);
         }
-        $specificInformation[] = $this->infoFormatter->format($this->getPaymentInformation());
+        $paymentInformation = $this->getPaymentInformation();
+
+        if ($this->isSplitPayment) {
+            $formattedSplitPaymentAmount = $this->paymentInfoBuilder->
+            getFormattedSplitPaymentAmount((int)$this->splitPaymentAmount, $paymentInformation->getCurrency());
+            $paymentInformation->setAuthorizedAmount($paymentInformation->getAuthorizedAmount() - $formattedSplitPaymentAmount);
+        }
+        $specificInformation[] = $this->infoFormatter->format($paymentInformation);
 
         return $specificInformation;
     }
@@ -211,8 +229,9 @@ class Info extends Template
             return null;
         }
         $this->setSplitPaymentFinalStatus($payment);
+        $this->splitPaymentAmount = $payment->getPaymentOutput()->getAmountOfMoney()->getAmount() - $paymentDetail->getAmountOfMoney()->getAmount();
 
-        return $this->paymentInfoBuilder->buildSplitTransaction($payment);
+        return $this->paymentInfoBuilder->buildSplitTransaction($payment, (int) $this->splitPaymentAmount);
     }
 
     public function getMethod(): MethodInterface
