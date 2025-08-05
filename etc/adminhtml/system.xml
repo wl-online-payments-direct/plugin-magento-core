@@ -264,7 +264,7 @@
                     <label>Email Copy To</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
                     <comment>Comma-separated.</comment>
-                    <validate>validate-email</validate>
+                    <validate>validate-multiple-emails</validate>
                     <depends>
                         <field id="active">1</field>
                     </depends>
@@ -302,7 +302,7 @@
                     <label>Email Copy To</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
                     <comment>Comma-separated.</comment>
-                    <validate>validate-email</validate>
+                    <validate>validate-multiple-emails</validate>
                     <depends>
                         <field id="active">1</field>
                     </depends>
@@ -340,7 +340,7 @@
                     <label>Email Copy To</label>
                     <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
                     <comment>Comma-separated.</comment>
-                    <validate>validate-email</validate>
+                    <validate>validate-multiple-emails</validate>
                     <depends>
                         <field id="active">1</field>
                     </depends>

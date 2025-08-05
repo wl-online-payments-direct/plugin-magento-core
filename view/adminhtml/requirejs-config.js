@@ -5,6 +5,7 @@ let config = {
         }
     },
     deps: [
-        'Worldline_PaymentCore/js/system-config-reset'
+        'Worldline_PaymentCore/js/system-config-reset',
+        'Worldline_PaymentCore/js/multiple-email-validation'
     ]
 };
