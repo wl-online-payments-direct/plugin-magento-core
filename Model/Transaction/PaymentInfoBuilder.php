@@ -67,10 +67,11 @@ class PaymentInfoBuilder
 
     /**
      * @param PaymentResponse $paymentResponse
+     * @param int $splitPaymentAmount
      *
      * @return PaymentInfoInterface
      */
-    public function buildSplitTransaction(PaymentResponse $paymentResponse): PaymentInfoInterface
+    public function buildSplitTransaction(PaymentResponse $paymentResponse, int $splitPaymentAmount): PaymentInfoInterface
     {
         /** @var PaymentInfoInterface $paymentInfo */
         $paymentInfo = $this->paymentInfoFactory->create();
@@ -84,12 +85,12 @@ class PaymentInfoBuilder
 
         $paymentInfo->setAuthorizedAmount(
             $this->formatAmount(
-                (int) $paymentResponse->getPaymentOutput()->getAcquiredAmount()->getAmount(),
+                (int) $splitPaymentAmount,
                 (string) $currency
             )
         );
         $paymentInfo->setFraudResult((string)$paymentResponse->getPaymentOutput()->
-            getRedirectPaymentMethodSpecificOutput()->getFraudResults()->getFraudServiceResult());
+        getRedirectPaymentMethodSpecificOutput()->getFraudResults()->getFraudServiceResult());
         $paymentInfo->setCardLastNumbers('');
         $paymentInfo->setPaymentProductId((int) $paymentProductId);
         $paymentInfo->setCurrency((string) $currency);
@@ -111,6 +112,17 @@ class PaymentInfoBuilder
         $payment = $this->paymentRepository->get($incrementId);
 
         return $payment->getPaymentId();
+    }
+
+    /**
+     * @param int $splitPaymentAmount
+     * @param string $currency
+     *
+     * @return float
+     */
+    public function getFormattedSplitPaymentAmount(int $splitPaymentAmount, string $currency): float
+    {
+        return $this->formatAmount($splitPaymentAmount, $currency);
     }
 
     private function setPaymentInfo(
