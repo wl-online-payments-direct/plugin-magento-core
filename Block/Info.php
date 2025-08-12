@@ -108,7 +108,7 @@ class Info extends Template
                 PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID
             )) {
             $this->isSplitPayment = true;
-            $specificInformation = array_merge(
+            $specificInformation[] = array_merge(
                 $specificInformation,
                 $this->infoFormatter->format($splitPaymentInfo)
             );
@@ -120,7 +120,7 @@ class Info extends Template
             getFormattedSplitPaymentAmount((int)$this->splitPaymentAmount, $paymentInformation->getCurrency());
             $paymentInformation->setAuthorizedAmount($paymentInformation->getAuthorizedAmount() - $formattedSplitPaymentAmount);
         }
-        $specificInformation = array_merge(
+        $specificInformation[] = array_merge(
             $specificInformation,
             $this->infoFormatter->format($this->getPaymentInformation())
         );

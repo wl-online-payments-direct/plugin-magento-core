@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.28.0
+- Fix wrong handling of payment specific information on order page
+
 #### 2.27.0
 - Fix comma separated email validation in notification settings
 
