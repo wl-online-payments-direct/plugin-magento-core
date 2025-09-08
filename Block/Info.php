@@ -12,6 +12,7 @@ use OnlinePayments\Sdk\Domain\DataObject;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentResponse;
 use OnlinePayments\Sdk\Domain\RefundResponse;
+use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\ClientProviderInterface;
 use Worldline\PaymentCore\Api\Data\PaymentInfoInterface;
 use Worldline\PaymentCore\Api\Data\PaymentProductsDetailsInterface;
@@ -20,9 +21,12 @@ use Worldline\PaymentCore\Model\Config\WorldlineConfig;
 use Worldline\PaymentCore\Model\Transaction\PaymentInfoBuilder;
 use Worldline\PaymentCore\Api\Ui\PaymentIconsProviderInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Info extends Template
 {
-    public const MAX_HEIGHT = '40px';
+    public const MAX_HEIGHT = '25px';
 
     /**
      * @var PaymentIconsProviderInterface
@@ -75,6 +79,11 @@ class Info extends Template
     private $splitPaymentAmount;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var string
      */
     protected $_template = 'Worldline_PaymentCore::info/default.phtml';
@@ -86,6 +95,7 @@ class Info extends Template
         InfoFormatterInterface $infoFormatter,
         ClientProviderInterface $clientProvider,
         WorldlineConfig $worldlineConfig,
+        LoggerInterface $logger,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -94,6 +104,7 @@ class Info extends Template
         $this->infoFormatter = $infoFormatter;
         $this->clientProvider = $clientProvider;
         $this->worldlineConfig = $worldlineConfig;
+        $this->logger = $logger;
     }
 
     public function getSpecificInformation(): array
@@ -118,7 +129,9 @@ class Info extends Template
         if ($this->isSplitPayment) {
             $formattedSplitPaymentAmount = $this->paymentInfoBuilder->
             getFormattedSplitPaymentAmount((int)$this->splitPaymentAmount, $paymentInformation->getCurrency());
-            $paymentInformation->setAuthorizedAmount($paymentInformation->getAuthorizedAmount() - $formattedSplitPaymentAmount);
+            $paymentInformation->setAuthorizedAmount(
+                $paymentInformation->getAuthorizedAmount() - $formattedSplitPaymentAmount
+            );
         }
         $specificInformation[] = array_merge(
             $specificInformation,
@@ -203,8 +216,11 @@ class Info extends Template
             $this->paymentDetails = $this->clientProvider->getClient($storeId)
                 ->merchant($this->worldlineConfig->getMerchantId($storeId))
                 ->payments()
-                ->getPaymentDetails($this->paymentInfoBuilder->getPaymentByOrderId(
-                    $this->getInfo()->getOrder()));
+                ->getPaymentDetails(
+                    $this->paymentInfoBuilder->getPaymentByOrderId(
+                        $this->getInfo()->getOrder()
+                    )
+                );
         }
         $this->splitPayment = ['payment' => null];
 
@@ -221,13 +237,13 @@ class Info extends Template
                 $paymentProductId = $redirectPaymentMethodSpecificOutput ?
                     $redirectPaymentMethodSpecificOutput->getPaymentProductId() : null;
 
-                if (
-                    $paymentProductId === PaymentProductsDetailsInterface::CHEQUE_VACANCES_CONNECT_PRODUCT_ID
-                    || $paymentProductId === PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID
+                if ($paymentProductId === PaymentProductsDetailsInterface::CHEQUE_VACANCES_CONNECT_PRODUCT_ID ||
+                    $paymentProductId === PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID
                 ) {
                     $this->splitPayment['payment'] = $payment;
                 }
             } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
             }
         }
         $payment = $this->splitPayment['payment'];
@@ -235,7 +251,9 @@ class Info extends Template
             return null;
         }
         $this->setSplitPaymentFinalStatus($payment);
-        $this->splitPaymentAmount = $payment->getPaymentOutput()->getAmountOfMoney()->getAmount() - $paymentDetail->getAmountOfMoney()->getAmount();
+        $this->splitPaymentAmount =
+            $payment->getPaymentOutput()->getAmountOfMoney()->getAmount() -
+            $paymentDetail->getAmountOfMoney()->getAmount();
 
         return $this->paymentInfoBuilder->buildSplitTransaction($payment, (int) $this->splitPaymentAmount);
     }

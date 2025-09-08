@@ -3,5 +3,5 @@ $eligibleItems = $block->getEligibleCartItems();
 ?>
 
 <script type="text/javascript">
-    window.worldlineEligibleCartItems = <?= json_encode($eligibleItems) ?>;
+    window.worldlineEligibleCartItems = <?= $block->escapeHtml(json_encode($eligibleItems)) ?>;
 </script>

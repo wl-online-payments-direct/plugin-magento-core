@@ -92,8 +92,8 @@ class Communicator extends IngenicoCommunicator
         ResponseClassMap $responseClassMap,
                          $relativeUriPath,
                          $clientMetaInfo = '',
-        RequestObject $requestParameters = null,
-        CallContext $callContext = null
+        ?RequestObject $requestParameters = null,
+        ?CallContext $callContext = null
     ) {
         $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
         $requestHeaders = $this->getRequestHeaders('GET', $relativeUriPathWithRequestParameters, null, $clientMetaInfo, $callContext);
@@ -146,8 +146,8 @@ class Communicator extends IngenicoCommunicator
                          $relativeUriPath,
                          $clientMetaInfo = '',
                          $requestBodyObject = null,
-        RequestObject $requestParameters = null,
-        CallContext $callContext = null
+        ?RequestObject $requestParameters = null,
+        ?CallContext $callContext = null
     ) {
         $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
         if ($requestBodyObject instanceof DataObject || is_null($requestBodyObject)) {

@@ -71,8 +71,10 @@ class PaymentInfoBuilder
      *
      * @return PaymentInfoInterface
      */
-    public function buildSplitTransaction(PaymentResponse $paymentResponse, int $splitPaymentAmount): PaymentInfoInterface
-    {
+    public function buildSplitTransaction(
+        PaymentResponse $paymentResponse,
+        int $splitPaymentAmount
+    ): PaymentInfoInterface {
         /** @var PaymentInfoInterface $paymentInfo */
         $paymentInfo = $this->paymentInfoFactory->create();
 
@@ -80,7 +82,8 @@ class PaymentInfoBuilder
         $paymentInfo->setStatusCode($paymentResponse->getStatusOutput()->getStatusCode());
         $paymentInfo->setLastTransactionNumber($paymentResponse->getId());
 
-        $paymentProductId = $paymentResponse->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getPaymentProductId();
+        $paymentProductId =
+            $paymentResponse->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getPaymentProductId();
         $currency = $paymentResponse->getPaymentOutput()->getAcquiredAmount()->getCurrencyCode();
 
         $paymentInfo->setAuthorizedAmount(

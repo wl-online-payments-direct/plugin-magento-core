@@ -31,8 +31,7 @@ class Debug extends StreamHandler
         File                   $filesystem,
         LogRepositoryInterface $logRepository,
         LogInterfaceFactory    $logFactory
-    )
-    {
+    ) {
         $this->filesystem = $filesystem;
         parent::__construct(BP . DIRECTORY_SEPARATOR . '/var/log/worldline/debug.log');
 

@@ -2,7 +2,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <!-- Preference -->
-    <preference type="OnlinePayments\Sdk\Communication\DefaultConnection" for="OnlinePayments\Sdk\Communication\Connection" />
+    <virtualType name="Worldline\PaymentCore\OnlinePayments\Sdk\DefaultConnectionVirtual"
+                 type="OnlinePayments\Sdk\Communication\DefaultConnection"/>
+    <preference for="OnlinePayments\Sdk\Communication\Connection"
+                type="Worldline\PaymentCore\OnlinePayments\Sdk\DefaultConnectionVirtual"/>
     <preference type="Magento\Framework\Filesystem\Driver\File" for="Magento\Framework\Filesystem\DriverInterface" />
     <preference type="Worldline\PaymentCore\Model\Log\Log" for="Worldline\PaymentCore\Api\Data\LogInterface" />
     <preference type="Worldline\PaymentCore\Model\Log\LogRepository" for="Worldline\PaymentCore\Api\LogRepositoryInterface" />
@@ -104,6 +107,18 @@
 
     <preference type="Worldline\PaymentCore\Model\Webhook\PlaceOrderManager" for="Worldline\PaymentCore\Api\Webhook\PlaceOrderManagerInterface" />
     <!-- End Preference -->
+
+    <type name="Magento\Framework\HTTP\PhpEnvironment\RemoteAddress">
+        <arguments>
+            <argument name="alternativeHeaders" xsi:type="array">
+                <item name="x-forwarded-for" xsi:type="string">HTTP_X_FORWARDED_FOR</item>
+                <item name="x-real-ip" xsi:type="string">HTTP_X_REAL_IP</item>
+                <item name="cf-connecting-ip" xsi:type="string">HTTP_CF_CONNECTING_IP</item>
+                <item name="true-client-ip" xsi:type="string">HTTP_TRUE_CLIENT_IP</item>
+                <item name="client-ip" xsi:type="string">HTTP_CLIENT_IP</item>
+            </argument>
+        </arguments>
+    </type>
 
     <type name="Worldline\PaymentCore\Block\Info">
         <arguments>

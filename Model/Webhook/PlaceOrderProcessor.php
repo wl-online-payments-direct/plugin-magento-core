@@ -138,24 +138,92 @@ class PlaceOrderProcessor implements ProcessorInterface
     }
 
     /**
+     * Determine if the event should be handled.
+     *
      * @param WebhooksEvent $event
      *
      * @return bool
      */
     private function shouldHandleEvent(WebhooksEvent $event): bool
     {
-        $payment = $event->getPayment() ?: null;
-        $paymentOutput = $payment ? $payment->getPaymentOutput() : null;
-        $redirectMethodSpecificInput = $paymentOutput ? $paymentOutput->getRedirectPaymentMethodSpecificOutput() : null;
-        $paymentProductId = $redirectMethodSpecificInput ? $redirectMethodSpecificInput->getPaymentProductId() : null;
-        $amountOfMoney = $paymentOutput->getAmountOfMoney() ? $paymentOutput->getAmountOfMoney()->getAmount() : null;
-        $acquiredAmount = $paymentOutput->getAcquiredAmount() ? $paymentOutput->getAcquiredAmount()->getAmount() : null;
+        $paymentProductId = $this->getPaymentProductId($event);
 
-        if ($paymentProductId === PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID
-            || $paymentProductId === PaymentProductsDetailsInterface::CHEQUE_VACANCES_CONNECT_PRODUCT_ID) {
-            return $amountOfMoney && $acquiredAmount && ($amountOfMoney === $acquiredAmount);
+        if ($this->isVoucherProduct($paymentProductId)) {
+            return $this->hasEqualAmounts($event);
         }
 
         return true;
+    }
+
+    /**
+     * Get payment product ID from event.
+     *
+     * @param WebhooksEvent $event
+     *
+     * @return int|null
+     */
+    private function getPaymentProductId(WebhooksEvent $event): ?int
+    {
+        $payment = $event->getPayment();
+        if (!$payment) {
+            return null;
+        }
+
+        $paymentOutput = $payment->getPaymentOutput();
+        if (!$paymentOutput) {
+            return null;
+        }
+
+        $redirectOutput = $paymentOutput->getRedirectPaymentMethodSpecificOutput();
+        if (!$redirectOutput) {
+            return null;
+        }
+
+        return $redirectOutput->getPaymentProductId();
+    }
+
+    /**
+     * Check if amounts are equal for voucher products.
+     *
+     * @param WebhooksEvent $event
+     *
+     * @return bool
+     */
+    private function hasEqualAmounts(WebhooksEvent $event): bool
+    {
+        $payment = $event->getPayment();
+        if (!$payment) {
+            return false;
+        }
+
+        $paymentOutput = $payment->getPaymentOutput();
+        if (!$paymentOutput) {
+            return false;
+        }
+
+        $amountOfMoney = $paymentOutput->getAmountOfMoney()
+            ? $paymentOutput->getAmountOfMoney()->getAmount()
+            : null;
+
+        $acquiredAmount = $paymentOutput->getAcquiredAmount()
+            ? $paymentOutput->getAcquiredAmount()->getAmount()
+            : null;
+
+        return $amountOfMoney && $acquiredAmount && ($amountOfMoney === $acquiredAmount);
+    }
+
+    /**
+     * Check if the payment product is a voucher type.
+     *
+     * @param int|null $paymentProductId
+     *
+     * @return bool
+     */
+    private function isVoucherProduct(?int $paymentProductId): bool
+    {
+        return in_array($paymentProductId, [
+            PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID,
+            PaymentProductsDetailsInterface::CHEQUE_VACANCES_CONNECT_PRODUCT_ID
+        ], true);
     }
 }

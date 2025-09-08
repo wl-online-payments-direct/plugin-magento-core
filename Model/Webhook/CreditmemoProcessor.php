@@ -47,6 +47,7 @@ class CreditmemoProcessor implements ProcessorInterface
             return;
         }
 
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction
         sleep(5);
 
         if ($statusCode === TransactionStatusInterface::REFUNDED_CODE) {

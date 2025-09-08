@@ -53,12 +53,12 @@ class EmailSender
     private $emailSendingListRepository;
 
     public function __construct(
-        StateInterface $inlineTranslation,
-        TransportBuilder $transportBuilder,
-        LoggerInterface $logger,
-        OrderSynchronizationConfig $orderSynchronizationConfig,
-        MessageInterfaceFactory $messageFactory,
-        TransportInterfaceFactory $mailTransportFactory,
+        StateInterface                      $inlineTranslation,
+        TransportBuilder                    $transportBuilder,
+        LoggerInterface                     $logger,
+        OrderSynchronizationConfig          $orderSynchronizationConfig,
+        MessageInterfaceFactory             $messageFactory,
+        TransportInterfaceFactory           $mailTransportFactory,
         EmailSendingListRepositoryInterface $emailSendingListRepository
     ) {
         $this->inlineTranslation = $inlineTranslation;
@@ -103,12 +103,12 @@ class EmailSender
 
     public function sendEmail(
         string $template,
-        int $storeId,
+        int    $storeId,
         string $sendFrom,
         string $sendTo,
         string $ccTo = '',
-        array $vars = [],
-        array $options = []
+        array  $vars = [],
+        array  $options = []
     ): bool {
         if (!$options) {
             $options = ['area' => Area::AREA_FRONTEND, 'store' => $storeId];
@@ -157,7 +157,6 @@ class EmailSender
         }
     }
 
-
     /**
      * Converts a string of emails to array
      *
@@ -170,6 +169,8 @@ class EmailSender
         $emailsCleaned = str_replace(' ', '', $emails);
         $emailsArray = explode(',', $emailsCleaned);
 
-        return array_filter($emailsArray, function ($email) { return $email !== ''; });
+        return array_filter($emailsArray, function ($email) {
+            return $email !== '';
+        });
     }
 }

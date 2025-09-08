@@ -1,5 +1,6 @@
 <?php
 $data = $block->getProductMealVoucherData();
 ?>
-<input type="hidden" name="eligible_for_meal_vouchers" value="<?= $data['eligible'] ? '1' : '0' ?>" />
-<input type="hidden" name="product_type" value="<?= $data['type'] ?>" />
+<input type="hidden" name="eligible_for_meal_vouchers"
+       value="<?= $block->escapeHtml($data['eligible']) ? '1' : '0' ?>"/>
+<input type="hidden" name="product_type" value="<?= $block->escapeHtml($data['type']) ?>"/>

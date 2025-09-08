@@ -26,8 +26,8 @@ $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
             ?>
             <?php if ($label !== '' || $value !== ''): ?>
                 <tr>
-                    <th><?= $label ?><?= $label !== '' ? ':' : '' ?></th>
-                    <td><?= $value ?></td>
+                    <th><?= $block->escapeHtml($label) ?><?= $label !== '' ? ':' : '' ?></th>
+                    <td><?= $block->escapeHtml($value) ?></td>
                 </tr>
             <?php endif; ?>
         <?php endforeach; ?>

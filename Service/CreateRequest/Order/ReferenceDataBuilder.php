@@ -26,6 +26,7 @@ class ReferenceDataBuilder implements ReferenceDataBuilderInterface
         /** @var OrderReferences $references */
         $references = $this->orderReferencesFactory->create();
         $references->setMerchantReference($quote->getReservedOrderId());
+        $references->setMerchantParameters("quoteId={$quote->getId()}");
 
         return $references;
     }

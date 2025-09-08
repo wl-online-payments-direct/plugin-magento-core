@@ -76,6 +76,12 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.30.0
+- Add quote ID to request payload
+- Fix wrong IP address being sent on checkout
+- Decrease maximum payment method logos
+- Add compatibility with 2.4.8-p2
+
 #### 2.29.0
 - Fix issue with sending email
 
