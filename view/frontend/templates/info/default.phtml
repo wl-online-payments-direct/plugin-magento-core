@@ -17,13 +17,19 @@ $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
     >
 <?php endif; ?>
 
-<?php if ($specificInfo): ?>
+<?php if (!empty($specificInfo)): ?>
     <table class="data-table admin__table-secondary">
         <?php foreach ($specificInfo as $item): ?>
-            <tr>
-                <th><?= $block->escapeHtml($item['label']) ?>:</th>
-                <td><?= $block->escapeHtml($item['value']) ?></td>
-            </tr>
+            <?php
+            $label = isset($item['label']) ? $block->escapeHtml($item['label']) : '';
+            $value = isset($item['value']) ? $block->escapeHtml($item['value']) : '';
+            ?>
+            <?php if ($label !== '' || $value !== ''): ?>
+                <tr>
+                    <th><?= $label ?><?= $label !== '' ? ':' : '' ?></th>
+                    <td><?= $value ?></td>
+                </tr>
+            <?php endif; ?>
         <?php endforeach; ?>
     </table>
-<?php endif;?>
+<?php endif; ?>

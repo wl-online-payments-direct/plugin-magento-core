@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.29.0
+- Fix issue with sending email
+
 #### 2.28.0
 - Fix wrong handling of payment specific information on order page
 
