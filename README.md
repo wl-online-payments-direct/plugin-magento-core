@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.31.0
+- Update payment brand logos
+
 #### 2.30.0
 - Add quote ID to request payload
 - Fix wrong IP address being sent on checkout
