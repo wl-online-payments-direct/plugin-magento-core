@@ -127,8 +127,8 @@ class PaymentIconsProvider implements PaymentIconsProviderInterface
 
         if ($this->isSvg($asset)) {
             preg_match(self::REGEXP_ATTR_VIEWBOX, $asset->getContent(), $viewBox);
-            $width = (int) $viewBox['width'];
-            $height = (int) $viewBox['height'];
+            $width = (int) ($viewBox['width'] ?? 0);
+            $height = (int) ($viewBox['height'] ?? 0);
         } else {
             $size = getimagesizefromstring($asset->getContent());
             $width = (int) $size[0];
