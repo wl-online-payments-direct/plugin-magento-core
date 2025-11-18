@@ -35,6 +35,7 @@ class PaymentManager implements PaymentManagerInterface
         $this->addCardPaymentMethodData($worldlineResponse, $wlPayment);
         $this->addRedirectPaymentMethodData($worldlineResponse, $wlPayment);
         $this->addSepaPaymentMethodData($worldlineResponse, $wlPayment);
+        $this->addMobilePaymentMethodData($worldlineResponse, $wlPayment);
 
         return $this->paymentRepository->save($wlPayment);
     }
@@ -90,6 +91,21 @@ class PaymentManager implements PaymentManagerInterface
         $wlPayment->setIncrementId($output->getReferences()->getMerchantReference());
         $wlPayment->setPaymentId($worldlineResponse->getId());
         $wlPayment->setPaymentProductId($sepaPaymentMethod->getPaymentProductId());
+        $wlPayment->setAmount($this->getAmount($output));
+        $wlPayment->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
+    }
+
+    private function addMobilePaymentMethodData(DataObject $worldlineResponse, PaymentInterface $wlPayment): void
+    {
+        $output = $worldlineResponse->getPaymentOutput();
+        $mobilePaymentMethod = $output->getMobilePaymentMethodSpecificOutput();
+        if (!$mobilePaymentMethod) {
+            return;
+        }
+
+        $wlPayment->setIncrementId($output->getReferences()->getMerchantReference());
+        $wlPayment->setPaymentId($worldlineResponse->getId());
+        $wlPayment->setPaymentProductId($mobilePaymentMethod->getPaymentProductId());
         $wlPayment->setAmount($this->getAmount($output));
         $wlPayment->setCurrency($output->getAmountOfMoney()->getCurrencyCode());
     }

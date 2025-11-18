@@ -76,6 +76,10 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.32.0
+- Remove MealVouchers configuration from hosted checkout
+- Fix mobile payment method information not being shown in order details
+
 #### 2.31.0
 - Update payment brand logos
 

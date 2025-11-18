@@ -66,14 +66,17 @@ class FraudManager implements FraudManagerInterface
         return $this->fraudRepository->save($fraudEntity);
     }
 
+    /**
+     * @param DataObject $worldlineResponse
+     *
+     * @return DataObject|null
+     */
     private function getOutput(DataObject $worldlineResponse): ?DataObject
     {
         $output = $worldlineResponse->getPaymentOutput();
-        $cardPaymentMethod = $output->getCardPaymentMethodSpecificOutput();
-        if ($cardPaymentMethod) {
-            return $cardPaymentMethod;
-        }
 
-        return $output->getRedirectPaymentMethodSpecificOutput();
+        return $output->getMobilePaymentMethodSpecificOutput()
+            ?? $output->getCardPaymentMethodSpecificOutput()
+            ?? $output->getRedirectPaymentMethodSpecificOutput();
     }
 }
