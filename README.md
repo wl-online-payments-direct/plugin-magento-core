@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+#### 2.33.0
+- Add new payment method: Pledg
+
 #### 2.32.0
 - Remove MealVouchers configuration from hosted checkout
 - Fix mobile payment method information not being shown in order details
