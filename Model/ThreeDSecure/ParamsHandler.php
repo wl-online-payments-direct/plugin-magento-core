@@ -9,6 +9,9 @@ use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 class ParamsHandler
 {
     public const LOW_VALUE_EXEMPTION_TYPE = 'low-value';
+    public const TRANSACTION_RISK_ANALYSIS_EXEMPTION_TYPE = 'transaction-risk-analysis';
+    public const ANALYSIS_PERFORMED_CHALLENGE_INDICATOR = 'no-challenge-requested-risk-analysis-performed';
+    public const NO_CHALLENGE_REQUESTED_CHALLENGE_INDICATOR = 'no-challenge-requested';
 
     /**
      * @var GeneralSettingsConfigInterface
@@ -36,9 +39,14 @@ class ParamsHandler
         }
 
         if ($isAuthExemptionEnabled && (float)$threeDSExemptedAmount >= $baseSubtotal) {
-            $threeDSecure->setSkipAuthentication(true);
+            $threeDSecure->setSkipAuthentication(false);
             $threeDSecure->setExemptionRequest($threeDSExemptedType);
             $threeDSecure->setSkipSoftDecline(false);
+            $threeDSecure->setChallengeIndicator(
+                $threeDSExemptedType === self::TRANSACTION_RISK_ANALYSIS_EXEMPTION_TYPE
+                    ? self::ANALYSIS_PERFORMED_CHALLENGE_INDICATOR
+                    : self::NO_CHALLENGE_REQUESTED_CHALLENGE_INDICATOR
+            );
         }
 
         if ($this->generalSettings->isEnforceAuthEnabled($storeId)) {
