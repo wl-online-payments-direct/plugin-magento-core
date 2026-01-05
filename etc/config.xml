@@ -8,6 +8,9 @@
                 <production_api_url>https://payment.direct.worldline-solutions.com</production_api_url>
                 <testing_api_url>https://payment.preprod.direct.worldline-solutions.com</testing_api_url>
             </connection>
+            <webhook>
+                <webhook_mode>1</webhook_mode>
+            </webhook>
         </worldline_connection>
         <worldline_payment>
             <general_settings>

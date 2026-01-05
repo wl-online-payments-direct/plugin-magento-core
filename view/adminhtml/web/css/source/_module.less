@@ -157,3 +157,57 @@
         }
     }
 }
+
+.tooltip {
+    &._rich {
+        margin-left: 5px;
+        position: relative;
+        float: right;
+        right: 0;
+        left: 0;
+        top: 0;
+        bottom: 0;
+
+        .help {
+            position: relative;
+            margin: 0;
+        }
+
+        .tooltip-content {
+            background: rgba(49, 48, 43, .8);
+            border-radius: 5px;
+            padding: 18px;
+            width: 239px;
+            max-width: 239px;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.4;
+            text-align: left;
+            text-shadow: none;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -120px;
+            margin-bottom: 10px;
+            hyphens: none;
+
+            &:before {
+                content: '';
+                top: auto;
+                right: auto;
+                border-top: 5px solid @color-very-dark-gray-black2;
+                border-bottom: 0;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                bottom: -5px;
+                left: 50%;
+                width: 0;
+                height: 0;
+                opacity: .8;
+            }
+        }
+
+        &:hover .tooltip-content {
+            display: block;
+        }
+    }
+}
