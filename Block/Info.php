@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Block;
 
+use Magento\Payment\Block\Info as MagentoInfo;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
-use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Model\MethodInterface;
 use OnlinePayments\Sdk\Domain\DataObject;
@@ -22,9 +22,10 @@ use Worldline\PaymentCore\Model\Transaction\PaymentInfoBuilder;
 use Worldline\PaymentCore\Api\Ui\PaymentIconsProviderInterface;
 
 /**
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Info extends Template
+class Info extends MagentoInfo
 {
     public const MAX_HEIGHT = '25px';
 
@@ -107,7 +108,7 @@ class Info extends Template
         $this->logger = $logger;
     }
 
-    public function getSpecificInformation(): array
+    public function getTransactionInfo(): array
     {
         $specificInformation = [];
         $splitPaymentInfo = $this->getSplitPaymentInformation();

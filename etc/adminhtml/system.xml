@@ -98,7 +98,7 @@
             </group>
             <group id="webhook" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
                 <label>Webhook</label>
-                <field id="webhook_url" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
+                <field id="webhook_url" translate="label comment tooltip" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
                     <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\WebhookUrl</frontend_model>
                 </field>
                 <field id="key" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1">
@@ -112,8 +112,31 @@
                     <validate>required-entry</validate>
                     <comment>To retrieve webhooks credentials, login to the Worldline Back Office</comment>
                 </field>
-                <field id="webhook_info" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1">
+                <field id="webhook_mode" translate="label comment tooltip" type="Worldline\PaymentCore\Data\Form\Element\WebhookToggle" sortOrder="50" showInDefault="1" showInWebsite="1">
+                    <label>Webhook URL Configuration</label>
+                    <tooltip>Webhooks are the primary method your store uses to receive real-time payment notifications (e.g., paid, failed, refunded), which are essential for creating and updating your orders. Automatic Mode Explained: The plugin automatically sends the store webhook URL with every payment request, which is the safest and most reliable option. This mode also allows you to add up to 4 additional URLs to send notifications to external services, like accounting or subscription management. Please be aware that in this mode, any webhook URLs configured in your merchant portal will be ignored for transactions originating from this specific store. Manual Mode Explained: You will be required to manually copy the Store Webhook URL and paste it into your merchant portal's webhook configuration. Crucially for multistore users, this URL is unique for each store, and this process must be repeated for every single one.</tooltip>
+                    <source_model>Worldline\PaymentCore\Model\Config\Source\WebhookMode</source_model>
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\Form\Field\LabelTooltip</frontend_model>
+                    <comment>Automatic: The plugin automatically sends the webhook URL(s) with each transaction. Manual: You must add your store webhook URL in the merchant portal.</comment>
+                </field>
+                <field id="webhook_mode_warning" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1">
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\WebhookModeWarning</frontend_model>
+                </field>
+                <field id="webhook_info" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1">
                     <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\WebhookInfo</frontend_model>
+                    <depends>
+                        <field id="webhook_mode">0</field>
+                    </depends>
+                </field>
+                <field id="additional_webhook_urls" translate="label tooltip comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1">
+                    <label>Additional Webhook URLs</label>
+                    <tooltip>Specify up to four additional URLs to receive a copy of every webhook event. This is an advanced feature for synchronizing payment data across multiple platforms (e.g., accounting software, fulfillment services). Each URL must be a valid and accessible HTTPS URL capable of receiving POST requests.</tooltip>
+                    <backend_model>Worldline\PaymentCore\Model\Config\Backend\AdditionalWebhookUrls</backend_model>
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\Form\Field\WebhookUrls</frontend_model>
+                    <comment>You can add up to 4 additional webhook URLs.</comment>
+                    <depends>
+                        <field id="webhook_mode">1</field>
+                    </depends>
                 </field>
             </group>
         </section>

@@ -1,6 +1,6 @@
 <?php
 /** @var Worldline\PaymentCore\Block\Info $block */
-$specificInfo = $block->getSpecificInformation();
+$specificInfo = $block->getTransactionInfo();
 $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
 ?>
 
