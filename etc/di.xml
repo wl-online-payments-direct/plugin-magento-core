@@ -83,6 +83,7 @@
     <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\ShippingAddressDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\ShippingAddressDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\Order\SurchargeDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\Order\SurchargeDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\ThreeDSecureDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureDataBuilderInterface" />
+    <preference type="Worldline\PaymentCore\Service\CreateRequest\ThreeDSecureQtyCalculator" for="Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureQtyCalculatorInterface" />
     <preference type="Worldline\PaymentCore\Service\CreateRequest\FeedbacksDataBuilder" for="Worldline\PaymentCore\Api\Service\CreateRequest\FeedbacksDataBuilderInterface" />
 
     <preference type="Worldline\PaymentCore\Infrastructure\ServiceStubSwitcher" for="Worldline\PaymentCore\Api\Test\Infrastructure\ServiceStubSwitcherInterface" />
