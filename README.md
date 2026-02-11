@@ -76,8 +76,11 @@ or install them from the GitHub:
 
 ### Change log:
 
+### 2.39.0
+- Fix: Stability for 3DS exemption capabilities
+
 ### 2.38.0
-- Improved exemptions capabilities related to exemption types (added: No challenge request)
+- Improved exemptions capabilities related to 3DS exemption types (added: No challenge request)
 - Added phone number formatter for sending API requests
 
 ### 2.37.0

@@ -46,10 +46,6 @@ class ParamsHandler
             $threeDSecure->setChallengeIndicator($this->resolveChallengeIndicator($threeDSExemptedType));
         }
 
-        if ($isAuthExemptionEnabled && $threeDSExemptedType === self::NONE_EXEMPTION_TYPE) {
-            $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_CHALLENGE_INDICATOR);
-        }
-
         if ($this->generalSettings->isEnforceAuthEnabled($storeId)) {
             $threeDSecure->setChallengeIndicator('challenge-required');
         }

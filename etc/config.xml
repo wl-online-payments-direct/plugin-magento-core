@@ -53,7 +53,6 @@
                 <logging_lifetime>14</logging_lifetime>
             </general>
         </worldline_debug>
-
         <worldline_order_creator>
             <amount_discrepancy>
                 <review_status>holded</review_status>

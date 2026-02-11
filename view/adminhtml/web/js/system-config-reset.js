@@ -13,6 +13,10 @@ define(['jquery'], function ($) {
 
         let previousType = exemptionTypeSelect.val();
 
+        if (exemptionTypeSelect.val() === 'none' && exemptionLimitNoChallengeInput.value === '') {
+            exemptionLimitNoChallengeInput.value = 100;
+        }
+
         exemptionTypeSelect.on('change', function () {
             const selectedType = $(this).val();
             let sourceValue = null;
@@ -24,9 +28,8 @@ define(['jquery'], function ($) {
                 if (previousType === 'transaction-risk-analysis') {
                     sourceValue = exemptionLimit100Input.value;
                 }
-                if (sourceValue) {
-                    exemptionLimitNoChallengeInput.value = Math.min(sourceValue, 100);
-                }
+
+                exemptionLimitNoChallengeInput.value = sourceValue ? Math.min(sourceValue, 100) : 100;
             }
 
             if (selectedType === 'low-value' && exemptionLimit30Input.value === "") {
@@ -36,9 +39,8 @@ define(['jquery'], function ($) {
                 if (previousType === 'transaction-risk-analysis') {
                     sourceValue = exemptionLimit100Input.value;
                 }
-                if (sourceValue) {
-                    exemptionLimit30Input.value = Math.min(sourceValue, 30);
-                }
+
+                exemptionLimit30Input.value = sourceValue ? Math.min(sourceValue, 30) : 30;
             }
 
             if (selectedType === 'transaction-risk-analysis' && exemptionLimit100Input.value === "") {
@@ -48,9 +50,8 @@ define(['jquery'], function ($) {
                 if (previousType === 'low-value') {
                     sourceValue = exemptionLimit30Input.value;
                 }
-                if (sourceValue) {
-                    exemptionLimit100Input.value = Math.min(sourceValue, 100);
-                }
+
+                exemptionLimit100Input.value = sourceValue ? Math.min(sourceValue, 100) : 100;
             }
 
             previousType = selectedType;
