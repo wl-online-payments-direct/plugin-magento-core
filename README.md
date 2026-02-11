@@ -76,11 +76,16 @@ or install them from the GitHub:
 
 ### Change log:
 
+### 2.38.0
+- Improved exemptions capabilities related to exemption types (added: No challenge request)
+- Added phone number formatter for sending API requests
+
 ### 2.37.0
 - Remove Mealvouchers logo from checkout page when using "Hosted Checkout (redirect to Worldline)"
 
 #### 2.36.0
 - Fix: Do not allow usage of decimals in the object cardPaymentMethodSpecificInput.paymentProduct130SpecificInput.threeDSecure.numberOfItems
+- Fix amount discrepancy issues
 
 #### 2.35.0
 - Added: Possibility to auto-include primary webhooks URL in the payload of payment request, and to configure up to 4 additional endpoints.
@@ -97,6 +102,8 @@ or install them from the GitHub:
 - Fix mobile payment method information not being shown in order details
 
 #### 2.31.0
+- Add allow amount discrepancy option
+- Fix print invoice issue
 - Update payment brand logos
 
 #### 2.30.0

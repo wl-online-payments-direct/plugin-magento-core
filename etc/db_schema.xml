@@ -172,4 +172,10 @@
                     referenceColumn="payment_id"
                     onDelete="NO ACTION"/>
     </table>
+    <table name="sales_order" resource="sales">
+        <column xsi:type="smallint" name="discrepancy_accepted" nullable="false" default="0"
+                comment="Discrepancy Accepted Flag"/>
+        <column xsi:type="smallint" name="discrepancy_rejected" nullable="false" default="0"
+                comment="Discrepancy Rejected Flag"/>
+    </table>
 </schema>

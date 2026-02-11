@@ -7,6 +7,9 @@ use Worldline\PaymentCore\Api\Service\CreateRequest\ThreeDSecureQtyCalculatorInt
 
 class ThreeDSecureQtyCalculator implements ThreeDSecureQtyCalculatorInterface
 {
+    /**
+     * @inheritDoc
+     */
     public function calculateNumberOfItems(CartInterface $quote): int
     {
         $numberOfItems = 0;
@@ -30,7 +33,7 @@ class ThreeDSecureQtyCalculator implements ThreeDSecureQtyCalculatorInterface
             if ($qty == (int)$qty) {
                 $numberOfItems += (int)$qty;
             } else {
-                $numberOfItems += 1;
+                $numberOfItems++;
             }
         }
 

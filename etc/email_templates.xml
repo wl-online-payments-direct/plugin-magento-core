@@ -30,4 +30,10 @@
               type="html"
               module="Worldline_PaymentCore"
               area="frontend"/>
+    <template id="worldline_order_creator_amount_discrepancy_notifications_amount_discrepancy_template"
+              label="Order with Amount Discrepancy"
+              file="order_amount_discrepancy.html"
+              type="html"
+              module="Worldline_PaymentCore"
+              area="adminhtml"/>
 </config>

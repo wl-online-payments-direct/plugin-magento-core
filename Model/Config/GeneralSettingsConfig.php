@@ -10,6 +10,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
 use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Sales\Model\Order;
 
 class GeneralSettingsConfig implements GeneralSettingsConfigInterface
 {
@@ -17,11 +18,15 @@ class GeneralSettingsConfig implements GeneralSettingsConfigInterface
     public const ENFORCE_AUTH = 'worldline_payment/general_settings/enforce_authentication';
     public const AUTH_EXEMPTION = 'worldline_payment/general_settings/authentication_exemption';
     public const AUTH_EXEMPTION_TYPE = 'worldline_payment/general_settings/authentication_exemption_type';
+    public const AUTH_NO_CHALLENGE_AMOUNT =
+        'worldline_payment/general_settings/authentication_exemption_limit_no_challenge';
     public const AUTH_LOW_VALUE_AMOUNT = 'worldline_payment/general_settings/authentication_exemption_limit_30';
     public const AUTH_TRANSACTION_RISK_ANALYSIS_AMOUNT =
         'worldline_payment/general_settings/authentication_exemption_limit_100';
     public const PWA_ROUTE = 'worldline_payment/general_settings/pwa_route';
     public const APPLY_SURCHARGE = 'worldline_payment/general_settings/apply_surcharge';
+    public const ENABLE_AMOUNT_DISCREPANCY = 'worldline_order_creator/amount_discrepancy/enable_amount_discrepancy';
+    public const ORDER_DISCREPANCY_STATUS = 'worldline_order_creator/amount_discrepancy/review_status';
 
     /**
      * @var State
@@ -75,14 +80,19 @@ class GeneralSettingsConfig implements GeneralSettingsConfigInterface
         return $this->scopeConfig->getValue(self::AUTH_EXEMPTION_TYPE, ScopeInterface::SCOPE_STORE, $scopeCode);
     }
 
-    public function getAuthLowValueAmount(?int $scopeCode = null): ?string
-    {
-        return $this->scopeConfig->getValue(self::AUTH_LOW_VALUE_AMOUNT, ScopeInterface::SCOPE_STORE, $scopeCode);
-    }
-
     public function saveAuthExemptionType(string $type): void
     {
         $this->configWriter->save(self::AUTH_EXEMPTION_TYPE, $type, ScopeInterface::SCOPE_STORE);
+    }
+
+    public function getAuthNoChallengeAmount(?int $scopeCode = null): ?string
+    {
+        return $this->scopeConfig->getValue(self::AUTH_NO_CHALLENGE_AMOUNT, ScopeInterface::SCOPE_STORE, $scopeCode);
+    }
+
+    public function getAuthLowValueAmount(?int $scopeCode = null): ?string
+    {
+        return $this->scopeConfig->getValue(self::AUTH_LOW_VALUE_AMOUNT, ScopeInterface::SCOPE_STORE, $scopeCode);
     }
 
     public function saveAuthLowValueAmount(string $amount): void
@@ -122,5 +132,17 @@ class GeneralSettingsConfig implements GeneralSettingsConfigInterface
     public function getValue(string $path, ?int $scopeCode = null): ?string
     {
         return (string)$this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $scopeCode);
+    }
+
+    public function isAmountDiscrepancyEnabled(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::ENABLE_AMOUNT_DISCREPANCY);
+    }
+
+    public function getOrderDiscrepancyStatus(): ?string
+    {
+        $orderDiscrepancyStatus = $this->scopeConfig->getValue(self::ORDER_DISCREPANCY_STATUS);
+
+        return $orderDiscrepancyStatus ? $orderDiscrepancyStatus : Order::STATE_HOLDED;
     }
 }

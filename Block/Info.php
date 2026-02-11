@@ -4,8 +4,13 @@ declare(strict_types=1);
 namespace Worldline\PaymentCore\Block;
 
 use Magento\Payment\Block\Info as MagentoInfo;
+use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
+use Worldline\PaymentCore\Model\Order\CurrencyAmountNormalizer;
+use Worldline\PaymentCore\Model\Order\ValidatorPool\DiscrepancyValidator;
+use Worldline\PaymentCore\Model\OrderState\OrderStateHelper;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
+use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Model\MethodInterface;
 use OnlinePayments\Sdk\Domain\DataObject;
@@ -24,6 +29,7 @@ use Worldline\PaymentCore\Api\Ui\PaymentIconsProviderInterface;
 /**
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class Info extends MagentoInfo
 {
@@ -89,6 +95,31 @@ class Info extends MagentoInfo
      */
     protected $_template = 'Worldline_PaymentCore::info/default.phtml';
 
+    /**
+     * @var GeneralSettingsConfigInterface
+     */
+    private $generalSettings;
+
+    /**
+     * @var DiscrepancyValidator
+     */
+    private $discrepancyValidator;
+
+    /**
+     * @var CurrencyAmountNormalizer
+     */
+    private $currencyAmountNormalizer;
+
+    /**
+     * @var OrderStateHelper
+     */
+    private $orderStateHelper;
+
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+     * @SuppressWarnings(PHPMD.TooManyFields)
+     */
     public function __construct(
         Context $context,
         PaymentIconsProviderInterface $paymentIconProvider,
@@ -97,6 +128,11 @@ class Info extends MagentoInfo
         ClientProviderInterface $clientProvider,
         WorldlineConfig $worldlineConfig,
         LoggerInterface $logger,
+        Registry $registry,
+        GeneralSettingsConfigInterface $generalSettings,
+        DiscrepancyValidator $discrepancyValidator,
+        CurrencyAmountNormalizer $currencyAmountNormalizer,
+        OrderStateHelper $orderStateHelper,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -106,6 +142,11 @@ class Info extends MagentoInfo
         $this->clientProvider = $clientProvider;
         $this->worldlineConfig = $worldlineConfig;
         $this->logger = $logger;
+        $this->registry = $registry;
+        $this->generalSettings = $generalSettings;
+        $this->discrepancyValidator = $discrepancyValidator;
+        $this->currencyAmountNormalizer = $currencyAmountNormalizer;
+        $this->orderStateHelper = $orderStateHelper;
     }
 
     public function getTransactionInfo(): array
@@ -140,6 +181,79 @@ class Info extends MagentoInfo
         );
 
         return $specificInformation;
+    }
+
+    /**
+     * @return array|void
+     */
+    public function getOrderDiscrepancy()
+    {
+        $order = $this->registry->registry('current_order');
+        if (!$order) {
+            return;
+        }
+
+        $paymentInfo = $this->getPaymentInformation();
+        $wlPayment = $this->discrepancyValidator->getWlPayment($order->getIncrementId());
+        $currency = $wlPayment->getCurrency();
+        $paymentAmount = (float)$this->currencyAmountNormalizer->normalize((float) $wlPayment->getAmount(), $currency);
+        $statusCode = $paymentInfo->getStatusCode();
+        $orderTotal = round((float)$order->getGrandTotal(), 2);
+        $isDiscrepancyOrder = $orderTotal !== $paymentAmount;
+
+        $discrepancyStatus = $this->generalSettings->getOrderDiscrepancyStatus();
+        $discrepancyState = $this->orderStateHelper->getStateByStatus($discrepancyStatus);
+
+        if ($isDiscrepancyOrder && $order->getState() !== $discrepancyState &&
+            !$this->isOrderDiscrepancyAccepted() && !$this->isOrderDiscrepancyRefunded()) {
+            $order->setState($discrepancyState)->setStatus($discrepancyStatus);
+        }
+
+        return [
+            'isDiscrepancyOrder' => $isDiscrepancyOrder,
+            'orderTotal' => $orderTotal,
+            'currency' => $order->getOrderCurrency()->getCurrencySymbol(),
+            'paymentAmount' => $paymentAmount,
+            'statusCode' => $statusCode,
+            'transactionId' => $paymentInfo->getLastTransactionNumber(),
+            'currencyName' => $currency
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderDiscrepancyAccepted(): bool
+    {
+        $order = $this->registry->registry('current_order');
+        if (!$order) {
+            return false;
+        }
+
+        return (bool)$order->getData('discrepancy_accepted');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrderDiscrepancyRefunded(): bool
+    {
+        $order = $this->registry->registry('current_order');
+        if (!$order) {
+            return false;
+        }
+
+        return (bool)$order->getData('discrepancy_rejected');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentOrderId()
+    {
+        $order = $this->registry->registry('current_order');
+
+        return $order ? $order->getId() : '';
     }
 
     public function getPaymentTitle(array $paymentInformation = []): string
@@ -213,50 +327,127 @@ class Info extends MagentoInfo
     {
         $storeId = (int)$this->getInfo()->getOrder()->getStoreId();
 
-        if (null === $this->paymentDetails) {
-            $this->paymentDetails = $this->clientProvider->getClient($storeId)
-                ->merchant($this->worldlineConfig->getMerchantId($storeId))
-                ->payments()
-                ->getPaymentDetails(
-                    $this->paymentInfoBuilder->getPaymentByOrderId(
-                        $this->getInfo()->getOrder()
-                    )
-                );
+        try {
+            $this->loadPaymentDetails($storeId);
+
+            $payment = $this->findSplitPayment($storeId);
+            if (!$payment) {
+                return null;
+            }
+
+            $this->setSplitPaymentFinalStatus($payment);
+            $this->calculateSplitPaymentAmount($payment);
+
+            return $this->paymentInfoBuilder->buildSplitTransaction(
+                $payment,
+                (int) $this->splitPaymentAmount
+            );
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+            return null;
         }
+    }
+
+    /**
+     * Load payment details if not already loaded.
+     *
+     * @param int $storeId
+     *
+     * @return void
+     */
+    private function loadPaymentDetails(int $storeId): void
+    {
+        if ($this->paymentDetails !== null) {
+            return;
+        }
+
+        $order = $this->getInfo()->getOrder();
+        $paymentId = $this->paymentInfoBuilder->getPaymentByOrderId($order);
+
+        $this->paymentDetails = $this->clientProvider->getClient($storeId)
+            ->merchant($this->worldlineConfig->getMerchantId($storeId))
+            ->payments()
+            ->getPaymentDetails($paymentId);
+    }
+
+    /**
+     * Find the split payment with a specific product ID.
+     *
+     * @param int $storeId
+     *
+     * @return object|mixed|null
+     */
+    private function findSplitPayment(int $storeId): ?object
+    {
         $this->splitPayment = ['payment' => null];
 
         foreach ($this->paymentDetails->getOperations() as $paymentDetail) {
-            try {
-                $payment = $this->clientProvider->getClient($storeId)
-                    ->merchant($this->worldlineConfig->getMerchantId($storeId))
-                    ->payments()
-                    ->getPayment($paymentDetail->getId());
+            $payment = $this->safeGetPayment($storeId, $paymentDetail->getId());
+            if (!$payment) {
+                continue;
+            }
 
-                $paymentOutput = $this->getOutput($payment);
-                $redirectPaymentMethodSpecificOutput = $paymentOutput ?
-                    $paymentOutput->getRedirectPaymentMethodSpecificOutput() : null;
-                $paymentProductId = $redirectPaymentMethodSpecificOutput ?
-                    $redirectPaymentMethodSpecificOutput->getPaymentProductId() : null;
-
-                if ($paymentProductId === PaymentProductsDetailsInterface::CHEQUE_VACANCES_CONNECT_PRODUCT_ID ||
-                    $paymentProductId === PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID
-                ) {
-                    $this->splitPayment['payment'] = $payment;
-                }
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
+            $productId = $this->getPaymentProductId($payment);
+            if ($this->isSplitPaymentProduct($productId)) {
+                $this->splitPayment['payment'] = $payment;
+                break;
             }
         }
-        $payment = $this->splitPayment['payment'];
-        if (!$payment) {
+
+        return $this->splitPayment['payment'];
+    }
+
+    /**
+     * Safely fetch a payment and log any exceptions.
+     *
+     * @param int $storeId
+     * @param string $paymentId
+     *
+     * @return object|null
+     */
+    private function safeGetPayment(int $storeId, string $paymentId): ?object
+    {
+        try {
+            return $this->clientProvider->getClient($storeId)
+                ->merchant($this->worldlineConfig->getMerchantId($storeId))
+                ->payments()
+                ->getPayment($paymentId);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
             return null;
         }
-        $this->setSplitPaymentFinalStatus($payment);
+    }
+
+    /**
+     * Extract the product ID from a payment.
+     */
+    private function getPaymentProductId($payment): ?int
+    {
+        $output = $this->getOutput($payment);
+        $redirectOutput = $output ? $output->getRedirectPaymentMethodSpecificOutput() : null;
+        return $redirectOutput ? $redirectOutput->getPaymentProductId() : null;
+    }
+
+    /**
+     * Check if a product ID is one of the split payment product types.
+     */
+    private function isSplitPaymentProduct(?int $productId): bool
+    {
+        return in_array($productId, [
+            PaymentProductsDetailsInterface::CHEQUE_VACANCES_CONNECT_PRODUCT_ID,
+            PaymentProductsDetailsInterface::MEALVOUCHERS_PRODUCT_ID,
+        ], true);
+    }
+
+    /**
+     * Calculate the split payment amount difference.
+     */
+    private function calculateSplitPaymentAmount($payment): void
+    {
+        $lastOperation = end($this->paymentDetails->getOperations());
         $this->splitPaymentAmount =
             $payment->getPaymentOutput()->getAmountOfMoney()->getAmount() -
-            $paymentDetail->getAmountOfMoney()->getAmount();
-
-        return $this->paymentInfoBuilder->buildSplitTransaction($payment, (int) $this->splitPaymentAmount);
+            $lastOperation->getAmountOfMoney()->getAmount();
     }
 
     public function getMethod(): MethodInterface

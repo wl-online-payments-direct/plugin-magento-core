@@ -15,6 +15,7 @@ use OnlinePayments\Sdk\Domain\PersonalInformationFactory;
 use OnlinePayments\Sdk\Domain\PersonalNameFactory;
 use Worldline\PaymentCore\Api\Service\CreateRequest\Order\CustomerDataBuilderInterface;
 use Worldline\PaymentCore\Gateway\Request\Customer\DeviceDataBuilder;
+use Worldline\PaymentCore\Model\Country\CallingCodeProvider;
 
 class CustomerDataBuilder implements CustomerDataBuilderInterface
 {
@@ -71,6 +72,11 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
      */
     private $deviceDataBuilder;
 
+    /**
+     * @var CallingCodeProvider
+     */
+    private $callingCodeProvider;
+
     public function __construct(
         CustomerFactory $customerFactory,
         PersonalNameFactory $personalNameFactory,
@@ -78,7 +84,8 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
         CompanyInformationFactory $companyInformationFactory,
         AddressFactory $addressFactory,
         ContactDetailsFactory $contactDetailsFactory,
-        DeviceDataBuilder $deviceDataBuilder
+        DeviceDataBuilder $deviceDataBuilder,
+        CallingCodeProvider $callingCodeProvider
     ) {
         $this->customerFactory = $customerFactory;
         $this->personalNameFactory = $personalNameFactory;
@@ -87,6 +94,7 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
         $this->addressFactory = $addressFactory;
         $this->contactDetailsFactory = $contactDetailsFactory;
         $this->deviceDataBuilder = $deviceDataBuilder;
+        $this->callingCodeProvider = $callingCodeProvider;
     }
 
     public function build(CartInterface $quote): Customer
@@ -149,7 +157,10 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
     {
         $contactDetails = $this->contactDetailsFactory->create();
         $contactDetails->setEmailAddress($this->billingAddress->getEmail());
-        $telephone = '+' . preg_replace('/\D+/', '', (string) $this->billingAddress->getTelephone());
+        $telephone = $this->callingCodeProvider->formatE164(
+            $this->billingAddress->getTelephone(),
+            $this->billingAddress->getCountryId()
+        );
         $contactDetails->setPhoneNumber($telephone);
         $this->customer->setContactDetails($contactDetails);
     }

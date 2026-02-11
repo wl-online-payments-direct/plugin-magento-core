@@ -168,9 +168,9 @@
                         <field id="enforce_authentication">0</field>
                     </depends>
                 </field>
-                <field id="authentication_exemption_type" translate="label tooltip comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1">
+                <field id="authentication_exemption_type" translate="label tooltip comment" type="select" sortOrder="31" showInDefault="1" showInWebsite="1">
                     <label>Exemption type</label>
-                    <tooltip>The Low-Value exemption is suitable for transactions below the specified monetary threshold of 30 EUR, allowing these low-value transactions a change to bypass Strong Customer Authentication (SCA) and streamline the checkout process. On the other hand, the Transaction-Risk-Analysis exemption enables a dynamic risk assessment for your transactions. The card issuer and your acquirer will evaluate the transaction based on various risk factors, allowing transactions up to a limit of 100 EUR to qualify for exemption if they are deemed low risk. Make your selection carefully to optimize the balance between customer experience and security for your transactions.</tooltip>
+                    <tooltip>The No-Challenge Preference requests the card issuer (and the customer’s card) not to apply Strong Customer Authentication (SCA). The issuer will approve or deny this request, and the transaction will proceed accordingly. The Low-Value exemption applies to transactions below the defined threshold (30 EUR), allowing these low-value payments to bypass SCA and speed up checkout. The Transaction Risk Analysis (TRA) exemption enables a dynamic risk assessment; the issuer and your acquirer will evaluate risk factors, allowing transactions up to 100 EUR to qualify for exemption if deemed low risk. Note that TRA typically requires a formal agreement with your acquirer; enable TRA only after such an agreement is in place. Otherwise, all card transactions may be blocked. Choose carefully to balance user experience and security.</tooltip>
                     <source_model>Worldline\HostedCheckout\Config\Source\ThreeDS\ExemptionType</source_model>
                     <comment><![CDATA[Please select the exemption type.]]></comment>
                     <depends>
@@ -179,7 +179,28 @@
                         <field id="authentication_exemption">1</field>
                     </depends>
                 </field>
-                <field id="authentication_exemption_limit_30" translate="label tooltip comment" type="text" sortOrder="31" showInDefault="1" showInWebsite="1">
+                <field id="transaction_risk_analysis_warning" translate="label" type="text" sortOrder="32" showInDefault="1" showInWebsite="1">
+                    <frontend_model>Worldline\PaymentCore\Block\Adminhtml\System\Config\TransactionRiskAnalysisWarning</frontend_model>
+                    <depends>
+                        <field id="enable_3d">1</field>
+                        <field id="enforce_authentication">0</field>
+                        <field id="authentication_exemption">1</field>
+                        <field id="authentication_exemption_type">transaction-risk-analysis</field>
+                    </depends>
+                </field>
+                <field id="authentication_exemption_limit_no_challenge" translate="label tooltip comment" type="text" sortOrder="33" showInDefault="1" showInWebsite="1">
+                    <label>Exemption limit</label>
+                    <tooltip>The exemption limit is specified in EUR. Therefore, if the checkout currency is not in EUR, the conversion will depend on the exchange rate to EUR. It is essential to have EUR configured in your environment, and to ensure accurate conversions, please keep your exchange rates updated. If EUR is not configured, the 3DS exemption will not be applied, and the transaction will not have the exemption requested. Additional Note: PSD2 designates the EUR as the base currency for determining exemption limits for other currencies in the EEA. However, each region can decide to adapt these limits, and regions outside the EEA may also support exemption requests. Due to these complexities, we cannot guarantee that the exemption request will be considered by the issuer or your acquirer.</tooltip>
+                    <validate>validate-digits validate-digits-range digits-range-0-100</validate>
+                    <comment><![CDATA[Please enter the amount limit (0 to 100 EUR).]]></comment>
+                    <depends>
+                        <field id="enable_3d">1</field>
+                        <field id="enforce_authentication">0</field>
+                        <field id="authentication_exemption">1</field>
+                        <field id="authentication_exemption_type">none</field>
+                    </depends>
+                </field>
+                <field id="authentication_exemption_limit_30" translate="label tooltip comment" type="text" sortOrder="33" showInDefault="1" showInWebsite="1">
                     <label>Exemption limit</label>
                     <tooltip>The exemption limit is specified in EUR. Therefore, if the checkout currency is not in EUR, the conversion will depend on the exchange rate to EUR. It is essential to have EUR configured in your environment, and to ensure accurate conversions, please keep your exchange rates updated. If EUR is not configured, the 3DS exemption will not be applied, and the transaction will not have the exemption requested. Additional Note: PSD2 designates the EUR as the base currency for determining exemption limits for other currencies in the EEA. However, each region can decide to adapt these limits, and regions outside the EEA may also support exemption requests. Due to these complexities, we cannot guarantee that the exemption request will be considered by the issuer or your acquirer.</tooltip>
                     <validate>validate-digits validate-digits-range digits-range-0-30</validate>
@@ -191,7 +212,7 @@
                         <field id="authentication_exemption_type">low-value</field>
                     </depends>
                 </field>
-                <field id="authentication_exemption_limit_100" translate="label tooltip comment" type="text" sortOrder="31" showInDefault="1" showInWebsite="1">
+                <field id="authentication_exemption_limit_100" translate="label tooltip comment" type="text" sortOrder="33" showInDefault="1" showInWebsite="1">
                     <label>Exemption limit</label>
                     <tooltip>The exemption limit is specified in EUR. Therefore, if the checkout currency is not in EUR, the conversion will depend on the exchange rate to EUR. It is essential to have EUR configured in your environment, and to ensure accurate conversions, please keep your exchange rates updated. If EUR is not configured, the 3DS exemption will not be applied, and the transaction will not have the exemption requested. Additional Note: PSD2 designates the EUR as the base currency for determining exemption limits for other currencies in the EEA. However, each region can decide to adapt these limits, and regions outside the EEA may also support exemption requests. Due to these complexities, we cannot guarantee that the exemption request will be considered by the issuer or your acquirer.</tooltip>
                     <validate>validate-digits validate-digits-range digits-range-0-100</validate>
@@ -238,6 +259,85 @@
                     <comment><![CDATA[Default value: every minute. <a href='http://crontab.guru/' target='_blank'>Need help?</a>]]></comment>
                 </field>
             </group>
+
+            <group id="amount_discrepancy" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Order Creation on Amount Discrepancy</label>
+
+                <!-- Enable toggle -->
+                <field id="enable_amount_discrepancy" translate="label tooltip" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable</label>
+                    <tooltip>If set to 'Yes', orders will be created even if the paid amount doesn't match the order total. The order will be placed in a review status.</tooltip>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <!-- Order status selector, only visible if enabled -->
+                <field id="review_status" translate="label tooltip" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order Status for Review</label>
+                    <tooltip>Select the status for orders created with an amount discrepancy. These orders will require manual review.</tooltip>
+                    <source_model>Worldline\PaymentCore\Model\Config\Source\OrderStatus</source_model>
+                    <depends>
+                        <field id="enable_amount_discrepancy">1</field>
+                    </depends>
+                </field>
+            </group>
+
+            <group id="amount_discrepancy_notifications" translate="label" type="text" sortOrder="16" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Order Amount Discrepancy Notifications</label>
+                <depends>
+                    <field id="worldline_order_creator/amount_discrepancy/enable_amount_discrepancy">1</field>
+                </depends>
+
+                <!-- Enable -->
+                <field id="sending_amount_discrepancy_emails" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <!-- Sender -->
+                <field id="amount_discrepancy_sender" translate="label" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <depends>
+                        <field id="sending_amount_discrepancy_emails">1</field>
+                    </depends>
+                </field>
+
+                <!-- Recipient -->
+                <field id="amount_discrepancy_recipient" translate="label" type="select" sortOrder="30"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Recipient</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <depends>
+                        <field id="sending_amount_discrepancy_emails">1</field>
+                    </depends>
+                </field>
+
+                <!-- Copy To -->
+                <field id="amount_discrepancy_copy_to" translate="label" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Email Copy To</label>
+                    <comment>Comma-separated.</comment>
+                    <validate>validate-multiple-emails</validate>
+                    <depends>
+                        <field id="sending_amount_discrepancy_emails">1</field>
+                    </depends>
+                </field>
+
+                <!-- Email Template -->
+                <field id="amount_discrepancy_template" translate="label" type="select" sortOrder="50"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Email Template</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                    <depends>
+                        <field id="sending_amount_discrepancy_emails">1</field>
+                    </depends>
+                </field>
+            </group>
+
             <group id="refused_notification" translate="label" type="text" sortOrder="20" showInDefault="1">
                 <label>Payment Refused Notifications</label>
                 <field id="sending_payment_refused_emails" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1">

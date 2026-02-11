@@ -1,0 +1,28 @@
+<!--@subject {{trans "Amount Discrepancy"}} @-->
+
+<div class="wl-main-container">
+    <div class="wl-text-container">
+        <div>
+            <h1>{{trans "Amount Discrepancy Detected"}}</h1>
+            <p>{{trans "An order has been successfully created but requires manual review due to a mismatch between the order total and the amount paid."}}</p>
+
+            <h2>{{trans "Order Details"}}</h2>
+            <ul>
+                <li><strong>{{trans "Order ID"}}:</strong> {{var increment_id}}</li>
+                <li><strong>{{trans "Quote ID"}}:</strong> {{var quote_id}}</li>
+                <li><strong>{{trans "Admin Link"}}:</strong>
+                    <a href="{{var admin_order_url}}">{{trans "View Order in Admin"}}</a>
+                </li>
+            </ul>
+
+            <h2>{{trans "Discrepancy Details"}}</h2>
+            <ul>
+                <li><strong>{{trans "Order total:"}}:</strong> {{var order_grand_total}}</li>
+                <li><strong>{{trans "Amount paid:"}}:</strong> {{var payment_amount}}</li>
+                <li><strong>{{trans "Difference:"}}:</strong> {{var discrepancy_amount}}</li>
+            </ul>
+
+            <p>{{trans "Please review the order in the Magento Admin to either accept it or cancel and refund the payment."}}</p>
+        </div>
+    </div>
+</div>
