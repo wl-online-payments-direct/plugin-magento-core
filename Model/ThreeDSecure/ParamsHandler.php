@@ -52,12 +52,12 @@ class ParamsHandler
     }
 
     /**
-     * @param string $type
+     * @param string|null $type
      * @param int $storeId
      *
      * @return string
      */
-    private function getExemptedAmount(string $type, int $storeId): string
+    private function getExemptedAmount(?string $type, int $storeId): string
     {
         switch ($type) {
             case self::NONE_EXEMPTION_TYPE:
