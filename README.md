@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+### 2.41.0
+- Fix order creation when 3DS exemption configuration is disabled
+
 ### 2.39.0
 - Fix: Stability for 3DS exemption capabilities
 
