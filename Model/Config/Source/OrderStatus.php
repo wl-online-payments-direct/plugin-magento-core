@@ -4,6 +4,7 @@ namespace Worldline\PaymentCore\Model\Config\Source;
 
 use Magento\Sales\Model\Config\Source\Order\Status as MagentoOrderStatus;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Config as OrderConfig;
 
 class OrderStatus extends MagentoOrderStatus
@@ -25,17 +26,32 @@ class OrderStatus extends MagentoOrderStatus
         parent::__construct($orderConfig);
     }
 
+    private function setStateStatuses()
+    {
+        $this->_stateStatuses = [Order::STATE_PAYMENT_REVIEW];
+    }
+
     public function toOptionArray()
     {
+        $this->setStateStatuses();
+
         $options = parent::toOptionArray();
 
-        $defaultReviewStatus = 'holded';
+        $defaultReviewStatus = 'payment_review';
 
-        foreach ($options as &$option) {
+        $head = [];
+        $tail = [];
+
+        foreach ($options as $option) {
             if ($option['value'] === $defaultReviewStatus) {
                 $option['label'] = $option['label'] . ' (Default)';
+                $head[] = $option;
+            } else {
+                $tail[] = $option;
             }
         }
+
+        $options = array_merge($head, $tail);
 
         return array_filter($options, function ($option) {
             return $option['value'] !== '';

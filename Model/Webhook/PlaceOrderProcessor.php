@@ -5,6 +5,7 @@ namespace Worldline\PaymentCore\Model\Webhook;
 
 use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 use Worldline\PaymentCore\Model\AmountDiscrepancy\AmountDiscrepancyNotification;
+use Worldline\PaymentCore\Model\Order\CurrencyAmountNormalizer;
 use Worldline\PaymentCore\Model\Order\ValidatorPool\DiscrepancyValidator;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Quote\Model\QuoteManagement;
@@ -21,6 +22,7 @@ use Worldline\PaymentCore\Model\Order\FailedOrderCreationNotification;
 use Worldline\PaymentCore\Api\Webhook\PlaceOrderManagerInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Worldline\PaymentCore\Model\OrderState\OrderStateHelper;
 
 /**
  * Identify if a webhook can trigger the order placement process, place an order and save payment information
@@ -87,6 +89,11 @@ class PlaceOrderProcessor implements ProcessorInterface
     private $amountDiscrepancyNotification;
 
     /**
+     * @var OrderStateHelper
+     */
+    private $stateHelper;
+
+    /**
      * @var GeneralSettingsConfigInterface
      */
     private $generalSettings;
@@ -102,8 +109,14 @@ class PlaceOrderProcessor implements ProcessorInterface
     private $orderRepository;
 
     /**
+     * @var CurrencyAmountNormalizer
+     */
+    private $normalizer;
+
+    /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+     * @SuppressWarnings(PHPMD.TooManyFields)
      */
     public function __construct(
         LoggerInterface $logger,
@@ -117,9 +130,11 @@ class PlaceOrderProcessor implements ProcessorInterface
         SessionDataManagerInterface $sessionDataManager,
         DiscrepancyValidator $discrepancyValidator,
         AmountDiscrepancyNotification $amountDiscrepancyNotification,
+        OrderStateHelper $stateHelper,
         GeneralSettingsConfigInterface $generalSettings,
         ResourceConnection $resourceConnection,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        CurrencyAmountNormalizer $normalizer
     ) {
         $this->logger = $logger;
         $this->quoteManagement = $quoteManagement;
@@ -132,9 +147,11 @@ class PlaceOrderProcessor implements ProcessorInterface
         $this->sessionDataManager = $sessionDataManager;
         $this->discrepancyValidator = $discrepancyValidator;
         $this->amountDiscrepancyNotification = $amountDiscrepancyNotification;
+        $this->stateHelper = $stateHelper;
         $this->generalSettings = $generalSettings;
         $this->resourceConnection = $resourceConnection;
         $this->orderRepository = $orderRepository;
+        $this->normalizer = $normalizer;
     }
 
     /**
@@ -223,10 +240,6 @@ class PlaceOrderProcessor implements ProcessorInterface
      */
     private function handleOrderDiscrepancy($order): void
     {
-        // phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
-        sleep(2);
-        // phpcs:enable Magento2.Functions.DiscouragedFunction.Discouraged
-
         if (!$order) {
             return;
         }
@@ -237,8 +250,20 @@ class PlaceOrderProcessor implements ProcessorInterface
         }
 
         $status = $this->generalSettings->getOrderDiscrepancyStatus();
+        $state = $this->stateHelper->getStateByStatus($status);
+        $order->setState($state)->setStatus($status);
 
-        $order->setState($status)->setStatus($status);
+        $orderTotals = (float)$order->getGrandTotal();
+        $wlPaid = $this->normalizer->normalize((float)$wlPayment->getAmount(), $wlPayment->getCurrency());
+        $difference = round($orderTotals - $wlPaid, 2);
+        $currency = $order->getOrderCurrency()->getCurrencySymbol();
+        $order->addCommentToStatusHistory(
+            __("Warning: Order created with an amount discrepancy, order requires manual review.
+                        Order Total: $orderTotals $currency,
+                        Amount Paid: $wlPaid $currency,
+                        Difference: $difference $currency"),
+        )->setIsCustomerNotified(false);
+
         $this->orderRepository->save($order);
 
         $this->updateOrderGridStatus((int)$order->getId(), $status);

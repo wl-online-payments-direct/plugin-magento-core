@@ -73,9 +73,8 @@ class Accept extends Action
         try {
             $order = $this->orderRepository->get($orderId);
 
-            // handle invoice creation for the holded order
-            if ($order->canUnhold()) {
-                $order->unhold();
+            if ($order->isPaymentReview()) {
+                $order->setState(null);
             }
 
             if ((int)$statusCode === TransactionStatusInterface::CAPTURED_CODE) {
@@ -110,13 +109,13 @@ class Accept extends Action
                     ->addObject($payment);
             }
 
+            $order->setState(Order::STATE_PROCESSING)
+                ->setStatus(Order::STATE_PROCESSING);
+
             // Add order comment about the discrepancy
             $order->addCommentToStatusHistory(
                 __("Order review accepted. Amount discrepancy acknowledged.", $paidAmount)
             )->setIsCustomerNotified(false);
-
-            $order->setState(Order::STATE_PROCESSING)
-                ->setStatus(Order::STATE_PROCESSING);
 
             // Add discrepancy accepted flag to the order
             $order->setData('discrepancy_accepted', 1);

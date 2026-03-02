@@ -48,7 +48,7 @@ class DiscrepancyValidator
         }
         $paidAmount = $this->normalizer->normalize((float)$wlPayment->getAmount(), $wlPayment->getCurrency());
 
-        return $orderTotal !== $paidAmount;
+        return round($orderTotal, 2) !== $paidAmount;
     }
 
     /**

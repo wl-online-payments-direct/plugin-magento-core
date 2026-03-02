@@ -8,6 +8,7 @@ use Worldline\PaymentCore\Service\Payment\CancelPaymentService;
 use Magento\Backend\App\Action;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\Framework\DB\Transaction;
 use Worldline\PaymentCore\Service\Refund\CreateRefundService;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
@@ -85,8 +86,8 @@ class CancelRefund extends Action
         try {
             $order = $this->orderRepository->get($orderId);
 
-            if ($order->canUnhold()) {
-                $order->unhold();
+            if ($order->isPaymentReview()) {
+                $order->setState(null);
             }
 
             if (!$order->canCancel()) {
@@ -105,8 +106,8 @@ class CancelRefund extends Action
                 $this->createRefundService->execute($transactionId, $refundRequest, $order->getStoreId());
             }
 
-            $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED)
-                ->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED);
+            $order->setState(Order::STATE_CANCELED)
+                ->setStatus(Order::STATE_CANCELED);
 
             // Add order comment about the discrepancy rejection
             $order->addCommentToStatusHistory(

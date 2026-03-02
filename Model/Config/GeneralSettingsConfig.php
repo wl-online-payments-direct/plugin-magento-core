@@ -143,6 +143,6 @@ class GeneralSettingsConfig implements GeneralSettingsConfigInterface
     {
         $orderDiscrepancyStatus = $this->scopeConfig->getValue(self::ORDER_DISCREPANCY_STATUS);
 
-        return $orderDiscrepancyStatus ? $orderDiscrepancyStatus : Order::STATE_HOLDED;
+        return $orderDiscrepancyStatus ? $orderDiscrepancyStatus : Order::STATE_PAYMENT_REVIEW;
     }
 }

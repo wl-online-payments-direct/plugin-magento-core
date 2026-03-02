@@ -88,7 +88,7 @@ class AmountDiscrepancyNotification
             'quote_id' => $order->getQuoteId(),
             'order_grand_total' => $order->getGrandTotal(),
             'payment_amount' => $formattedPaidAmount,
-            'discrepancy_amount' => $order->getGrandTotal() - $formattedPaidAmount,
+            'discrepancy_amount' => round($order->getGrandTotal() - $formattedPaidAmount, 2),
             'admin_order_url' => $this->urlInterface->getUrl('sales/order/view', ['order_id' => $order->getId()])
         ];
     }

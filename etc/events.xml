@@ -13,4 +13,7 @@
     <event name="adminhtml_cache_flush_all">
         <observer name="Worldline_PaymentCore::flush_all_cache" instance="Worldline\PaymentCore\Observer\Cache\FlushPaymentProducts"/>
     </event>
+    <event name="sales_model_service_quote_submit_before">
+        <observer name="Worldline_PaymentCore::set_payment_review_status" instance="Worldline\PaymentCore\Observer\SetPaymentReviewStatus" />
+    </event>
 </config>

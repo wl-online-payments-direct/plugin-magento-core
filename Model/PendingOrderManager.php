@@ -107,7 +107,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
     /**
      * @var OrderStateHelper
      */
-    private $statusHelper;
+    private $stateHelper;
 
     /**
      * @var CurrencyAmountNormalizer
@@ -129,7 +129,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
         GeneralSettingsConfigInterface $generalSettings,
         DiscrepancyValidator $discrepancyValidator,
         AmountDiscrepancyNotification $amountDiscrepancyNotification,
-        OrderStateHelper $statusHelper,
+        OrderStateHelper $stateHelper,
         CurrencyAmountNormalizer $normalizer
     ) {
         $this->sessionDataManager = $sessionDataManager;
@@ -146,7 +146,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
         $this->generalSettings = $generalSettings;
         $this->discrepancyValidator = $discrepancyValidator;
         $this->amountDiscrepancyNotification = $amountDiscrepancyNotification;
-        $this->statusHelper = $statusHelper;
+        $this->stateHelper = $stateHelper;
         $this->normalizer = $normalizer;
     }
 
@@ -178,8 +178,7 @@ class PendingOrderManager implements PendingOrderManagerInterface
             $this->surchargingQuoteManager->formatAndSaveSurchargingQuote($quote, $surchargeSO);
         }
 
-        $quote->setTotalsCollectedFlag(false);
-        $quote->collectTotals();
+        $quote->setTotalsCollectedFlag(false)->collectTotals();
 
         $statusCode = (int)$paymentResponse->getStatusOutput()->getStatusCode();
         if ($statusCode === TransactionStatusInterface::WAITING_AUTHENTICATION) {
@@ -198,14 +197,14 @@ class PendingOrderManager implements PendingOrderManagerInterface
                 $order = $this->quoteManagement->submit($quote);
                 if ($order && $this->isOrderWithDiscrepancy($order)) {
                     $orderDiscrepancyStatus = $this->generalSettings->getOrderDiscrepancyStatus();
-                    $orderDiscrepancyState = $this->statusHelper->getStateByStatus($orderDiscrepancyStatus);
+                    $orderDiscrepancyState = $this->stateHelper->getStateByStatus($orderDiscrepancyStatus);
                     $order->setState($orderDiscrepancyState)->setStatus($orderDiscrepancyStatus);
 
                     //add message
                     $wlPayment = $this->discrepancyValidator->getWlPayment($incrementId);
                     $orderTotals = (float)$order->getGrandTotal();
                     $wlPaid = $this->normalizer->normalize((float)$wlPayment->getAmount(), $wlPayment->getCurrency());
-                    $difference = $orderTotals - $wlPaid;
+                    $difference = round($orderTotals - $wlPaid, 2);
                     $currency = $order->getOrderCurrency()->getCurrencySymbol();
                     $order->addCommentToStatusHistory(
                         __("Warning: Order created with an amount discrepancy, order requires manual review.

@@ -199,15 +199,8 @@ class Info extends MagentoInfo
         $paymentAmount = (float)$this->currencyAmountNormalizer->normalize((float) $wlPayment->getAmount(), $currency);
         $statusCode = $paymentInfo->getStatusCode();
         $orderTotal = round((float)$order->getGrandTotal(), 2);
-        $isDiscrepancyOrder = $orderTotal !== $paymentAmount;
-
-        $discrepancyStatus = $this->generalSettings->getOrderDiscrepancyStatus();
-        $discrepancyState = $this->orderStateHelper->getStateByStatus($discrepancyStatus);
-
-        if ($isDiscrepancyOrder && $order->getState() !== $discrepancyState &&
-            !$this->isOrderDiscrepancyAccepted() && !$this->isOrderDiscrepancyRefunded()) {
-            $order->setState($discrepancyState)->setStatus($discrepancyStatus);
-        }
+        $isDiscrepancyOrder = ($orderTotal !== $paymentAmount) &&
+            ($order->getStatus() === $this->generalSettings->getOrderDiscrepancyStatus());
 
         return [
             'isDiscrepancyOrder' => $isDiscrepancyOrder,

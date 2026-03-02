@@ -3,13 +3,13 @@
 $specificInfo = $block->getTransactionInfo();
 $cardNumbers = $block->getPaymentInformation()->getCardLastNumbers();
 $orderDiscrepancy = $block->getOrderDiscrepancy();
-$discrepanyAccepted = $block->isOrderDiscrepancyAccepted();
+$discrepancyAccepted = $block->isOrderDiscrepancyAccepted();
 $discrepancyRefunded = $block->isOrderDiscrepancyRefunded();
 ?>
 
 <?php if ($specificInfo): ?>
     <?php if ($orderDiscrepancy && $orderDiscrepancy['isDiscrepancyOrder']): ?>
-        <?php if (!$discrepanyAccepted && !$discrepancyRefunded): ?>
+        <?php if (!$discrepancyAccepted && !$discrepancyRefunded): ?>
             <div class="message message-warning discrepancy-message">
                 <h4><?= $block->escapeHtml(__('Amount discrepancy review required')) ?></h4>
                 <p>
@@ -37,8 +37,11 @@ $discrepancyRefunded = $block->isOrderDiscrepancyRefunded();
 
                 <div class="discrepancy-row">
                     <strong><?= $block->escapeHtml(__('Difference:')) ?></strong>
+                    <?php
+                    $difference = $orderDiscrepancy['orderTotal'] - $orderDiscrepancy['paymentAmount'];
+                    ?>
                     <span>&nbsp;
-                        <?= $block->escapeHtml($orderDiscrepancy['orderTotal'] - $orderDiscrepancy['paymentAmount']) ?>
+                        <?= $block->escapeHtml(number_format($difference, 2)) ?>
                         <?= $block->escapeHtml($orderDiscrepancy['currency']) ?>
                     </span>
                 </div>
@@ -52,7 +55,7 @@ $discrepancyRefunded = $block->isOrderDiscrepancyRefunded();
                     </button>
                 </div>
             </div>
-        <?php elseif ($discrepanyAccepted): ?>
+        <?php elseif ($discrepancyAccepted): ?>
             <div class="message message-info discrepancy-message">
                 <h4><?= $block->escapeHtml(__('Amount Discrepancy Accepted')) ?></h4>
                 <p><?= $block->escapeHtml(__('This order was reviewed and accepted with an amount discrepancy.')) ?></p>
@@ -75,8 +78,11 @@ $discrepancyRefunded = $block->isOrderDiscrepancyRefunded();
 
                 <div class="discrepancy-row">
                     <strong><?= $block->escapeHtml(__('Difference:')) ?></strong>
+                    <?php
+                    $difference = $orderDiscrepancy['orderTotal'] - $orderDiscrepancy['paymentAmount'];
+                    ?>
                     <span>&nbsp;
-                        <?= $block->escapeHtml($orderDiscrepancy['orderTotal'] - $orderDiscrepancy['paymentAmount']) ?>
+                        <?= $block->escapeHtml(number_format($difference, 2)) ?>
                         <?= $block->escapeHtml($orderDiscrepancy['currency']) ?>
                     </span>
                 </div>
@@ -103,8 +109,11 @@ $discrepancyRefunded = $block->isOrderDiscrepancyRefunded();
 
                 <div class="discrepancy-row">
                     <strong><?= $block->escapeHtml(__('Difference:')) ?></strong>
+                    <?php
+                    $difference = $orderDiscrepancy['orderTotal'] - $orderDiscrepancy['paymentAmount'];
+                    ?>
                     <span>&nbsp;
-                        <?= $block->escapeHtml($orderDiscrepancy['orderTotal'] - $orderDiscrepancy['paymentAmount']) ?>
+                        <?= $block->escapeHtml(number_format($difference, 2)) ?>
                         <?= $block->escapeHtml($orderDiscrepancy['currency']) ?>
                     </span>
                 </div>

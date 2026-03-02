@@ -40,8 +40,8 @@ class AdditionalWebhookUrls extends Value
         ScopeConfigInterface $config,
         TypeListInterface $cacheTypeList,
         SerializerInterface $serializer,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->serializer = $serializer;
