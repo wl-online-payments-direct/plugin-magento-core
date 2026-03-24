@@ -157,11 +157,13 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
     {
         $contactDetails = $this->contactDetailsFactory->create();
         $contactDetails->setEmailAddress($this->billingAddress->getEmail());
-        $telephone = $this->callingCodeProvider->formatE164(
-            $this->billingAddress->getTelephone(),
-            $this->billingAddress->getCountryId()
-        );
-        $contactDetails->setPhoneNumber($telephone);
+
+        $telephone = $this->billingAddress->getTelephone();
+        if (is_string($telephone) && trim($telephone) !== '') {
+            $formattedPhone = $this->callingCodeProvider->formatE164($telephone, $this->billingAddress->getCountryId());
+            $contactDetails->setPhoneNumber($formattedPhone);
+        }
+
         $this->customer->setContactDetails($contactDetails);
     }
 
