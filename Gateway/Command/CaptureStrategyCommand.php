@@ -11,7 +11,6 @@ use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\CommandInterface;
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
@@ -109,7 +108,7 @@ class CaptureStrategyCommand implements CommandInterface
     {
         $paymentDO = $this->subjectReader->readPayment($commandSubject);
 
-        if ($this->isOrderWithDiscrepancy($paymentDO->getOrder())) {
+        if ($this->isOrderWithDiscrepancy($paymentDO)) {
             $wlPayment = $this->discrepancyValidator->getWlPayment($paymentDO->getOrder()->getOrderIncrementId());
             $commandSubject['amount'] = $this->currencyNormalizer->normalize(
                 (float)$wlPayment->getAmount(),
@@ -181,15 +180,16 @@ class CaptureStrategyCommand implements CommandInterface
     }
 
     /**
-     * @param OrderAdapterInterface $order
+     * @param PaymentDataObjectInterface $paymentDO
      *
      * @return bool
      */
-    private function isOrderWithDiscrepancy(OrderAdapterInterface $order): bool
+    private function isOrderWithDiscrepancy(PaymentDataObjectInterface $paymentDO): bool
     {
+        $order = $paymentDO->getPayment()->getOrder();
         return $this->discrepancyValidator->compareAmounts(
-            (float)$order->getGrandTotalAmount(),
-            $order->getOrderIncrementId()
+            (float)$order->getGrandTotal(),
+            $order->getIncrementId()
         );
     }
 }

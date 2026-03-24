@@ -66,6 +66,11 @@ class QuoteRestoration implements QuoteRestorationInterface
     public function shiftQuoteId(): void
     {
         $quoteId = $this->checkoutSession->getWlQuoteRecoveryId();
+
+        if (!$quoteId) {
+            return;
+        }
+
         $this->checkoutSession->setWlQuoteRecoveryId(null);
         $this->checkoutSession->setWlShiftedQuoteRecoveryId($quoteId);
     }

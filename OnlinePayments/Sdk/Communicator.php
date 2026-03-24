@@ -190,6 +190,59 @@ class Communicator extends IngenicoCommunicator
         return $response;
     }
 
+    /**
+     * @see \OnlinePayments\Sdk\Communicator::delete()
+     *
+     * @param ResponseClassMap $responseClassMap
+     * @param string $relativeUriPath
+     * @param string $clientMetaInfo
+     * @param RequestObject|null $requestParameters
+     * @param CallContext|null $callContext
+     * @return DataObject|null
+     * @throws ResponseException
+     */
+    public function delete(
+        ResponseClassMap $responseClassMap,
+                         $relativeUriPath,
+                         $clientMetaInfo = '',
+        ?RequestObject $requestParameters = null,
+        ?CallContext $callContext = null
+    ) {
+        $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
+        $requestHeaders = $this->getRequestHeaders('DELETE', $relativeUriPathWithRequestParameters, null, $clientMetaInfo, $callContext);
+
+        $responseBuilder = new ResponseBuilder();
+        $responseHandler = function ($httpStatusCode, $data, $headers) use ($responseBuilder) {
+            $responseBuilder->setHttpStatusCode($httpStatusCode);
+            $responseBuilder->setHeaders($headers);
+            $responseBuilder->appendBody($data);
+        };
+
+        $this->getConnection()->delete(
+            $this->communicatorConfiguration->getApiEndpoint() . $relativeUriPathWithRequestParameters,
+            $requestHeaders,
+            $responseHandler,
+            $this->communicatorConfiguration->getProxyConfiguration()
+        );
+        $connectionResponse = $responseBuilder->getResponse();
+        $this->updateCallContext($connectionResponse, $callContext);
+        $response = $this->getResponseFactory()->createResponse($connectionResponse, $responseClassMap);
+        $httpStatusCode = $connectionResponse->getHttpStatusCode();
+
+        $this->requestLogManager->log(
+            (string) $relativeUriPathWithRequestParameters,
+            (int) $httpStatusCode,
+            '',
+            (string) $connectionResponse->getBody()
+        );
+
+        if ($httpStatusCode >= 400) {
+            throw $this->getResponseExceptionFactory()->createException($httpStatusCode, $response, $callContext);
+        }
+        return $response;
+    }
+
+
     /** @return ExceptionFactory */
     private function getResponseExceptionFactory()
     {

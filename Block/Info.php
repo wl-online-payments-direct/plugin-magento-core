@@ -194,7 +194,12 @@ class Info extends MagentoInfo
         }
 
         $paymentInfo = $this->getPaymentInformation();
+
         $wlPayment = $this->discrepancyValidator->getWlPayment($order->getIncrementId());
+        if (!$wlPayment) {
+            return [];
+        }
+
         $currency = $wlPayment->getCurrency();
         $paymentAmount = (float)$this->currencyAmountNormalizer->normalize((float) $wlPayment->getAmount(), $currency);
         $statusCode = $paymentInfo->getStatusCode();

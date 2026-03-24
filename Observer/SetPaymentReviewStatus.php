@@ -6,6 +6,7 @@ namespace Worldline\PaymentCore\Observer;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Payment;
 use Worldline\PaymentCore\Api\Config\GeneralSettingsConfigInterface;
 use Worldline\PaymentCore\Model\Order\ValidatorPool\DiscrepancyValidator;
 
@@ -31,14 +32,20 @@ class SetPaymentReviewStatus implements ObserverInterface
 
     public function execute(Observer $observer): void
     {
+        /** @var Order $order */
+        $order = $observer->getEvent()->getOrder();
+        $payment = $order->getPayment();
+
+        if ($payment instanceof Payment && (strpos($payment->getMethod(), 'worldline') !== 0)) {
+            return;
+        }
+
         if (!$this->generalSettings->isAmountDiscrepancyEnabled()) {
             return;
         }
 
-        $order = $observer->getEvent()->getOrder();
-
         if ($this->isOrderWithDiscrepancy($order)) {
-            $order->getPayment()->setIsTransactionPending(true);
+            $payment->setIsTransactionPending(true);
         }
     }
 

@@ -8,4 +8,8 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Vault\Controller\Cards\DeleteAction">
+        <plugin name="Worldline_PaymentCore::delete_token_on_worldline"
+                type="Worldline\PaymentCore\Plugin\Magento\Vault\Controller\Cards\DeleteAction"/>
+    </type>
 </config>
