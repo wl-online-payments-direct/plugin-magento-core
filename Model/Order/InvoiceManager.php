@@ -62,8 +62,12 @@ class InvoiceManager implements InvoiceManagerInterface
 
         try {
             $invoice = $this->invoiceService->prepareInvoice($order);
+            $invoice->setRequestedCaptureCase(Invoice::CAPTURE_OFFLINE);
             $invoice->register();
-            $invoice->setState(Invoice::STATE_PAID);
+            $lastTransId = $order->getPayment()->getLastTransId();
+            if ($lastTransId) {
+                $invoice->setTransactionId($lastTransId);
+            }
             $this->invoiceRepository->save($invoice);
 
             $this->transaction->addObject($invoice)
