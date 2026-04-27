@@ -110,6 +110,25 @@ class TransactionRepository implements TransactionRepositoryInterface
         return $result;
     }
 
+    /**
+     * @return TransactionInterface[]
+     */
+    public function getAllCapturedTransactions(string $incrementId): array
+    {
+        $result = [];
+        if (!$transactions = $this->getAllTransactions($incrementId)) {
+            return $result;
+        }
+
+        foreach ($transactions as $transaction) {
+            if ($transaction->getStatusCode() === TransactionStatusInterface::CAPTURED_CODE) {
+                $result[] = $transaction;
+            }
+        }
+
+        return $result;
+    }
+
     public function getCaptureTransactionsAmount(string $incrementId): float
     {
         $amount = 0;

@@ -40,6 +40,12 @@ interface TransactionRepositoryInterface
 
     /**
      * @param string $incrementId
+     * @return TransactionInterface[]
+     */
+    public function getAllCapturedTransactions(string $incrementId): array;
+
+    /**
+     * @param string $incrementId
      * @return float
      */
     public function getCaptureTransactionsAmount(string $incrementId): float;

@@ -13,7 +13,6 @@ use OnlinePayments\Sdk\Communication\ResponseBuilder;
 use OnlinePayments\Sdk\Communication\ResponseClassMap;
 use OnlinePayments\Sdk\ExceptionFactory;
 use OnlinePayments\Sdk\ResponseException;
-use UnexpectedValueException;
 use Worldline\PaymentCore\Logger\RequestLogManager;
 use Worldline\PaymentCore\Model\TrackerDataProvider;
 use OnlinePayments\Sdk\Authentication\V1HmacAuthenticator;
@@ -90,11 +89,11 @@ class Communicator extends IngenicoCommunicator
      */
     public function get(
         ResponseClassMap $responseClassMap,
-                         $relativeUriPath,
-                         $clientMetaInfo = '',
+        string $relativeUriPath,
+        string $clientMetaInfo = '',
         ?RequestObject $requestParameters = null,
         ?CallContext $callContext = null
-    ) {
+    ): ?DataObject {
         $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
         $requestHeaders = $this->getRequestHeaders('GET', $relativeUriPathWithRequestParameters, null, $clientMetaInfo, $callContext);
 
@@ -105,7 +104,7 @@ class Communicator extends IngenicoCommunicator
             $responseBuilder->appendBody($data);
         };
 
-        $this->getConnection()->get(
+        $this->connection->get(
             $this->communicatorConfiguration->getApiEndpoint() . $relativeUriPathWithRequestParameters,
             $requestHeaders,
             $responseHandler,
@@ -143,19 +142,15 @@ class Communicator extends IngenicoCommunicator
      */
     public function post(
         ResponseClassMap $responseClassMap,
-                         $relativeUriPath,
-                         $clientMetaInfo = '',
-                         $requestBodyObject = null,
+        string $relativeUriPath,
+        string $clientMetaInfo = '',
+        $requestBodyObject = null,
         ?RequestObject $requestParameters = null,
         ?CallContext $callContext = null
-    ) {
+    ): ?DataObject {
         $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
-        if ($requestBodyObject instanceof DataObject || is_null($requestBodyObject)) {
-            $contentType = static::MIME_APPLICATION_JSON;
-            $requestBody = $requestBodyObject ? $requestBodyObject->toJson() : '';
-        } else {
-            throw new UnexpectedValueException('Unsupported request body');
-        }
+        $contentType = static::MIME_APPLICATION_JSON;
+        $requestBody = $requestBodyObject ? $requestBodyObject->toJson() : '';
         $requestHeaders = $this->getRequestHeaders('POST', $relativeUriPathWithRequestParameters, $contentType, $clientMetaInfo, $callContext);
 
         $responseBuilder = new ResponseBuilder();
@@ -165,7 +160,7 @@ class Communicator extends IngenicoCommunicator
             $responseBuilder->appendBody($data);
         };
 
-        $this->getConnection()->post(
+        $this->connection->post(
             $this->communicatorConfiguration->getApiEndpoint() . $relativeUriPathWithRequestParameters,
             $requestHeaders,
             $requestBody,
@@ -203,11 +198,11 @@ class Communicator extends IngenicoCommunicator
      */
     public function delete(
         ResponseClassMap $responseClassMap,
-                         $relativeUriPath,
-                         $clientMetaInfo = '',
+        string $relativeUriPath,
+        string $clientMetaInfo = '',
         ?RequestObject $requestParameters = null,
         ?CallContext $callContext = null
-    ) {
+    ): ?DataObject {
         $relativeUriPathWithRequestParameters = $this->getRelativeUriPathWithRequestParameters($relativeUriPath, $requestParameters);
         $requestHeaders = $this->getRequestHeaders('DELETE', $relativeUriPathWithRequestParameters, null, $clientMetaInfo, $callContext);
 
@@ -218,7 +213,7 @@ class Communicator extends IngenicoCommunicator
             $responseBuilder->appendBody($data);
         };
 
-        $this->getConnection()->delete(
+        $this->connection->delete(
             $this->communicatorConfiguration->getApiEndpoint() . $relativeUriPathWithRequestParameters,
             $requestHeaders,
             $responseHandler,

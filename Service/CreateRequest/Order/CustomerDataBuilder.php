@@ -115,7 +115,8 @@ class CustomerDataBuilder implements CustomerDataBuilderInterface
         $this->billingAddress = $quote->getBillingAddress();
         $this->payment = $quote->getPayment();
         $this->customer = $this->customerFactory->create();
-        $this->customer->setMerchantCustomerId($quote->getCustomerId());
+        $customerId = $quote->getCustomerId();
+        $this->customer->setMerchantCustomerId($customerId !== null ? (string) $customerId : null);
 
         if ($quote->getCustomerIsGuest()) {
             $this->customer->setAccountType(self::GUEST_VALUE);

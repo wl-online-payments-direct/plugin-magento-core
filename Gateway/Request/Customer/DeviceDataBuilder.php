@@ -41,8 +41,8 @@ class DeviceDataBuilder
         $customerDevice->setAcceptHeader($deviceData['AcceptHeader'] ?? '');
         $customerDevice->setUserAgent($deviceData['UserAgent'] ?? '');
         $customerDevice->setLocale($deviceData['Locale'] ?? '');
-        $customerDevice->setTimezoneOffsetUtcMinutes($deviceData['TimezoneOffsetUtcMinutes'] ?? '');
-        $customerDevice->setIpAddress($this->remoteAddress->getRemoteAddress());
+        $customerDevice->setTimezoneOffsetUtcMinutes((string) ($deviceData['TimezoneOffsetUtcMinutes'] ?? ''));
+        $customerDevice->setIpAddress($this->remoteAddress->getRemoteAddress() ?: null);
 
         $this->addBrowserData($customerDevice, $deviceData);
 
@@ -52,10 +52,10 @@ class DeviceDataBuilder
     private function addBrowserData(CustomerDevice $customerDevice, array $deviceData): void
     {
         $browserData = $this->browserDataFactory->create();
-        $browserData->setColorDepth($deviceData['BrowserData']['ColorDepth'] ?? '');
+        $browserData->setColorDepth((int) ($deviceData['BrowserData']['ColorDepth'] ?? 0));
         $browserData->setJavaEnabled((bool) ($deviceData['BrowserData']['JavaEnabled'] ?? false));
-        $browserData->setScreenHeight($deviceData['BrowserData']['ScreenHeight'] ?? '');
-        $browserData->setScreenWidth($deviceData['BrowserData']['ScreenWidth'] ?? '');
+        $browserData->setScreenHeight((string) ($deviceData['BrowserData']['ScreenHeight'] ?? ''));
+        $browserData->setScreenWidth((string) ($deviceData['BrowserData']['ScreenWidth'] ?? ''));
 
         $customerDevice->setBrowserData($browserData);
     }

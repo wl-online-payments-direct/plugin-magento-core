@@ -13,6 +13,9 @@ use Worldline\PaymentCore\Api\AmountFormatterInterface;
 use Worldline\PaymentCore\Api\CreditmemoOnlineServiceInterface;
 use Worldline\PaymentCore\Api\Data\RefundRequestInterfaceFactory;
 use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
+use Worldline\PaymentCore\Api\Service\Refund\CreateRefundServiceInterface;
+use Worldline\PaymentCore\Api\Service\Refund\RefundRequestDataBuilderInterface;
+use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
 
 class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
 {
@@ -41,18 +44,39 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
      */
     private $amountFormatter;
 
+    /**
+     * @var TransactionRepositoryInterface
+     */
+    private $transactionRepository;
+
+    /**
+     * @var CreateRefundServiceInterface
+     */
+    private $createRefundService;
+
+    /**
+     * @var RefundRequestDataBuilderInterface
+     */
+    private $refundRequestDataBuilder;
+
     public function __construct(
         RefundRequestRepositoryInterface $refundRequestRepository,
         CreditmemoRepositoryInterface $creditmemoRepository,
         RefundRequestInterfaceFactory $refundRequestFactory,
         OrderRepositoryInterface $orderRepository,
-        AmountFormatterInterface $amountFormatter
+        AmountFormatterInterface $amountFormatter,
+        TransactionRepositoryInterface $transactionRepository,
+        CreateRefundServiceInterface $createRefundService,
+        RefundRequestDataBuilderInterface $refundRequestDataBuilder
     ) {
         $this->refundRequestRepository = $refundRequestRepository;
         $this->creditmemoRepository = $creditmemoRepository;
         $this->refundRequestFactory = $refundRequestFactory;
         $this->orderRepository = $orderRepository;
         $this->amountFormatter = $amountFormatter;
+        $this->transactionRepository = $transactionRepository;
+        $this->createRefundService = $createRefundService;
+        $this->refundRequestDataBuilder = $refundRequestDataBuilder;
     }
 
     /**
@@ -70,10 +94,17 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
 
         $invoiceId = (int)$invoice->getId();
         $payment = $order->getPayment();
-        $baseAmountToRefund = $payment->formatAmount($creditmemo->getBaseGrandTotal());
-        $gateway = $payment->getMethodInstance();
-        $gateway->setStore($order->getStoreId());
-        $gateway->refund($payment, $baseAmountToRefund);
+        $incrementId = (string)$order->getIncrementId();
+        $currencyCode = (string)$order->getOrderCurrencyCode();
+
+        $baseAmountToRefund = (float)$creditmemo->getBaseGrandTotal();
+        if ($this->isSplitPayment($incrementId)) {
+            $this->refundSplitPayment($incrementId, $currencyCode, (int)$order->getStoreId(), $baseAmountToRefund);
+        } else {
+            $gateway = $payment->getMethodInstance();
+            $gateway->setStore($order->getStoreId());
+            $gateway->refund($payment, $payment->formatAmount($baseAmountToRefund));
+        }
 
         $payment->addTransaction(TransactionInterface::TYPE_REFUND, $creditmemo, true);
 
@@ -82,12 +113,53 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
 
         $amount = $this->amountFormatter->formatToInteger(
             (float) $creditmemo->getGrandTotal(),
-            (string) $creditmemo->getOrderCurrencyCode()
+            $currencyCode
         );
-        $this->saveRefundRequest($invoiceId, $order->getIncrementId(), (int)$creditmemo->getId(), $amount);
-        $this->orderRepository->save($order); //need to save $order->getCustomerNoteNotify() flag changes
+        $this->saveRefundRequest($invoiceId, $incrementId, (int)$creditmemo->getId(), $amount);
+        $this->orderRepository->save($order);
 
         return $creditmemo;
+    }
+
+    private function isSplitPayment(string $incrementId): bool
+    {
+        return count($this->transactionRepository->getAllCapturedTransactions($incrementId)) > 1;
+    }
+
+    /**
+     * Refund split payment: first refund the card (non-gift-card) transaction,
+     * then refund the remainder from the gift card transaction.
+     *
+     * @throws LocalizedException
+     */
+    private function refundSplitPayment(
+        string $incrementId,
+        string $currencyCode,
+        int $storeId,
+        float $totalRefundAmount
+    ): void {
+        $capturedTransactions = $this->transactionRepository->getAllCapturedTransactions($incrementId);
+        $amountInCents = $this->amountFormatter->formatToInteger($totalRefundAmount, $currencyCode);
+        $remaining = $amountInCents;
+
+        // Sort: card transactions first (higher amounts typically), gift card last
+        usort($capturedTransactions, function ($a, $b) {
+            return $b->getAmount() <=> $a->getAmount();
+        });
+
+        foreach ($capturedTransactions as $transaction) {
+            if ($remaining <= 0) {
+                break;
+            }
+
+            $capturedAmount = (int)$transaction->getAmount();
+            $refundForThis = min($remaining, $capturedAmount);
+            $remaining -= $refundForThis;
+
+            $refundAmount = $refundForThis / 100;
+            $refundRequest = $this->refundRequestDataBuilder->build($refundAmount, $currencyCode);
+            $this->createRefundService->execute($transaction->getTransactionId(), $refundRequest, $storeId);
+        }
     }
 
     private function saveRefundRequest(

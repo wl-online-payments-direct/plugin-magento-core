@@ -121,10 +121,10 @@ $discrepancyRefunded = $block->isOrderDiscrepancyRefunded();
         <?php endif; ?>
     <?php endif; ?>
 
-    <?php foreach ($specificInfo as $info): ?>
+    <?php foreach ($specificInfo as $index => $info): ?>
         <?= $block->escapeHtml($block->getPaymentTitle($info)) ?>
 
-        <?php if ($cardNumbers): ?>
+        <?php if ($cardNumbers && $index === array_key_last($specificInfo)): ?>
             <span><?= $block->escapeHtml(__('ending')) ?></span> <?= $block->escapeHtml($cardNumbers) ?>
         <?php endif; ?>
 

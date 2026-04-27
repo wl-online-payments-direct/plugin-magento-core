@@ -84,7 +84,10 @@ class PaymentInfoBuilder
 
         $paymentProductId =
             $paymentResponse->getPaymentOutput()->getRedirectPaymentMethodSpecificOutput()->getPaymentProductId();
-        $currency = $paymentResponse->getPaymentOutput()->getAcquiredAmount()->getCurrencyCode();
+        $acquiredAmount = $paymentResponse->getPaymentOutput()->getAcquiredAmount();
+        $currency = $acquiredAmount
+            ? $acquiredAmount->getCurrencyCode()
+            : $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
 
         $paymentInfo->setAuthorizedAmount(
             $this->formatAmount(
