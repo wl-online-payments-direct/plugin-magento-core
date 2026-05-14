@@ -76,6 +76,10 @@ or install them from the GitHub:
 
 ### Change log:
 
+### 2.49.0
+- Added: Configuration option to skip the Worldline payment confirmation page
+- Fixed: Mealvouchers product type mapping and line item adjustments
+
 ### 2.48.0
 - Added: Support for Illicado payment method
 - Upgrade PHP SDK to 8.3 version
