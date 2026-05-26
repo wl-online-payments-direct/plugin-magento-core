@@ -13,6 +13,12 @@ use Worldline\PaymentCore\Api\Payment\PaymentIdFormatterInterface;
 class PaymentIdFormatter implements PaymentIdFormatterInterface
 {
     private const PAYMENT_ID_STANDARD_LENGTH = 10;
+
+    /**
+     * Worldline may return an 11-digit standard payment identifier.
+     * Keep it explicit so ANZ 19-digit handling stays unchanged.
+     */
+    private const PAYMENT_ID_STANDARD_EXTENDED_LENGTH = 11;
     private const PAYMENT_ID_ANZ_LENGTH = 19;
 
     /**
@@ -45,7 +51,11 @@ class PaymentIdFormatter implements PaymentIdFormatterInterface
     {
         $isValid = in_array(
             strlen($wlPaymentId),
-            [self::PAYMENT_ID_STANDARD_LENGTH, self::PAYMENT_ID_ANZ_LENGTH]
+            [
+                self::PAYMENT_ID_STANDARD_LENGTH,
+                self::PAYMENT_ID_STANDARD_EXTENDED_LENGTH,
+                self::PAYMENT_ID_ANZ_LENGTH
+            ]
         ) || strpos($wlPaymentId, '_');
 
         if (!$isValid) {
