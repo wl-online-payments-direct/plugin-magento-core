@@ -34,7 +34,7 @@ class PaymentIdFormatter implements PaymentIdFormatterInterface
         $this->validate($wlPaymentId);
 
         if (strlen($wlPaymentId) === self::PAYMENT_ID_ANZ_LENGTH) {
-            $wlPaymentId = mb_substr($wlPaymentId, 6, self::PAYMENT_ID_STANDARD_LENGTH);
+            $wlPaymentId = mb_substr($wlPaymentId, 5, self::PAYMENT_ID_STANDARD_EXTENDED_LENGTH);
         }
 
         return $addPostfix ? ((int)$wlPaymentId . '_0') : ((string)(int)$wlPaymentId);
