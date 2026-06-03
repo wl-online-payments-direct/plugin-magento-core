@@ -5,7 +5,10 @@ namespace Worldline\PaymentCore\Model;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
+use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Sales\Model\OrderFactory;
 use Psr\Log\LoggerInterface;
 use Worldline\PaymentCore\Api\QuoteRestorationInterface;
 
@@ -16,6 +19,8 @@ use Worldline\PaymentCore\Api\QuoteRestorationInterface;
  */
 class QuoteRestoration implements QuoteRestorationInterface
 {
+    private const SECTION_DATA_IDS_COOKIE = 'section_data_ids';
+
     /**
      * @var CheckoutSession
      */
@@ -27,24 +32,77 @@ class QuoteRestoration implements QuoteRestorationInterface
     private $cartRepository;
 
     /**
+     * @var OrderFactory
+     */
+    private $orderFactory;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
+    /**
+     * @var CookieManagerInterface
+     */
+    private $cookieManager;
+
+    /**
+     * @var CookieMetadataFactory
+     */
+    private $cookieMetadataFactory;
+
     public function __construct(
         CheckoutSession $checkoutSession,
         CartRepositoryInterface $cartRepository,
-        LoggerInterface $logger
+        OrderFactory $orderFactory,
+        LoggerInterface $logger,
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->cartRepository = $cartRepository;
+        $this->orderFactory = $orderFactory;
         $this->logger = $logger;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     public function preserveQuoteId(int $quoteId): void
     {
         $this->checkoutSession->setWlShiftedQuoteRecoveryId(null);
         $this->checkoutSession->setWlQuoteRecoveryId($quoteId);
+        // Detach the inactive quote from the session so the server returns an empty cart
+        // on later requests. restoreQuote() will re-attach it via replaceQuote() if
+        // the payment fails and the customer returns through the normal cart-recovery flow.
+        $this->checkoutSession->setQuoteId(null);
+        $this->invalidateCartSection();
+    }
+
+    /**
+     * Force the browser to re-fetch the cart customer-data section on the next page load.
+     * Without this, the mini-cart localStorage cache keeps showing items even after the
+     * quote is deactivated, because section_data_ids is never bumped during payment initiation.
+     */
+    private function invalidateCartSection(): void
+    {
+        $existing = $this->cookieManager->getCookie(self::SECTION_DATA_IDS_COOKIE);
+        $sectionIds = $existing ? json_decode($existing, true) : [];
+        if (!is_array($sectionIds)) {
+            $sectionIds = [];
+        }
+
+        $sectionIds['cart'] = time();
+
+        $metadata = $this->cookieMetadataFactory->createPublicCookieMetadata()
+            ->setDuration(3600)
+            ->setPath('/')
+            ->setHttpOnly(false);
+
+        $this->cookieManager->setPublicCookie(
+            self::SECTION_DATA_IDS_COOKIE,
+            json_encode($sectionIds),
+            $metadata
+        );
     }
 
     /**
@@ -85,6 +143,15 @@ class QuoteRestoration implements QuoteRestorationInterface
 
         try {
             $quote = $this->cartRepository->get($quoteId);
+
+            $reservedOrderId = $quote->getReservedOrderId();
+            if ($reservedOrderId) {
+                $order = $this->orderFactory->create()->loadByIncrementId($reservedOrderId);
+                if ($order->getId()) {
+                    return;
+                }
+            }
+
             $quote->setIsActive(true);
 
             $this->cartRepository->save($quote);

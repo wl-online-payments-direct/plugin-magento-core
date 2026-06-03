@@ -72,7 +72,7 @@ class Surcharging extends DefaultTotal
         }
 
         $quoteId = (int)$this->getOrder()->getQuoteId();
-        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
+        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteIdIncludingDeleted($quoteId);
         $paymentMethod = str_replace('_vault', '', (string)$this->getOrder()->getPayment()->getMethod());
         if (!$surchargingQuote->getId() || $paymentMethod !== $surchargingQuote->getPaymentMethod()) {
             return null;

@@ -20,10 +20,14 @@ namespace Worldline\PaymentCore\Api\Data;
  *
  * @method getPublicHash(): string
  * @method setPublicHash(string $publicHash): QuotePaymentInterface
+ *
+ * @method getDeletedAt(): ?string
+ * @method setDeletedAt(?string $deletedAt): QuotePaymentInterface
  */
 interface QuotePaymentInterface
 {
     public const PAYMENT_ID = 'payment_id';
     public const PAYMENT_IDENTIFIER = 'payment_identifier';
     public const DEVICE_DATA = 'device_data';
+    public const DELETED_AT = 'deleted_at';
 }

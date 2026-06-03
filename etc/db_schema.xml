@@ -111,16 +111,13 @@
         <column xsi:type="decimal" name="quote_total_amount" scale="4" precision="20" unsigned="false" nullable="true" default="0" onCreate="migrateDataFrom(quote_grand_total)" comment="Quote Total Amount"/>
         <column xsi:type="smallint" name="is_invoiced" unsigned="true" nullable="false" default="0" comment="Is Invoiced Flag"/>
         <column xsi:type="smallint" name="is_refunded" unsigned="true" nullable="false" default="0" comment="Is Refunded Flag"/>
+        <column xsi:type="timestamp" name="deleted_at" nullable="true" comment="Set when the related quote was removed by Magento cleanup"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
         </constraint>
-        <constraint xsi:type="foreign"
-                    referenceId="WORLDLINE_SURCHARGING_QUOTE_QUOTE_ID_QUOTE_ENTITY_ID"
-                    table="worldline_surcharging_quote"
-                    column="quote_id"
-                    referenceTable="quote"
-                    referenceColumn="entity_id"
-                    onDelete="NO ACTION"/>
+        <index referenceId="WORLDLINE_SURCHARGING_QUOTE_DELETED_AT" indexType="btree">
+            <column name="deleted_at"/>
+        </index>
     </table>
     <table name="worldline_surcharging_creditmemo" resource="default" engine="innodb" comment="Worldline Surcharging Creditmemo">
         <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID" />
@@ -154,6 +151,18 @@
             <column name="entity_id"/>
         </constraint>
     </table>
+    <!--
+        The foreign key on payment_id -> quote_payment.payment_id was
+        intentionally removed so that Magento's sales_clean_quotes cron can
+        prune quote_payment rows. Worldline rows are preserved via the
+        deleted_at soft-delete column, stamped by the
+        MarkQuotePaymentInfoAsDeleted beforeDelete plugin.
+
+        For legacy installations whose live constraint has an auto-generated
+        hash-style name (not matching the referenceId Magento expects),
+        Setup/Patch/Schema/DropLegacyQuotePaymentInfoForeignKey ensures the
+        constraint is dropped during setup:upgrade regardless of its name.
+    -->
     <table name="worldline_quote_payment_information" resource="default" engine="innodb" comment="Worldline Quote Payment Info">
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"/>
         <column xsi:type="int" name="payment_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Payment ID"/>
@@ -161,16 +170,13 @@
         <column xsi:type="varchar" name="public_hash" nullable="true" length="255" comment="Public Hash"/>
         <column xsi:type="varchar" name="method" nullable="true" length="255" comment="Method"/>
         <column xsi:type="text" name="device_data" comment="Device Data"/>
+        <column xsi:type="timestamp" name="deleted_at" nullable="true" comment="Set when the related quote was removed by Magento cleanup"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
         </constraint>
-        <constraint xsi:type="foreign"
-                    referenceId="WORLDLINE_QUOTE_PAYMENT_PAYMENT_ID_QUOTE_PAYMENT_PAYMENT_ID"
-                    table="worldline_quote_payment_information"
-                    column="payment_id"
-                    referenceTable="quote_payment"
-                    referenceColumn="payment_id"
-                    onDelete="NO ACTION"/>
+        <index referenceId="WORLDLINE_QUOTE_PAYMENT_INFO_DELETED_AT" indexType="btree">
+            <column name="deleted_at"/>
+        </index>
     </table>
     <table name="sales_order" resource="sales">
         <column xsi:type="smallint" name="discrepancy_accepted" nullable="false" default="0"

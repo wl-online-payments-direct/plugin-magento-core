@@ -27,7 +27,7 @@ class IsInvoicedSurcharging implements ObserverInterface
     {
         $invoice = $observer->getEvent()->getInvoice();
         $quoteId = (int)$invoice->getOrder()->getQuoteId();
-        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
+        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteIdIncludingDeleted($quoteId);
         if (!$surchargingQuote->getId()) {
             return;
         }

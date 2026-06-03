@@ -27,8 +27,12 @@ namespace Worldline\PaymentCore\Api\Data;
  *
  * @method getIsRefunded(): bool
  * @method setIsRefunded(bool $isRefunded): bool
+ *
+ * @method getDeletedAt(): ?string
+ * @method setDeletedAt(?string $deletedAt): SurchargingQuoteInterface
  */
 interface SurchargingQuoteInterface
 {
     public const QUOTE_ID = 'quote_id';
+    public const DELETED_AT = 'deleted_at';
 }

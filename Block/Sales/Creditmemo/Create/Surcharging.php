@@ -56,7 +56,7 @@ class Surcharging extends Template
         }
 
         $quoteId = (int)$parent->getOrder()->getQuoteId();
-        $this->surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
+        $this->surchargingQuote = $this->surchargingQuoteRepository->getByQuoteIdIncludingDeleted($quoteId);
         if (!$this->surchargingQuote->getId()
             || $parent->getOrder()->getPayment()->getMethod() !== $this->surchargingQuote->getPaymentMethod()
         ) {

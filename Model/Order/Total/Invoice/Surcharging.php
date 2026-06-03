@@ -30,7 +30,7 @@ class Surcharging extends AbstractTotal
         }
 
         $quoteId = (int)$order->getQuoteId();
-        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
+        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteIdIncludingDeleted($quoteId);
         $paymentMethod = str_replace('_vault', '', (string)$order->getPayment()->getMethod());
         if (!$surchargingQuote->getId() || $paymentMethod !== $surchargingQuote->getPaymentMethod()) {
             return $this;

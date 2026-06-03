@@ -40,7 +40,7 @@ class Surcharging extends Template
         }
 
         $paymentMethod = str_replace('_vault', '', (string)$order->getPayment()->getMethod());
-        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId((int)$order->getQuoteId());
+        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteIdIncludingDeleted((int)$order->getQuoteId());
         if (!$surchargingQuote->getId() || $paymentMethod !== $surchargingQuote->getPaymentMethod()) {
             return $this;
         }

@@ -73,6 +73,7 @@
     <preference type="Worldline\PaymentCore\Service\Refund\RefundRequestDataBuilder" for="Worldline\PaymentCore\Api\Service\Refund\RefundRequestDataBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\Payment\GetPaymentService" for="Worldline\PaymentCore\Api\Service\Payment\GetPaymentServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Services\TestConnectionService" for="Worldline\PaymentCore\Api\Service\Services\TestConnectionServiceInterface" />
+    <preference type="Worldline\PaymentCore\Service\Services\StoreConnectionService" for="Worldline\PaymentCore\Api\Service\Services\StoreConnectionServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Services\SurchargeCalculationService" for="Worldline\PaymentCore\Api\Service\Services\SurchargeCalculationServiceInterface" />
     <preference type="Worldline\PaymentCore\Service\Services\CalculateSurchargeRequestBuilder" for="Worldline\PaymentCore\Api\Service\CalculateSurchargeRequestBuilderInterface" />
     <preference type="Worldline\PaymentCore\Service\Token\DeleteTokenService" for="Worldline\PaymentCore\Api\Service\Token\DeleteTokenServiceInterface" />
@@ -190,6 +191,14 @@
     <type name="Worldline\PaymentCore\Model\Config\WebhookConfig">
         <plugin name="Worldline_PaymentCore::decrypt_keys_for_tests"
                 type="Worldline\PaymentCore\Infrastructure\Plugin\WebhookConfig\DecryptedKey"/>
+    </type>
+    <type name="Magento\Quote\Model\ResourceModel\Quote">
+        <plugin name="worldline_mark_quote_payment_info_as_deleted"
+                type="Worldline\PaymentCore\Plugin\Quote\MarkQuotePaymentInfoAsDeleted"
+                sortOrder="10"/>
+        <plugin name="worldline_mark_surcharging_quote_as_deleted"
+                type="Worldline\PaymentCore\Plugin\Quote\MarkSurchargingQuoteAsDeleted"
+                sortOrder="20"/>
     </type>
     <!-- End Plugin -->
 

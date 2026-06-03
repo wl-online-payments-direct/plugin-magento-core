@@ -7,7 +7,7 @@
         "wl-online-payments-direct/sdk-php": "8.3"
     },
     "type": "magento2-module",
-    "version": "2.49.0",
+    "version": "2.52.0",
     "license": ["MIT"],
     "authors": [
         {

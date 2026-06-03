@@ -182,10 +182,11 @@ class Info extends MagentoInfo
             )) {
             $this->isSplitPayment = true;
             foreach ($splitPaymentInfos as $splitPaymentInfo) {
-                $specificInformation[] = array_merge(
-                    $specificInformation,
-                    $this->infoFormatter->format($splitPaymentInfo)
-                );
+                $formatted = $this->infoFormatter->format($splitPaymentInfo);
+
+                foreach ($formatted as $item) {
+                    $specificInformation[] = $item;
+                }
             }
         }
         $paymentInformation = $this->getPaymentInformation();

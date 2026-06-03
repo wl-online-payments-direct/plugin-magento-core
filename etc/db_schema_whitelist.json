@@ -116,11 +116,14 @@
             "base_amount": true,
             "quote_total_amount": true,
             "is_invoiced": true,
-            "is_refunded": true
+            "is_refunded": true,
+            "deleted_at": true
+        },
+        "index": {
+            "WORLDLINE_SURCHARGING_QUOTE_DELETED_AT": true
         },
         "constraint": {
-            "PRIMARY": true,
-            "WORLDLINE_SURCHARGING_QUOTE_QUOTE_ID_QUOTE_ENTITY_ID": true
+            "PRIMARY": true
         }
     },
     "worldline_surcharging_creditmemo": {
@@ -154,11 +157,14 @@
             "payment_identifier": true,
             "public_hash": true,
             "method": true,
-            "device_data": true
+            "device_data": true,
+            "deleted_at": true
+        },
+        "index": {
+            "WORLDLINE_QUOTE_PAYMENT_INFO_DELETED_AT": true
         },
         "constraint": {
-            "PRIMARY": true,
-            "WORLDLINE_QUOTE_PAYMENT_PAYMENT_ID_QUOTE_PAYMENT_PAYMENT_ID": true
+            "PRIMARY": true
         }
     }
 }

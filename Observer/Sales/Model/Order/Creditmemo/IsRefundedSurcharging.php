@@ -52,7 +52,7 @@ class IsRefundedSurcharging implements ObserverInterface
     {
         $creditmemo = $observer->getEvent()->getCreditmemo();
         $quoteId = (int)$creditmemo->getOrder()->getQuoteId();
-        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteId($quoteId);
+        $surchargingQuote = $this->surchargingQuoteRepository->getByQuoteIdIncludingDeleted($quoteId);
         if (!$surchargingQuote->getId() || $surchargingQuote->getIsRefunded()) {
             return;
         }

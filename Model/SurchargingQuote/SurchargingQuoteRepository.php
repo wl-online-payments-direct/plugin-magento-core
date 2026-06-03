@@ -50,6 +50,16 @@ class SurchargingQuoteRepository implements SurchargingQuoteRepositoryInterface
 
     public function getByQuoteId(int $quoteId): SurchargingQuoteInterface
     {
+        $surchargingQuote = $this->getByQuoteIdIncludingDeleted($quoteId);
+        if ($surchargingQuote->getDeletedAt() !== null) {
+            return $this->surchargingQuoteFactory->create();
+        }
+
+        return $surchargingQuote;
+    }
+
+    public function getByQuoteIdIncludingDeleted(int $quoteId): SurchargingQuoteInterface
+    {
         if (empty($this->storedSurchargingQuote[$quoteId])) {
             $surchargingQuote = $this->surchargingQuoteFactory->create();
             $this->surchargingQuoteResource->load($surchargingQuote, $quoteId, SurchargingQuoteInterface::QUOTE_ID);
@@ -63,7 +73,7 @@ class SurchargingQuoteRepository implements SurchargingQuoteRepositoryInterface
     {
         $order = $this->orderRepository->get($orderId);
 
-        return $this->getByQuoteId((int)$order->getQuoteId());
+        return $this->getByQuoteIdIncludingDeleted((int)$order->getQuoteId());
     }
 
     public function deleteByQuoteId(int $quoteId): void

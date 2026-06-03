@@ -30,8 +30,19 @@ interface QuotePaymentRepositoryInterface
     public function get(int $paymentId): QuotePaymentInterface;
 
     /**
+     * Returns the active row (deleted_at IS NULL) matching $paymentIdentifier.
+     *
      * @param string $paymentIdentifier
      * @return QuotePaymentInterface
      */
     public function getByPaymentIdentifier(string $paymentIdentifier): QuotePaymentInterface;
+
+    /**
+     * Returns the row matching $paymentIdentifier regardless of deleted_at state.
+     * Reserved for support and audit reads.
+     *
+     * @param string $paymentIdentifier
+     * @return QuotePaymentInterface
+     */
+    public function getByPaymentIdentifierIncludingDeleted(string $paymentIdentifier): QuotePaymentInterface;
 }

@@ -75,6 +75,18 @@ class QuotePaymentRepository implements QuotePaymentRepositoryInterface
         $quotePayment = $this->quotePaymentInterfaceFactory->create();
         $this->quotePaymentResource->load($quotePayment, $paymentIdentifier, QuotePaymentInterface::PAYMENT_IDENTIFIER);
 
+        if ($quotePayment->getDeletedAt() !== null) {
+            return $this->quotePaymentInterfaceFactory->create();
+        }
+
+        return $quotePayment;
+    }
+
+    public function getByPaymentIdentifierIncludingDeleted(string $paymentIdentifier): QuotePaymentInterface
+    {
+        $quotePayment = $this->quotePaymentInterfaceFactory->create();
+        $this->quotePaymentResource->load($quotePayment, $paymentIdentifier, QuotePaymentInterface::PAYMENT_IDENTIFIER);
+
         return $quotePayment;
     }
 }
