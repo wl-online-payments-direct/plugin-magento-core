@@ -14,6 +14,13 @@ use Worldline\PaymentCore\Model\Log\ResourceModel\Log;
 class EraseDebugLog extends Action implements HttpGetActionInterface
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    public const ADMIN_RESOURCE = 'Worldline_PaymentCore::config_worldline';
+
+    /**
      * @var Log
      */
     private $logResource;

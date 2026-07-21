@@ -177,6 +177,9 @@
         <index referenceId="WORLDLINE_QUOTE_PAYMENT_INFO_DELETED_AT" indexType="btree">
             <column name="deleted_at"/>
         </index>
+        <index referenceId="WORLDLINE_QUOTE_PAYMENT_INFO_PAYMENT_IDENTIFIER" indexType="btree">
+            <column name="payment_identifier"/>
+        </index>
     </table>
     <table name="sales_order" resource="sales">
         <column xsi:type="smallint" name="discrepancy_accepted" nullable="false" default="0"

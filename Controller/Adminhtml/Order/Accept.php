@@ -16,6 +16,13 @@ use Magento\Sales\Model\Order\Payment\Transaction as PaymentTransaction;
 class Accept extends Action
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    public const ADMIN_RESOURCE = 'Magento_Sales::actions';
+
+    /**
      * @var JsonFactory
      */
     protected $resultJsonFactory;

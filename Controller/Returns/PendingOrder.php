@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Worldline\PaymentCore\Controller\Returns;
 
+use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
@@ -32,22 +33,37 @@ class PendingOrder extends Action implements HttpPostActionInterface
      */
     private $failedOrderCreationNotification;
 
+    /**
+     * @var Session
+     */
+    private $checkoutSession;
+
     public function __construct(
         Context $context,
         LoggerInterface $logger,
         PendingOrderManagerInterface $pendingOrderManager,
-        FailedOrderCreationNotification $failedOrderCreationNotification
+        FailedOrderCreationNotification $failedOrderCreationNotification,
+        Session $checkoutSession
     ) {
         parent::__construct($context);
         $this->logger = $logger;
         $this->pendingOrderManager = $pendingOrderManager;
         $this->failedOrderCreationNotification = $failedOrderCreationNotification;
+        $this->checkoutSession = $checkoutSession;
     }
 
     public function execute(): ResultInterface
     {
         $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         $incrementId = $this->getRequest()->getParam('incrementId', '');
+
+        if ($incrementId === '') {
+            return $result->setData(['status' => false]);
+        }
+
+        if ((string)$this->checkoutSession->getLastRealOrderId() !== (string)$incrementId) {
+            return $result->setData(['status' => false]);
+        }
 
         try {
             $param['status'] = $this->pendingOrderManager->processPendingOrder($incrementId);

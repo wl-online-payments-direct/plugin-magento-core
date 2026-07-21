@@ -16,6 +16,13 @@ use Worldline\PaymentCore\Logger\ResourceModel\RequestLog\CollectionFactory;
 class MassProcessed extends Action implements HttpPostActionInterface
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    public const ADMIN_RESOURCE = 'Worldline_PaymentCore::request_logs';
+
+    /**
      * MassActions filter
      *
      * @var Filter

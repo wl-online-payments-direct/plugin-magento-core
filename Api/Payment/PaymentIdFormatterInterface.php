@@ -18,4 +18,14 @@ interface PaymentIdFormatterInterface
      * @throw LocalizedException
      */
     public function validateAndFormat(string $wlPaymentId, bool $addPostfix = false): string;
+
+    /**
+     * Validate the hosted tokenization id before it is used in a quote lookup.
+     *
+     * @param string $hostedTokenizationId
+     * @return string
+     *
+     * @throw LocalizedException
+     */
+    public function validateAndFormatHostedTokenizationId(string $hostedTokenizationId): string;
 }

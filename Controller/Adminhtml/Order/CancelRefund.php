@@ -22,6 +22,13 @@ use OnlinePayments\Sdk\Domain\RefundRequest;
 class CancelRefund extends Action
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    public const ADMIN_RESOURCE = 'Magento_Sales::actions';
+
+    /**
      * @var JsonFactory
      */
     protected $resultJsonFactory;

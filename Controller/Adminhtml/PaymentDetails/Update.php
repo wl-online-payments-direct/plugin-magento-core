@@ -12,6 +12,13 @@ use Worldline\PaymentCore\Model\Order\PaymentInfoUpdater;
 class Update extends Action implements HttpPostActionInterface
 {
     /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    public const ADMIN_RESOURCE = 'Magento_Sales::actions_edit';
+
+    /**
      * @var PaymentInfoUpdater
      */
     private $paymentInfoUpdater;

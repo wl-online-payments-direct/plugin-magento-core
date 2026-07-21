@@ -21,6 +21,7 @@ class PaymentIdFormatter implements PaymentIdFormatterInterface
 {
     private const PAYMENT_ID_MIN_LENGTH = 10;
     private const PAYMENT_ID_MAX_LENGTH = 20;
+    private const HOSTED_TOKENIZATION_ID_PATTERN = '/^[A-Za-z0-9.\-]{8,100}$/';
 
     /**
      * Validate and format worldline payment ID
@@ -42,6 +43,22 @@ class PaymentIdFormatter implements PaymentIdFormatterInterface
         }
 
         return $addPostfix ? ($wlPaymentId . '_0') : $wlPaymentId;
+    }
+
+    /**
+     * Validate and format the hosted tokenization id used in a quote lookup
+     *
+     * @param string $hostedTokenizationId
+     * @return string
+     * @throws LocalizedException
+     */
+    public function validateAndFormatHostedTokenizationId(string $hostedTokenizationId): string
+    {
+        if (!preg_match(self::HOSTED_TOKENIZATION_ID_PATTERN, $hostedTokenizationId)) {
+            throw new LocalizedException(__('Invalid hosted tokenization id format.'));
+        }
+
+        return $hostedTokenizationId;
     }
 
     /**
