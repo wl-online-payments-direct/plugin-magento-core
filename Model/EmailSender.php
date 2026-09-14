@@ -114,7 +114,7 @@ class EmailSender
             $options = ['area' => Area::AREA_FRONTEND, 'store' => $storeId];
         }
 
-        $addTo = $this->emailsStringToArray($sendTo);
+        $addTo = array_merge($addTo, $this->emailsStringToArray($ccTo));
 
         if ($ccTo) {
             $addTo[] = $ccTo;
