@@ -8,6 +8,14 @@ use Worldline\PaymentCore\Api\AmountFormatterInterface;
 class AmountFormatter implements AmountFormatterInterface
 {
     /**
+     * Exponent assumed for currencies that are missing from the mapping below.
+     *
+     * 2 is the ISO 4217 default and the same fallback CurrencyAmountNormalizer uses on the
+     * inbound side, so both directions agree on a currency the mapping does not know yet.
+     */
+    public const DEFAULT_NUMBER_OF_DECIMALS = 2;
+
+    /**
      * Mapping between currencies and number of decimal places
      *
      * @var int[]
@@ -144,11 +152,13 @@ class AmountFormatter implements AmountFormatterInterface
         'SEK' => 2,
         'SGD' => 2,
         'SHP' => 2,
+        'SLE' => 2,
         'SLL' => 2,
         'SOS' => 2,
         'SRD' => 2,
         'SSP' => 2,
         'STD' => 2,
+        'STN' => 2,
         'SVC' => 2,
         'SYP' => 2,
         'SZL' => 2,
@@ -167,18 +177,22 @@ class AmountFormatter implements AmountFormatterInterface
         'USN' => 2,
         'UYI' => 0,
         'UYU' => 2,
+        'UYW' => 4,
         'UZS' => 2,
         'VEF' => 2,
+        'VES' => 2,
         'VND' => 0,
         'VUV' => 0,
         'WST' => 2,
         'XAF' => 0,
         'XCD' => 2,
+        'XCG' => 2,
         'XOF' => 0,
         'XPF' => 0,
         'YER' => 2,
         'ZAR' => 2,
         'ZMW' => 2,
+        'ZWG' => 2,
         'ZWL' => 2,
     ];
 
@@ -192,9 +206,16 @@ class AmountFormatter implements AmountFormatterInterface
         return (float) ($amount / $this->getMultiplier($currency));
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getNumberOfDecimals(string $currency): int
+    {
+        return $this->currencies[$currency] ?? self::DEFAULT_NUMBER_OF_DECIMALS;
+    }
+
     private function getMultiplier(string $currency): int
     {
-        $numberOfDecimalPlaces = $this->currencies[$currency] ?? 0;
-        return  10 ** $numberOfDecimalPlaces;
+        return 10 ** $this->getNumberOfDecimals($currency);
     }
 }

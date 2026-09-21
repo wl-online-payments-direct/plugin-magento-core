@@ -50,6 +50,45 @@ class AmountFormatterTest extends TestCase
         );
     }
 
+    /**
+     * @param string $currency
+     * @param int $expected
+     * @return void
+     *
+     * @dataProvider dataProviderNumberOfDecimals
+     */
+    public function testGetNumberOfDecimals(string $currency, int $expected): void
+    {
+        $this->assertSame(
+            $expected,
+            $this->amountFormatter->getNumberOfDecimals($currency)
+        );
+    }
+
+    public function dataProviderNumberOfDecimals(): array
+    {
+        return [
+            ['EUR', 2],
+            ['USD', 2],
+            ['AUD', 2],
+            ['JPY', 0],
+            ['IQD', 3],
+            ['CLF', 4],
+            ['UYW', 4],
+
+            // redenominated currencies, their retired predecessors are still part of the mapping
+            ['VES', 2],
+            ['SLE', 2],
+            ['STN', 2],
+            ['XCG', 2],
+            ['ZWG', 2],
+
+            // unknown currencies fall back to the ISO 4217 default
+            ['AAA', 2],
+            ['', 2],
+        ];
+    }
+
     public function dataProviderFormat(): array
     {
         return [
@@ -72,8 +111,12 @@ class AmountFormatterTest extends TestCase
             ['IQD', -1000, -1],
             ['IQD', 0, 0.000],
 
-            ['AAA', 1000, 1000],
-            ['AAA', -1000, -1000],
+            ['VES', 17990, 179.90],
+            ['ZWG', -17990, -179.90],
+            ['UYW', 1000, 0.1],
+
+            ['AAA', 1000, 10],
+            ['AAA', -1000, -10],
             ['AAA', 0, 0],
         ];
     }

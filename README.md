@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+### 2.57.0
+- Fixed: Adjust tax amounts rounding and prevent a validation amount failure
+
 ### 2.56.0
 - Changed: Card saving now requires an enabled vault and a logged in shopper
 

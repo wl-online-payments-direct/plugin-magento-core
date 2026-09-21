@@ -9,6 +9,7 @@ class CurrencyAmountNormalizer
         'BHD' => 3,
         'XOF' => 0,
         'BIF' => 0,
+        'BYR' => 0,
         'XAF' => 0,
         'CLP' => 0,
         'CLF' => 4,
