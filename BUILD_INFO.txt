@@ -1,1 +1,1 @@
-Built from Worldline-Plugins/plugin-magento-core-PRE-RELEASE@2.57.0 on Mon Sep 21 07:27:13 UTC 2026
+Built from Worldline-Plugins/plugin-magento-core-PRE-RELEASE@2.58.0 on Mon Sep 28 07:16:28 UTC 2026
