@@ -16,6 +16,7 @@ use Worldline\PaymentCore\Api\QuoteRestorationInterface;
 use Worldline\PaymentCore\Api\WebApi\Checkout\BaseCreatePaymentManagementInterface;
 use Worldline\PaymentCore\Api\WebApi\Checkout\QuoteManagerInterface;
 use Worldline\PaymentCore\Model\DataAssigner\DataAssignerInterface;
+use Worldline\PaymentCore\Model\Quote\Address\AddressBookValidator;
 use Worldline\PaymentCore\Model\QuotePayment\QuotePaymentRepository;
 
 /**
@@ -59,6 +60,11 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
     private $wlQuotePaymentRepository;
 
     /**
+     * @var AddressBookValidator
+     */
+    private $addressBookValidator;
+
+    /**
      * @var DataAssignerInterface[]
      */
     private $dataAssignerPool;
@@ -71,6 +77,7 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         CustomerManagement $customerManagement,
         QuotePaymentInterfaceFactory $wlQuotePaymentFactory,
         QuotePaymentRepositoryInterface $wlQuotePaymentRepository,
+        AddressBookValidator $addressBookValidator,
         array $dataAssignerPool = []
     ) {
         $this->quoteManager = $quoteManager;
@@ -80,6 +87,7 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
         $this->customerManagement = $customerManagement;
         $this->wlQuotePaymentFactory = $wlQuotePaymentFactory;
         $this->wlQuotePaymentRepository = $wlQuotePaymentRepository;
+        $this->addressBookValidator = $addressBookValidator;
         $this->dataAssignerPool = $dataAssignerPool;
     }
 
@@ -137,10 +145,11 @@ class BaseCreatePaymentManagement implements BaseCreatePaymentManagementInterfac
 
         $this->paymentInformationManagement->savePaymentInformation($quote->getId(), $paymentMethod, $billingAddress);
 
-        if (!$quote->getCustomerIsGuest()) {
-            if ($quote->getCustomerId()) {
-                $this->customerManagement->validateAddresses($quote);
-            }
+        // Magento 2.4.8+ validates the addresses of every quote, guest ones included, when it places the order
+        // (QuoteManagement::submitQuote). With a redirect payment that is after the payment, so it is done here.
+        $this->customerManagement->validateAddresses($quote);
+        if (!$quote->getCustomerIsGuest() && $quote->getCustomerId()) {
+            $this->addressBookValidator->validate($quote);
         }
 
         // For PWA additional information is used, for luma - additional_data
