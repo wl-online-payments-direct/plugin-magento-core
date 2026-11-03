@@ -7,6 +7,7 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Model\Order\Payment;
 use Worldline\PaymentCore\Api\Service\Refund\RefundRequestDataBuilderInterface;
 use Worldline\PaymentCore\Gateway\SubjectReader;
+use Worldline\PaymentCore\Service\Refund\RefundReasonDataBuilder;
 
 class RefundDataBuilder implements BuilderInterface
 {
@@ -24,12 +25,16 @@ class RefundDataBuilder implements BuilderInterface
      */
     private $refundRequestBuilder;
 
+    private $refundReasonDataBuilder;
+
     public function __construct(
         SubjectReader $subjectReader,
-        RefundRequestDataBuilderInterface $refundRequestBuilder
+        RefundRequestDataBuilderInterface $refundRequestBuilder,
+        RefundReasonDataBuilder $refundReasonDataBuilder
     ) {
         $this->subjectReader = $subjectReader;
         $this->refundRequestBuilder = $refundRequestBuilder;
+        $this->refundReasonDataBuilder = $refundReasonDataBuilder;
     }
 
     public function build(array $buildSubject): array
@@ -52,10 +57,13 @@ class RefundDataBuilder implements BuilderInterface
             $amount = (float)$this->subjectReader->readAmount($buildSubject);
         }
 
+        $refundRequest = $this->refundRequestBuilder->build($amount, $currencyCode);
+        $this->refundReasonDataBuilder->apply($refundRequest, (string)$payment->getOrder()->getIncrementId());
+
         return [
             self::TRANSACTION_ID => $txnId,
             self::STORE_ID => (int)$payment->getOrder()->getStoreId(),
-            self::REFUND_REQUEST => $this->refundRequestBuilder->build($amount, $currencyCode)
+            self::REFUND_REQUEST => $refundRequest
         ];
     }
 }

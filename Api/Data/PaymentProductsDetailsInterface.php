@@ -23,6 +23,7 @@ interface PaymentProductsDetailsInterface
     public const SEPA_DIRECT_DEBIT_PRODUCT_ID = 771;
     public const IDEAL_PRODUCT_ID = 809;
     public const PAYPAL_PRODUCT_ID = 840;
+    public const WERO_PRODUCT_ID = 900;
     public const BANCONTACT_PRODUCT_ID = 3012;
     public const GIFTCARD_LIMONETIK_ID = 3111;
     public const ILLICADO_PRODUCT_ID = 3112;
@@ -114,6 +115,10 @@ interface PaymentProductsDetailsInterface
         self::PAYPAL_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_E_WALLET,
             'label' => 'PayPal'
+        ],
+        self::WERO_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_REALTIME_BANKING,
+            'label' => 'Wero'
         ],
         self::ALIPAY_PLUS_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_MOBILE,

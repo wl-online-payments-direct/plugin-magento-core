@@ -146,6 +146,9 @@
                 <item name="refund.refund_requested" xsi:type="object">Worldline\PaymentCore\Model\Webhook\CreditmemoProcessor</item>
                 <item name="refund.rejected" xsi:type="object">Worldline\PaymentCore\Model\Webhook\RejectPaymentProcessor</item>
             </argument>
+            <argument name="customProcessorStrategies" xsi:type="array">
+                <item name="wero_capture_strategy" xsi:type="object">Worldline\PaymentCore\Model\Webhook\WeroCustomProcessorStrategy\Proxy</item>
+            </argument>
         </arguments>
     </type>
 

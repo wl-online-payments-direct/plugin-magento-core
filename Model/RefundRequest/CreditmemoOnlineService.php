@@ -16,7 +16,11 @@ use Worldline\PaymentCore\Api\RefundRequestRepositoryInterface;
 use Worldline\PaymentCore\Api\Service\Refund\CreateRefundServiceInterface;
 use Worldline\PaymentCore\Api\Service\Refund\RefundRequestDataBuilderInterface;
 use Worldline\PaymentCore\Api\TransactionRepositoryInterface;
+use Worldline\PaymentCore\Service\Refund\RefundReasonDataBuilder;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
 {
     /**
@@ -59,6 +63,11 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
      */
     private $refundRequestDataBuilder;
 
+    /**
+     * @var RefundReasonDataBuilder
+     */
+    private $refundReasonDataBuilder;
+
     public function __construct(
         RefundRequestRepositoryInterface $refundRequestRepository,
         CreditmemoRepositoryInterface $creditmemoRepository,
@@ -67,7 +76,8 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
         AmountFormatterInterface $amountFormatter,
         TransactionRepositoryInterface $transactionRepository,
         CreateRefundServiceInterface $createRefundService,
-        RefundRequestDataBuilderInterface $refundRequestDataBuilder
+        RefundRequestDataBuilderInterface $refundRequestDataBuilder,
+        RefundReasonDataBuilder $refundReasonDataBuilder
     ) {
         $this->refundRequestRepository = $refundRequestRepository;
         $this->creditmemoRepository = $creditmemoRepository;
@@ -77,6 +87,7 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
         $this->transactionRepository = $transactionRepository;
         $this->createRefundService = $createRefundService;
         $this->refundRequestDataBuilder = $refundRequestDataBuilder;
+        $this->refundReasonDataBuilder = $refundReasonDataBuilder;
     }
 
     /**
@@ -158,6 +169,11 @@ class CreditmemoOnlineService implements CreditmemoOnlineServiceInterface
 
             $refundAmount = $refundForThis / 100;
             $refundRequest = $this->refundRequestDataBuilder->build($refundAmount, $currencyCode);
+            $this->refundReasonDataBuilder->apply(
+                $refundRequest,
+                $incrementId,
+                (string)$transaction->getTransactionId()
+            );
             $this->createRefundService->execute($transaction->getTransactionId(), $refundRequest, $storeId);
         }
     }

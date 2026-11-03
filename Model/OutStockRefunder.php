@@ -13,6 +13,7 @@ use Worldline\PaymentCore\Model\Config\AutoRefundConfigProvider;
 use Worldline\PaymentCore\Model\Order\AutoRefundAttemptNotification;
 use Worldline\PaymentCore\Model\Order\AutoRefundToCustomerNotification;
 use Worldline\PaymentCore\Service\Refund\CreateRefundService;
+use Worldline\PaymentCore\Service\Refund\RefundReasonDataBuilder;
 
 class OutStockRefunder
 {
@@ -59,6 +60,8 @@ class OutStockRefunder
      */
     private $autoRefundToCustomerNotification;
 
+    private $refundReasonDataBuilder;
+
     public function __construct(
         StockStateInterface $stockState,
         QuoteResourceInterface $quoteResource,
@@ -67,7 +70,8 @@ class OutStockRefunder
         AutoRefundConfigProvider $autoRefundConfigProvider,
         RefundRequestDataBuilderInterface $refundRequestDataBuilder,
         AutoRefundAttemptNotification $autoRefundAttemptNotification,
-        AutoRefundToCustomerNotification $autoRefundToCustomerNotification
+        AutoRefundToCustomerNotification $autoRefundToCustomerNotification,
+        RefundReasonDataBuilder $refundReasonDataBuilder
     ) {
         $this->stockState = $stockState;
         $this->quoteResource = $quoteResource;
@@ -77,6 +81,7 @@ class OutStockRefunder
         $this->refundRequestDataBuilder = $refundRequestDataBuilder;
         $this->autoRefundAttemptNotification = $autoRefundAttemptNotification;
         $this->autoRefundToCustomerNotification = $autoRefundToCustomerNotification;
+        $this->refundReasonDataBuilder = $refundReasonDataBuilder;
     }
 
     public function refundTransaction(string $incrementId): void
@@ -99,6 +104,7 @@ class OutStockRefunder
         $paymentId = $this->paymentIdFormatter->validateAndFormat($paymentId, true);
 
         $refundRequest = $this->refundRequestDataBuilder->build((float)$quote->getGrandTotal(), $currency);
+        $this->refundReasonDataBuilder->apply($refundRequest, $incrementId);
         $storeId = (int)$quote->getStoreId();
         $this->autoRefundAttemptNotification->notify($quote);
         $this->autoRefundToCustomerNotification->notify($quote);

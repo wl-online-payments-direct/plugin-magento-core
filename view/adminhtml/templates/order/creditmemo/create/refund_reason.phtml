@@ -1,0 +1,23 @@
+<?php
+if (!$block->isAvailable()) {
+    return;
+}
+$selectedReason = $block->getSelectedReason();
+?>
+<div class="admin__field field-worldline-refund-reason">
+    <label for="<?= $block->escapeHtmlAttr($block->getFieldId()) ?>" class="admin__field-label">
+        <span><?= $block->escapeHtml(__('Refund reason')) ?></span>
+    </label>
+    <div class="admin__field-control">
+        <select id="<?= $block->escapeHtmlAttr($block->getFieldId()) ?>"
+                name="<?= $block->escapeHtmlAttr($block->getFieldName()) ?>"
+                class="admin__control-select">
+            <?php foreach ($block->getOptions() as $option): ?>
+                <option value="<?= $block->escapeHtmlAttr($option['value']) ?>"
+                    <?= $option['value'] === $selectedReason ? 'selected="selected"' : '' ?>>
+                    <?= $block->escapeHtml($option['label']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+</div>

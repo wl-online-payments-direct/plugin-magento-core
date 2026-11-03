@@ -76,6 +76,10 @@ or install them from the GitHub:
 
 ### Change log:
 
+### 2.60.0
+- Added: Wero payment method
+- Added: Refund reason selection on credit memo creation
+
 ### 2.59.0
 - Fixed: Validate checkout addresses before the payment redirect to prevent paid payments without an order
 - Fixed: Checkout page breaking when the address could not be saved to the address book
