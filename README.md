@@ -76,6 +76,9 @@ or install them from the GitHub:
 
 ### Change log:
 
+### 2.61.0
+- Added: PostFinance Pay payment method
+
 ### 2.60.0
 - Added: Wero payment method
 - Added: Refund reason selection on credit memo creation

@@ -28,6 +28,7 @@ interface PaymentProductsDetailsInterface
     public const GIFTCARD_LIMONETIK_ID = 3111;
     public const ILLICADO_PRODUCT_ID = 3112;
     public const PRZELEWY24_PRODUCT_ID = 3124;
+    public const POSTFINANCE_PAY_PRODUCT_ID = 3203;
     public const KLARNA_PAY_NOW_PRODUCT_ID = 3301;
     public const KLARNA_PAY_LATER_PRODUCT_ID = 3302;
     public const KLARNA_FINANCING_PRODUCT_ID = 3303;
@@ -143,6 +144,10 @@ interface PaymentProductsDetailsInterface
         self::PRZELEWY24_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_REALTIME_BANKING,
             'label' => 'Przelewy24'
+        ],
+        self::POSTFINANCE_PAY_PRODUCT_ID => [
+            'group' => self::PAYMENT_GROUP_REALTIME_BANKING,
+            'label' => 'PostFinance Pay'
         ],
         self::KLARNA_PAY_NOW_PRODUCT_ID => [
             'group' => self::PAYMENT_GROUP_INSTALMENT,
